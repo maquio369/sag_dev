@@ -1,0 +1,248 @@
+@import "tailwindcss";
+
+[data-theme="light"] {
+  --color-bg: #f9f6d0;
+  --color-fg: #000000;
+  --color-fondoObscuro: #171c26;
+}
+[data-theme="dark"] {
+  --color-bg: #000000;
+  --color-fg: #ffffff;
+  --color-fondoObscuro: #0f3428;
+}
+
+hr {
+  @apply text-fondoTransparenteObscuroBoton dark:text-textoSeparadorDark mb-2 mt-1;
+}
+
+::-webkit-scrollbar {
+  @apply w-1.5 h-1.5 rounded-full bg-textoSeparadorDark;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-fondoGradienteTopTo rounded-full;
+}
+
+::-webkit-calendar-picker-indicator {
+  @apply bg-fondoBlancoTransparente rounded-full;
+}
+
+input {
+  @apply placeholder:text-sm placeholder:italic placeholder:font-light rounded invalid:border-bordeControlInvalido valid:bg-fondoControlValido placeholder:pl-0.5 text-textoControl
+   border-bordeControl ring-bordeExteriorBotonSeleccionado bg-fondoControl  focus:border-bordeControlHover  
+    dark:bg-fondoTransparenteObscuroBoton dark:valid:bg-fondoTransparenteObscuroBoton dark:text-menuTexto 
+   px-3 py-2 border hover:ring-1 focus:drop-shadow-xs focus:outline-none;
+}
+
+.input-border-zero {
+  @apply valid:bg-transparent bg-transparent focus:outline-none font-light text-sm border-0 hover:ring-0 px-0 py-1 focus:drop-shadow-none;
+}
+
+button,
+input[type="button"] {
+  @apply py-1.5 cursor-pointer px-3 rounded-lg focus:ring-1 focus:outline-none shadow transition-colors border-0
+  disabled:cursor-default;
+}
+
+.btn1 {
+  @apply disabled:text-menuTextoSeparador disabled:bg-fondoTablaHeader focus:ring-offset-1 bg-fondoBoton1 text-textoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover  ring-bordeExteriorBotonSeleccionado
+  justify-center;
+}
+
+.btn2 {
+  @apply disabled:text-menuTextoSeparador disabled:bg-fondoTablaHeader focus:ring-offset-1 bg-fondoBoton2 hover:bg-fondoBoton1Hover text-textoBoton2 hover:text-textoBoton2Hover ring-bordeExteriorBotonSeleccionado
+  justify-center;
+}
+
+.btn3 {
+  @apply disabled:text-fondoTransparenteObscuroNotificacion focus:ring-offset-1 bg-transparent text-textoBoton2 dark:text-textoLink hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover ring-bordeExteriorBotonSeleccionado
+  shadow-transparent rounded-xl px-2 py-1;
+}
+
+.btnTop {
+  @apply rounded-full text-textoBoton1 ring-bordeControl hover:bg-fondoTransparenteObscuroBoton border-0 outline-0 bg-transparent shadow-none hover:scale-105 px-2.5 py-1
+  z-1;
+}
+
+.btnIcon {
+  @apply disabled:text-fondoTransparenteObscuroNotificacion focus:ring-offset-1 bg-transparent text-textoBoton2 dark:text-textoLink hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover ring-bordeExteriorBotonSeleccionado
+  shadow-transparent rounded-full px-2 py-0.5 mb-1;
+}
+
+.btnDanger {
+  @apply focus:ring-offset-1 bg-TextoLblError hover:bg-bordeControlInvalido text-textoBoton1 hover:text-textoBoton1Hover  ring-bordeExteriorBotonSeleccionado
+  justify-center;
+}
+
+.ahref {
+  @apply focus:outline-1 focus:outline-bordeExteriorBotonSeleccionado text-textoLink hover:text-textoLinkHover hover:underline;
+}
+
+.lbl {
+  @apply text-textoEtiqueta dark:text-menuTextoSeparador font-light block mb-1;
+}
+
+.lblEncabezado {
+  @apply font-medium text-textoEncabezado dark:text-textoEncabezadoDark p-1 mb-1;
+}
+
+.lblBtn {
+  @apply pl-1 hidden sm:inline-block text-xs;
+}
+
+.lblError {
+  @apply text-TextoLblError dark:text-TextoLblErrorDark font-light text-base ;/*max-w-[640]*/
+}
+
+.tooltip {
+  @apply invisible absolute text-xs rounded shadow-lg p-1 bg-textoControl text-fondoControl
+  -translate-y-[-35px]  -translate-x-[100%] border-bordeBlancoTransparente border; /*show Tip in the bottom+left corner*/
+  /*add this class to set the tootip's width: -right-24 */
+  /*use % in negative to move the tip up(bottom) & rigth(left): -bottom-[-190%] -left-[-90%] */
+}
+.has-tooltip:hover .tooltip {
+  @apply visible z-100;
+  /* add to the parent control, this classes: ' has-tooltip relative ' */
+}
+
+.pantallaObscura {
+  /*background: var(--color-fondoTransparenteObscuroBoton);
+  
+  @apply fixed inset-0 z-50 flex items-center justify-center;*/
+  backdrop-filter: blur(1px);
+}
+
+.fondoVentanaForm {
+  @apply bg-fondoControl dark:bg-fondoObscuroVentana border border-textoSeparadorDark rounded shadow-xl py-2 px-3;
+  /* w-[98%] md:w-[50%]*/
+}
+.fondoVentanaForm-width {
+  @apply w-[98%] md:w-[80%];
+}
+
+.fondoVentanaForm-center {
+  @apply left-6/12 top-6/12 translate-x-[-50%] translate-y-[-50%];
+}
+
+.encabezadoVentannaForm {
+  @apply flex justify-between items-center mb-5 border-b-1 border-fondoTransparenteObscuroBoton dark:border-textoSeparadorDark;
+}
+
+.tituloVentanaForm {
+  @apply pl-0.5 text-base font-light text-textoControl dark:text-bordeBlancoTransparente;
+}
+
+.iconoVentanaForm{
+  @apply text-bordeControl dark:text-bordeControl mr-1.5;
+}
+.grid3cols{
+  @apply grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-4;
+}
+/*
+.modal::backdrop {
+  background: hsl(0 0% 0% / 50%);
+  backdrop-filter: blur(1px);
+  @apply fixed inset-0 z-50 flex items-center justify-center;
+}
+*/
+/*
+.modal {
+  max-width: 20rem;
+  padding: 2rem;
+  border: 0;
+  border-radius: 0.5rem;
+  position: relative;
+  box-shadow: hsl(0 0% 0% / 10%) 0 0 0.5rem 0.25rem;
+}
+
+.modal-close-btn {
+  font-size: 0.75em;
+  position: absolute;
+  top: 0.25em;
+  right: 0.25em;
+}
+
+.form-row {
+  margin-top: 1rem;
+}
+select,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+button {
+  padding: 0.5em;
+  font: inherit;
+  line-height: 1;
+}
+*/
+@theme {
+  /*  --font-font1: "__className_d65c78"; /*Inter*/
+  /*  --font-font2: "__className_721240"; /*Roboto condensed*/
+
+  --color-fondoTransparenteObscuro: #00000009;
+  --color-fondoTransparenteObscuroBoton: #00000012;
+  --color-fondoTransparenteObscuroNotificacion: #0000003e;
+  --color-fondoGradienteLogo: #000000cc; /*negro #000000cc a transparente*/
+  --color-fondoBlancoTransparente: #ffffffe5;
+  --color-fondoBlancoTransparenteDark: #1c222ea5;
+  --color-fondoControlBlancoTransparente: #ffffffef;
+  --color-fondoControl: #ffffff;
+  --color-fondoControlValido: #f6fef9; /*eefbf3*/
+  --color-bordeBlancoTransparente: #ffffff99;
+  --color-fondoContenido: #fafafa; /*f5f8fa*/
+  --color-fondoContenidoDark: #070c11; /* 171c21 */
+
+  --color-bordeExteriorBotonSeleccionado: #009887a0;
+  --color-fondoBoton1: #009887;
+  --color-textoBoton1: #ffffff;
+  --color-fondoBoton1Hover: #007867;
+  --color-textoBoton1Hover: #ffffff;
+
+  --color-fondoGradienteTopFrom: #009887;
+  --color-fondoGradienteTopTo: #006d5c;
+
+  --color-fondoBoton2: #ffffffe5;
+  --color-textoBoton2: #009887;
+  --color-fondoBoton2Hover: #00c6b5;
+  --color-textoBoton2Hover: #ffffff;
+
+  --color-bordeControl: #7c9eaf;
+  --color-bordeControlHover: #00c6b5;
+  --color-bordeControlInvalido: #be2932;
+
+  --color-textoLink: #00c6b5;
+  --color-textoLinkHover: #009887;
+  --color-textoEtiqueta: #575c66;
+
+  --color-textoControl: #272c3c;
+  --color-textoTabla: #464a48;
+  --color-fondoObscuro: var(--color-fondoObscuro); /* 171c26 */
+  --color-fondoObscuroTransparente: #00000099; /* Ventana para obscurecer fondo */
+  --color-fondoObscuroVentana: #19212dee; /* PopOver window dark 1c2029 */
+
+  --color-textoEncabezado: #004f3e; /*tono verde obs*/
+  --color-fondoAgregar: #00c6b5;
+  --color-fondoModificar: #02da9a;
+  --color-fondoEliminar: #ff637e;
+  --color-fondoInfo: #00bcff;
+
+  --color-textoGolden1: #f3dcb4; /*+claro */
+  --color-textoGolden2: #f3d090; /*-claro para fondo claro*/
+
+  --color-fondoCeleste: #ff637e; /*-cyan-400*/
+  --color-fondoNaranja: #ffb900; /*-amber-400 warning*/
+
+  --color-menuIcon: #55b8a7;
+  --color-menuIconHover: #00c6b5;
+  --color-menuTexto: #ffffffe5; /*verdoso claro #d0fAe5;*/
+  --color-menuTextoHover: #ffffff;
+  --color-menuFondoOpcion: #49f8e745;
+  --color-menuTextoSeparador: #ffffff90;
+  --color-textoSeparadorDark: #575c6670; /*363a42... 393c42=575c66A6*/
+  --color-textoEncabezadoDark: #eefbf3;
+  --color-fondoTablaFilaHover: #20a8a71a; /*f6fef9 20A8a712*/
+  --color-fondoTablaHeader: #6b7583; /*gris=e5e7ebFF bordeControl=7c9eaf*/
+  --color-TextoTablaHeader: #ffffffe5;
+  --color-fondoTablaFilaZebra: #00000005;
+  --color-TextoLblError: #ff4564;
+  --color-TextoLblErrorDark: #fc93a5;
+}

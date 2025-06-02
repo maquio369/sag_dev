@@ -1,0 +1,42 @@
+/*------------------Toggle Dark Mode---------------------*/
+/*bg light color*/
+.toggle-checkbox:checked ~ .toggle-slot {
+  background-color: #172131e5;
+}
+
+.sun-icon-wrapper {
+  position: absolute;
+  height: 6em;
+  width: 6em;
+  opacity: 1;
+  transform: translate(1.5em, 1em) rotate(90deg);
+  transform-origin: 50% 50%;
+  transition:
+    opacity 150ms,
+    transform 800ms cubic-bezier(0.26, 2, 0.46, 0.71);
+  shadow: 0px 0px 8px 0.75em #fff;
+}
+/*sun opacity after toggle to dark*/
+.toggle-checkbox:checked ~ .toggle-slot .sun-icon-wrapper {
+  opacity: 0.03;
+  transform: translate(7.5em, 1em) rotate(0deg);
+}
+
+.moon-icon-wrapper {
+  position: absolute;
+  height: 6em;
+  width: 6em;
+  opacity: 0.1;
+  transform: translate(1em, 1em) rotate(165deg);
+  transform-origin: 50% 50%;
+  transition:
+    opacity 150ms,
+    transform 900ms cubic-bezier(0.26, 2.5, 0.45, 0.05);
+}
+
+.toggle-checkbox:checked ~ .toggle-slot .moon-icon-wrapper {
+  opacity: 1;
+  transform: translate(7em, 1em) rotate(9.15deg);
+}
+
+/*---------------------------------------*/
