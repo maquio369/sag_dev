@@ -13,14 +13,14 @@ export default function RootLayout({
     <html lang="en" data-theme="light">
       <head>
         <meta charSet="UTF-8" />
-        <title>SIAG</title>
+        <title>SAG</title>
         <meta
           name="description"
-          content="Sistema Integral Administrativo Gubernamental"
+          content="Sistema Administrativo Gubernamental"
         />
         <meta
           name="keywords"
-          content="SIAG, Sistema Integral Administrativo Gubernamental"
+          content="SAG, Sistema Administrativo Gubernamental"
         />
         <meta name="author" content="Julio Arizmendi" />
 

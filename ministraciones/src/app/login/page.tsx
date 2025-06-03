@@ -34,8 +34,8 @@ const LoginPage = () => {
             <div
               className="flex flex-col bg-[url(/general/rombos-patron-gob.png)] bg-[auto_88px] bg-fondoControl mt-2 p-10 rounded-lg shadow-lg space-y-6 text-textoControl dark:text-menuTexto dark:bg-fondoBlancoTransparenteDark"
             >
-              <h1 className="text-xl text-center ">
-                Bienvenido al Sistema Integral Administrativo Gubernamental
+              <h1 className="text-lg text-center ">
+                Bienvenido al sistema financiero de <strong className="text-2xl ">MINISTRACIONES</strong>
               </h1>
 
               <div className="flex flex-col space-y-1">
