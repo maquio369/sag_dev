@@ -22,12 +22,9 @@ export class UsuariosService extends BaseService<Usuarios> {
   }
 
   async auth(usr: string, pwd: string): Promise<any> {
-    //const qry = `SELECT usuario,rol_id FROM usuarios WHERE esta_activo=true AND usuario='${usr}' AND clave='${pwd}'`;
-    //const result = await this.getRepository().query(qry);
-    
     const qry = "SELECT usuario,rol_id FROM usuarios WHERE esta_activo=true AND usuario=$1 AND clave=$2";
     const result = await this.getRepository().query(qry,[usr,pwd]);
-
+    //console.log("service="usr,pwd,result);
     return result;
   }
 }

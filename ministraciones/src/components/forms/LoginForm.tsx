@@ -9,7 +9,7 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
-  const apiHost = process.env.API_URL ? process.env.API_URL : "";
+
   const toastOptions = {
     theme:
       typeof window !== "undefined" ? localStorage.getItem("theme") : "dark",
@@ -28,6 +28,9 @@ const LoginForm = () => {
 
     try {
       console.log("Iniciando proceso de login para usuario:", username);
+      var apiHost =
+        process.env.API_URL !== undefined ? process.env.API_URL : "";
+      apiHost = "http://172.16.35.43:3011/";
 
       // Realizar petición al endpoint de login
       const response = await fetch(apiHost + "api/auth", {
@@ -40,48 +43,23 @@ const LoginForm = () => {
 
       const data = await response.json();
       console.log("Respuesta del servidor:", data);
+sessionStorage.setItem("auth_token", data.token);
+          console.log(data.message);
+          sessionStorage.setItem("userData", data.message);
+      if (data && "token" in data) {
+        if (data.token != "") {
+          console.log("Ok...");          
+          //ok
+          window.location.href = "/sistemas";
+        } else {
+          setError(data.message);
 
-      if (!response.ok) {
-        // Si la respuesta no es exitosa, mostrar error
-        throw new Error(data.error || "Error al iniciar sesión");
+          //throw new Error("No se recibió token de autenticación");
+        }
       }
-
-      // Guardar el token JWT en localStorage
-      if (data.token) {
-        console.log("Guardando token");
-        localStorage.setItem("auth_token", data.token);
-      } else {
-        console.error("No se recibió token del servidor");
-        toast.warn("No se recibió token", toastOptions);
-        localStorage.setItem("userData", "___NoToken___");
-        sessionStorage.setItem("userData", "_No-Token_");
-
-        throw new Error("No se recibió token de autenticación");
-      }
-
-      // Guardar datos básicos del usuario en sessionStorage
-      if (data.user) {
-        console.log("Guardando datos de usuario en sessionStorage");
-        sessionStorage.setItem("userData", JSON.stringify(data.user));
-      }
-
-      // Mostrar mensaje de éxito
-      toast.success(
-        `¡Bienvenido, ${data.user?.nombre || username}!`,
-        toastOptions
-      );
-
-      // Redirigir al dashboard
-      console.log("Redirigiendo a /sistemas...");
-
-      // Usar una recarga completa en lugar de navegación del cliente
-      window.location.href = "/sistemas";
     } catch (err: any) {
-      console.log("Error de autorización");
-      setError("Error al iniciar sesión");
-
-      // Mostrar toast de error
-      //toast.warn(err.message || "Error al iniciar sesión", toastOptions);
+      console.log("Error autorizando inicio de sesión");
+      setError("Error autorizando inicio de sesión");
     } finally {
       setIsLoading(false);
     }
