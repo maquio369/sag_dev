@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-//import ToggleDarkModeButton from "@/components/elements/ToggleDarkModeButton";
 import "@/components/elements/elements.css";
 
 function handleToggle(): void {

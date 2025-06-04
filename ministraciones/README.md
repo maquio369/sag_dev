@@ -1,5 +1,5 @@
-# SIAG
-Sistema Integral Administrativo Gubernamental
+# SAG
+Sistema Administrativo Gubernamental
 
 ## Getting Started
 First, run the development server:
