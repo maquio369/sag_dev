@@ -1,24 +1,51 @@
+"use client";
 import Image from "next/image";
+import { useEffect } from "react";
+import { verify } from "jsonwebtoken";
 
 const SistemasPage = () => {
+  useEffect(() => {
+    //Verificar token
+    var token = sessionStorage.getItem("token");
+    var payload=null;
+    if (token) {
+      /*
+      //JWT verification      
+      try {
+        var secret = process.env.JWT_SECRET || "";
+        payload = verify(token, secret, { complete: true });
+        console.log("verifyToken:", payload);
+      } catch (error: any) {
+        token = "";
+        console.log("verifyToken:", error.message);
+        payload = null;
+      }
+      */
+      if (!token) {
+        window.location.href = "/login";
+      }
+    }
+  }, []);
+
   return (
-    <div className ="flex flex-col">
-      <span className="font-medium_ text-left text-textoTabla bg-fondoTransparenteObscuro dark:bg-fondoTransparenteObscuroNotificacion py-1
-      flex  flex_-col dark:text-fondoControlBlancoTransparente">
-       <span  className="mx-2 ">Usuarios</span>
+    <div className="flex flex-col">
+      <span
+        className="font-medium_ text-left text-textoTabla bg-fondoTransparenteObscuro dark:bg-fondoTransparenteObscuroNotificacion py-1
+      flex  flex_-col dark:text-fondoControlBlancoTransparente"
+      >
+        <span className="mx-2 ">Usuarios</span>
       </span>
-      <span className="lblEncabezado ml-4 mt-3">
-        Catálogo de Usuarios
-      </span>      
+      <span className="lblEncabezado ml-4 mt-3">Catálogo de Usuarios</span>
       <div className="px-4 flex gap-4 flex-col xl:flex-row">
         <div className="flex flex-row w-full gap-4 xs:flex-col">
           <div className="flex-none w-full bg-bordeBlancoTransparente p-4 rounded-lg shadow-sm dark:bg-fondoBlancoTransparenteDark ">
             <h1 className="flex justify-between">
               <span className="pl-2 font-light text-textoControl dark:text-bordeBlancoTransparente">
-              {/*<span className=" text-bordeControl">+ </span> */}
-              <i className="fa-regular fa-note-sticky text-bordeControl mr-1.5 "></i>
-              {/*<i className="fa-solid fa-plus text-bordeControl mr-1.5"></i>
-              */}Nuevo registro
+                {/*<span className=" text-bordeControl">+ </span> */}
+                <i className="fa-regular fa-note-sticky text-bordeControl mr-1.5 "></i>
+                {/*<i className="fa-solid fa-plus text-bordeControl mr-1.5"></i>
+                 */}
+                Nuevo registro
               </span>
               <div>
                 <i className="fa-solid fa-pen-to-square text-bordeControl"></i>
@@ -27,7 +54,7 @@ const SistemasPage = () => {
                 </span>
               </div>
             </h1>
-            <hr/>
+            <hr />
             <div className="max-w-md w-full p-1">
               <form>
                 {/*Editar img*/}
@@ -46,10 +73,7 @@ const SistemasPage = () => {
                 </div>
 
                 <div className="mb-4">
-                  <label
-                    id="nombre"
-                    className="lbl"
-                  >
+                  <label id="nombre" className="lbl">
                     Nombres
                   </label>
                   <input
@@ -61,10 +85,7 @@ const SistemasPage = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label
-                    id="apellido"
-                    className="lbl"
-                  >
+                  <label id="apellido" className="lbl">
                     Apellidos
                   </label>
                   <input
@@ -75,10 +96,7 @@ const SistemasPage = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label
-                    id="email"
-                    className="lbl"
-                  >
+                  <label id="email" className="lbl">
                     Correo electrónico
                   </label>
                   <input
@@ -91,10 +109,7 @@ const SistemasPage = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label
-                    id="password"
-                    className="lbl"
-                  >
+                  <label id="password" className="lbl">
                     Contraseña
                   </label>
                   <input
@@ -106,10 +121,7 @@ const SistemasPage = () => {
                   />
                 </div>
                 <div className="mb-6">
-                  <label
-                    id="confirmPassword"
-                    className="lbl"
-                  >
+                  <label id="confirmPassword" className="lbl">
                     Repetir contraseña
                   </label>
                   <input

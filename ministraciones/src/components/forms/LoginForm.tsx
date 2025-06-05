@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer, ToastOptions, toast } from "react-toastify";
 import SubmitBtn from "../elements/SubmitBtn";
 import { handleSubmit } from "@/components/forms/actions";
@@ -18,6 +18,13 @@ const LoginForm = () => {
       typeof window !== "undefined" ? localStorage.getItem("theme") : "dark",
   } as ToastOptions;
 
+  useEffect(() => {
+    //Cerrar sesión
+    //const token = sessionStorage.getItem("token");
+    sessionStorage.setItem("token", "");
+    sessionStorage.setItem("message", "Sesión finalizada");
+  }, []);
+
   return (
     /*< form onSubmit={handleSubmit} className="flex flex-col space-y-6" > */
     //<form action={(e) => {  handleSubmit(); }}>
@@ -28,7 +35,7 @@ const LoginForm = () => {
         if (jsonData) {
           sessionStorage.setItem("token", jsonData.token);
           sessionStorage.setItem("message", jsonData.message);
-          if (jsonData.token===undefined || jsonData.token === "") {
+          if (jsonData.token === undefined || jsonData.token === "") {
             setError(jsonData.message as string);
           } else {
             window.location.href = "/sistemas";
