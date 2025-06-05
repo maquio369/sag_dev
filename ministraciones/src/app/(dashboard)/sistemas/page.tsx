@@ -1,36 +1,34 @@
 "use client";
+
+import { verifyToken } from "@/Lib/jwt_lib";
 import Image from "next/image";
 import { useEffect } from "react";
-import { verify } from "jsonwebtoken";
-import { toast } from "react-toastify";
+import { toast, ToastContainer, ToastOptions } from "react-toastify";
+
+const toastOptions = {
+  theme: typeof window !== "undefined" ? localStorage.getItem("theme") : "dark",
+} as ToastOptions;
 
 const SistemasPage = () => {
   useEffect(() => {
-    //Verificar token
-    var token = sessionStorage.getItem("token");
-    var payload = null;
-    console.log("-Token:", token);
-    if (token) {
-      
-      //JWT verification      
-      try {
-        var secret = process.env.JWT_SECRET? process.env.JWT_SECRET: "-";
-        console.log("Secret:",secret);
-        toast.info(secret);
-
-        payload = verify(token, secret, { complete: true });
-        console.log("verifyToken:", payload);
-      } catch (error: any) {//	secret or public key must be provided
-        token = "";
-        console.log("verifyToken:", error.message);
-        payload = null;
-        sessionStorage.setItem("token", error.message);
+    const checkToken = async () => {
+      //Verificar token
+      var token = sessionStorage.getItem("token");
+      var payload = await verifyToken(token);
+      console.log("-Token:", token, "*payload:", payload);
+      if (payload) {
+        try {
+          //toast.info("Acceso correcto " + payload.usuario, toastOptions);
+          console.log("Acceso correcto " + payload.usuario, token);
+        } finally {
+        }
+      } else {
+        toast.info("logout...", toastOptions);
+        console.log("LogOut:", token);
+        window.location.href = "/login";
       }
-      
-      if (!token) {
-        //window.location.href = "/login";
-      }
-    }
+    };
+    checkToken();
   }, []);
 
   return (
@@ -153,6 +151,7 @@ const SistemasPage = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

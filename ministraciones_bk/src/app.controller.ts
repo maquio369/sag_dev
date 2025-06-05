@@ -41,7 +41,7 @@ export class AppController {
     const { usuario, clave } = body;
 
     const jsonObj = await this.usuariosService.auth(usuario, clave);
-    console.log("controller = ",clave, usuario,jsonObj);
+    //console.log("app.controller = ",clave, usuario,jsonObj);
     if (jsonObj.length > 0) {
       //console.log('select:', jsonObj[0].usuario, jsonObj[0].rol_id, clave);
       var expTime = process.env.JWT_EXPIRATION as StringValue;

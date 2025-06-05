@@ -3,7 +3,7 @@ import { AppDataSource } from './DataSource';
 
 AppDataSource.initialize()
   .then(() => {
-    console.log('Data Source has been initialized!');
+    console.log('Data Source has been initialized! Port:',process.env.API_PORT);
   })
   .catch((err) => {
     console.error('Error during Data Source initialization', err);

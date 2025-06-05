@@ -9,41 +9,6 @@ function handleToggle(): void {
   localStorage.setItem("theme", newTheme);
 }
 
-const ToggleDarkMode = ({
-  isActive,
-  className,
-}: {
-  isActive: boolean;
-  className?: string;
-}) => {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const chkDarkModeToggle = document.querySelector('input[name="chkDarkModeToggle"]') as HTMLInputElement;
-      chkDarkModeToggle.checked = isDark;
-      return isDark;
-
-    }
-    return false;
-  });
-  const [newTheme, setNewTheme] = useState(isDarkMode ? "dark" : "light");
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = newTheme;
-    localStorage.setItem("theme", newTheme);
-  }, []);
-
-  return (
-    <div>
-      {isActive ? (
-        <div className={"" + className}>
-          <ToggleDarkModeButton onClick={handleToggle} />
-        </div>
-      ) : null}
-    </div>
-  );
-};
-
 const ToggleDarkModeButton = ({ onClick }: { onClick: () => void }) => {
   return (
     <label className="scale-17 w-fit h-0 flex cursor-pointer">
@@ -74,4 +39,41 @@ const ToggleDarkModeButton = ({ onClick }: { onClick: () => void }) => {
   );
 };
 
+const ToggleDarkMode = ({
+  isActive,
+  className,
+}: {
+  isActive: boolean;
+  className?: string;
+}) => {
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const chkDarkModeToggle = document.querySelector(
+        'input[name="chkDarkModeToggle"]'
+      ) as HTMLInputElement;
+      window.onload = function () {
+        chkDarkModeToggle.checked = isDark ? isDark : false;
+      };
+      return isDark;
+    }
+    return false;
+  });
+  const [newTheme, setNewTheme] = useState(isDarkMode ? "dark" : "light");
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = newTheme;
+    localStorage.setItem("theme", newTheme);
+  }, []);
+
+  return (
+    <div>
+      {isActive ? (
+        <div className={"" + className}>
+          <ToggleDarkModeButton onClick={handleToggle} />
+        </div>
+      ) : null}
+    </div>
+  );
+};
 export default ToggleDarkMode;

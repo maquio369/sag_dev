@@ -7,18 +7,20 @@ import { verify } from 'jsonwebtoken';
  * @param token Token JWT a verificar
  * @returns Payload decodificado o null si el token es inválido
  */
-export function verifyToken(token: string): any | null {
-  var payload;
-  try {
-    var secret = process.env.JWT_SECRET || '';
-    payload = verify(token, secret, { complete: true });
-  } catch (error) {
-    //console.error('verifyToken:', error.message);
-    payload = null;
+export function verifyToken(token: string | null): any | null {
+  var payload = null as any;
+  if (token) {
+    try {
+      var secret = process.env.JWT_SECRET || "";
+      payload = verify(token, secret, { complete: true });
+      console.log("Payload(verifyToken):", payload);
+    } catch (error: any) {
+      console.log("verifyToken:", error.message);
+      payload = null;
+    }
   }
   return payload;
 }
-
 /**
  * Verifica el JWT enviado en el Header y decodifica el Payload
  * @param authHeader
@@ -33,7 +35,7 @@ export function verifyTokenFromAuthHeader(
   try {
     var secret = process.env.JWT_SECRET || '';
     payload = verify(token, secret, { complete: true });
-  } catch (error) {
+  } catch (error:any) {
     console.log('verifyToken:', error.message, url ? url : '');
     //payload = null;
     throw new HttpException(
