@@ -1,9 +1,9 @@
 "use client";
 
-import { verifyToken } from "@/Lib/jwt_lib";
 import Image from "next/image";
 import { useEffect } from "react";
 import { toast, ToastContainer, ToastOptions } from "react-toastify";
+import { verificarToken } from "@/utils/helpers";
 
 const toastOptions = {
   theme: typeof window !== "undefined" ? localStorage.getItem("theme") : "dark",
@@ -11,24 +11,7 @@ const toastOptions = {
 
 const SistemasPage = () => {
   useEffect(() => {
-    const checkToken = async () => {
-      //Verificar token
-      var token = sessionStorage.getItem("token");
-      var payload = await verifyToken(token);
-      console.log("-Token:", token, "*payload:", payload);
-      if (payload) {
-        try {
-          //toast.info("Acceso correcto " + payload.usuario, toastOptions);
-          console.log("Acceso correcto " + payload.usuario, token);
-        } finally {
-        }
-      } else {
-        toast.info("logout...", toastOptions);
-        console.log("LogOut:", token);
-        window.location.href = "/login";
-      }
-    };
-    checkToken();
+    verificarToken();
   }, []);
 
   return (

@@ -1,0 +1,12 @@
+import { verifyToken } from "@/Lib/jwt_lib";
+
+export const verificarToken = async () => {
+  //Verificar token
+  var token = sessionStorage.getItem("token");
+  var payload = await verifyToken(token);
+  //console.log("-Token:", token, "*payload:", payload);
+  if (!payload) {
+    window.location.href = "/login";
+  }
+  return payload;
+};
