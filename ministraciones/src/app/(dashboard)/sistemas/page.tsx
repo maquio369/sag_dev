@@ -2,27 +2,33 @@
 import Image from "next/image";
 import { useEffect } from "react";
 import { verify } from "jsonwebtoken";
+import { toast } from "react-toastify";
 
 const SistemasPage = () => {
   useEffect(() => {
     //Verificar token
     var token = sessionStorage.getItem("token");
-    var payload=null;
+    var payload = null;
+    console.log("-Token:", token);
     if (token) {
-      /*
+      
       //JWT verification      
       try {
-        var secret = process.env.JWT_SECRET || "";
+        var secret = process.env.JWT_SECRET? process.env.JWT_SECRET: "-";
+        console.log("Secret:",secret);
+        toast.info(secret);
+
         payload = verify(token, secret, { complete: true });
         console.log("verifyToken:", payload);
-      } catch (error: any) {
+      } catch (error: any) {//	secret or public key must be provided
         token = "";
         console.log("verifyToken:", error.message);
         payload = null;
+        sessionStorage.setItem("token", error.message);
       }
-      */
+      
       if (!token) {
-        window.location.href = "/login";
+        //window.location.href = "/login";
       }
     }
   }, []);
