@@ -1,11 +1,38 @@
 "use client";
 import PersonalListPage from "@/app/(dashboard)/list/personal/page";
-import ContactosForm from "./ContactosForm";
+import ContactosForm, { modelContactos } from "./ContactosForm";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const ContactosDT = () => {
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const [userData, setUserData] = useState<modelContactos | null>(null);
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const contactosHandleOpenModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseUserModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleFormSubmit = async (data: modelContactos): Promise<void> => {
+    setUserData(data);
+    
+    console.log("Form submitted:", { data});
+        // No need to preventDefault or reset form - React handles it
+        if (data.nombres === "") {
+          toast.warn("El nombre es obligatorio", { theme: "dark" });
+          //return { success: false, message: "¡El nombre es obligatorio!" };
+        } else {
+          await new Promise((resolve) => setTimeout(resolve, 777));
+          toast.success("¡Registro guardado con éxito!", { theme: "light" });          
+        }
+
+
+    handleCloseUserModal();
+  };
+  //const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   return (
     <div className="flex flex-col overflow-auto pb-3">
@@ -23,17 +50,28 @@ const ContactosDT = () => {
               </div>
             </div>
             <div className="flex items-center gap-4 text-base">
+
               <ContactosForm
                 isOpen={isModalOpen}
-                //onSubmit={handleFormSubmit}
-                //onClose={handleCloseUserModal}
+                onSubmit={handleFormSubmit}
+                onClose={handleCloseUserModal}
                 type="ins"
               />
-              {/*<button className="btn3 " title="Buscar">
+
+              <button
+                className="btn3 "
+                title="Agregar registro"
+                onClick={contactosHandleOpenModal}
+              >
+                <i className="fa-solid fa-plus"></i>
+                <span className="lblBtn">Agregar</span>
+              </button>
+
+              <button className="btn3 " title="Buscar">
                 <i className="fa-solid fa-magnifying-glass"></i>
                 <span className="lblBtn">Buscar</span>
               </button>
-              <button className="btn3 " title="Filtrar">
+              {/*<button className="btn3 " title="Filtrar">
                 <i className="fa-solid fa-filter"></i>
                 <span className="lblBtn">Filtrar</span>
               </button>
