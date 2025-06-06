@@ -1,5 +1,5 @@
 
-const signedInPages = ["/admin2", "/test"];
+const protectedPages = ["/home", "/admin", "/contactos", "/humanos", "/sistemas", "/usuarios", "/test"];
 
 export default function middleware(req: any, res: any) {
 
@@ -7,7 +7,7 @@ export default function middleware(req: any, res: any) {
     let ck = getCookie("access_token", req.cookies.toString());
   } finally {
   }
-  if (signedInPages.find((p) => p === req.nextUrl.pathname)) {
+  if (protectedPages.find((p) => p === req.nextUrl.pathname)) {
     console.log("middleWARE", req.nextUrl.pathname);
     let token = getCookie("access_token", req.cookies.toString());
     if (!token) {

@@ -63,7 +63,7 @@ const menuItems = [
       {
         icon: "fa-regular fa-credit-card",
         label: "Gastos",
-        link: "/test",
+        link: "/admin",
         visible: [
           "superadmin",
           "admin",

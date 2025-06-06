@@ -43,7 +43,7 @@ const LoginForm = () => {
             setError(jsonData.message as string);
           } else {
             document.cookie = `access_token=${jsonData.token}; `;//path=/; max-age=3600; secure; SameSite=Strict`;
-            window.location.href = "/sistemas";
+            window.location.href = "/home";
           }
         }
       }}
