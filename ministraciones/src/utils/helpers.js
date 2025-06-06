@@ -1,3 +1,4 @@
+"use client"
 import { verifyToken } from "@/Lib/jwt_lib";
 
 export const verificarToken = async () => {

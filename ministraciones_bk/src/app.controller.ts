@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Body,
+  Res,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import * as jwt from 'jsonwebtoken';
@@ -33,7 +34,10 @@ export class AppController {
   }    */
   @Post('api/auth')
   @HttpCode(HttpStatus.OK)
-  async auth(@Body() body: { usuario: string; clave: string }): Promise<any> {
+  async auth(
+    @Body() body: { usuario: string; clave: string },
+    @Res() res: any
+  ): Promise<any> {
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
       throw new Error('JWT_SECRET no definida');
@@ -48,9 +52,11 @@ export class AppController {
       const token = jwt.sign(jsonObj[0], jwtSecret as string, {
         expiresIn: expTime ? expTime : '7h',
       });
-      return { message: 'Acceso autorizado', token };
+      //set cookie with token
+      res.cookie("access_token", token);//.httpOnly(); 
+      return res.json({ message: 'Acceso autorizado', token });
     } else {
-      return { message: 'Credenciales inválidas', token: '' };
+      return res.json({ message: 'Credenciales inválidas', token: '' });
     }
   }
 }

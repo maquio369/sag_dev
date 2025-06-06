@@ -1,7 +1,13 @@
+"use client";
+import { verificarToken } from "@/utils/helpers";
 import { Inter, Roboto_Condensed } from "next/font/google";
+import { useEffect } from "react";
 const font2 = Roboto_Condensed({ subsets: ["latin"] });
 
 const AdminPage = () => {
+  useEffect(() => {
+    verificarToken();
+  }, []);
   return (
     <div className="p-4 flex gap-4 flex-col xl:flex-row">
       <div className="w-full  lg:w-2/3 ">

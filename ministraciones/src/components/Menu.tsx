@@ -14,7 +14,7 @@ const menuItems = [
       {
         icon: "fa-solid fa-circle-plus",
         label: "Ampliaciones",
-        link: "/test",
+        link: "/contactos",
         visible: [
           "superadmin",
           "admin",
@@ -28,7 +28,7 @@ const menuItems = [
       {
         icon: "fa-solid fa-circle-minus",
         label: "Reducciones",
-        link: "/humanos",
+        link: "/sistemas",
         visible: [
           "superadmin",
           "admin",

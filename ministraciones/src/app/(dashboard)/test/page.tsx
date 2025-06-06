@@ -1,8 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UsuariosForm, { modelUsuarios } from "@/components/forms/UsuariosForm";
+import { verificarToken } from "@/utils/helpers";
 
-const HumanosPage = () => {
+const TestPage = () => {
+  useEffect(() => {
+    //verificarToken();
+  }, []);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [userData, setUserData] = useState<modelUsuarios | null>(null);
 
@@ -80,19 +84,19 @@ const HumanosPage = () => {
                 />
               </div>
               <div className="mb-4">
-                <label id="email" className="lbl">
+                <label id="lblEmail" className="lbl">
                   Correo electrónico
                 </label>
                 <input
                   type="email"
-                  id="email"
-                  name="email"
+                  id="email1"
+                  name="email2"
                   className="w-full"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label id="password" className="lbl">
+                <label id="lblPassword" className="lbl">
                   Rango de fechas de inserción
                 </label>
                 <input
@@ -267,4 +271,4 @@ const HumanosPage = () => {
   );
 };
 
-export default HumanosPage;
+export default TestPage;

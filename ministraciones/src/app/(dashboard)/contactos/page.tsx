@@ -1,11 +1,15 @@
 "use client";
 import PersonalListPage from "@/app/(dashboard)/list/personal/page";
 import ContactosForm from "./ContactosForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { verificarToken } from "@/utils/helpers";
 
 const ContactosDT = () => {
+  useEffect(() => {
+    verificarToken();
+  }, []);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  
+
   return (
     <div className="flex flex-col overflow-auto pb-3">
       <span className="lblEncabezado ml-4 mt-3">Configuraciones</span>
@@ -22,13 +26,12 @@ const ContactosDT = () => {
               </div>
             </div>
             <div className="flex items-center gap-4 text-base">
-            
-      <ContactosForm
-        isOpen={isModalOpen}
-        //onSubmit={handleFormSubmit}
-        //onClose={handleCloseUserModal}
-        type="ins"
-      />
+              <ContactosForm
+                isOpen={isModalOpen}
+                //onSubmit={handleFormSubmit}
+                //onClose={handleCloseUserModal}
+                type="ins"
+              />
               {/*<button className="btn3 " title="Buscar">
                 <i className="fa-solid fa-magnifying-glass"></i>
                 <span className="lblBtn">Buscar</span>

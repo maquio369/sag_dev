@@ -24,7 +24,8 @@ export async function handleSubmit(formData: FormData): Promise<any> {
           clave: password,
         }),
       });
-
+      // console.log(response.headers.get("set-cookie")?.substring(13));
+      
       data = await response.json();
       if (data && "token" in data && data.token === "") {
         setError = data.message; //console.log(data.message);

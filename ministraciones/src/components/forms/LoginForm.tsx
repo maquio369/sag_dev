@@ -23,6 +23,7 @@ const LoginForm = () => {
     //const token = sessionStorage.getItem("token");
     sessionStorage.setItem("token", "");
     sessionStorage.setItem("message", "Sesión finalizada");
+    document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   }, []);
 
   return (
@@ -38,6 +39,7 @@ const LoginForm = () => {
           if (jsonData.token === undefined || jsonData.token === "") {
             setError(jsonData.message as string);
           } else {
+            document.cookie = `access_token=${jsonData.token}; `;//path=/; max-age=3600; secure; SameSite=Strict`;
             window.location.href = "/sistemas";
           }
         }
