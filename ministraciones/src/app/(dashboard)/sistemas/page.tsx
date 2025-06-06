@@ -1,17 +1,12 @@
 "use client";
 import Image from "next/image";
-import { useEffect } from "react";
 import { toast, ToastContainer, ToastOptions } from "react-toastify";
-import { verificarToken } from "@/utils/helpers";
 
 const toastOptions = {
   theme: typeof window !== "undefined" ? localStorage.getItem("theme") : "dark",
 } as ToastOptions;
 
 const SistemasPage = () => {
-  useEffect(() => {
-    verificarToken();
-  }, []);
 
   return (
     <div className="flex flex-col">

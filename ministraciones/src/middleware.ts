@@ -1,7 +1,3 @@
-import { verificarToken } from "@/utils/helpers";
-import { NextResponse } from "next/server";
-import { useEffect } from "react";
-import cookieParser from "cookie-parser";
 
 const signedInPages = ["/admin2", "/test"];
 

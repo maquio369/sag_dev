@@ -2,12 +2,9 @@
 import PersonalListPage from "@/app/(dashboard)/list/personal/page";
 import ContactosForm from "./ContactosForm";
 import { useEffect, useState } from "react";
-import { verificarToken } from "@/utils/helpers";
 
 const ContactosDT = () => {
-  useEffect(() => {
-    verificarToken();
-  }, []);
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   return (

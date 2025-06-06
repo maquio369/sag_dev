@@ -1,12 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import UsuariosForm, { modelUsuarios } from "@/components/forms/UsuariosForm";
-import { verificarToken } from "@/utils/helpers";
+
 
 const TestPage = () => {
-  useEffect(() => {
-    //verificarToken();
-  }, []);
+  
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [userData, setUserData] = useState<modelUsuarios | null>(null);
 

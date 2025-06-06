@@ -1,15 +1,8 @@
 "use client";
-import Image from "next/image";
 import PersonalListPage from "@/app/(dashboard)/list/personal/page";
-import { Form } from "react-hook-form";
 import FormModal from "@/components/FormModal";
-import { verificarToken } from "@/utils/helpers";
-import { useEffect } from "react";
 
 const HumanosPage = () => {
-  useEffect(() => {
-    verificarToken();
-  }, []);
   return (
     <div className="flex flex-col overflow-auto pb-3">
       <span className="lblEncabezado ml-4 mt-3">Configuraciones</span>

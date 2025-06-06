@@ -20,9 +20,10 @@ const LoginForm = () => {
 
   useEffect(() => {
     //Cerrar sesión
-    //const token = sessionStorage.getItem("token");
+    /*
     sessionStorage.setItem("token", "");
     sessionStorage.setItem("message", "Sesión finalizada");
+    */
     document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   }, []);
 
@@ -34,8 +35,10 @@ const LoginForm = () => {
       action={async (formData) => {
         const jsonData = await handleSubmit(formData);
         if (jsonData) {
+          /*
           sessionStorage.setItem("token", jsonData.token);
           sessionStorage.setItem("message", jsonData.message);
+          */
           if (jsonData.token === undefined || jsonData.token === "") {
             setError(jsonData.message as string);
           } else {
