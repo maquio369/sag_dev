@@ -27,6 +27,7 @@ const initialData: modelContactos = {
 };
 
 const ContactosForm = ({ isOpen, onClose, onSubmit, type }: CrudProps) => {
+  //const ContactosForm = ({ isOpen, onClose, type }: CRUD_Props) => {
   const [formData, setFormData] = useState<modelContactos>(initialData);
 
   const handleChange = (
@@ -59,7 +60,7 @@ const ContactosForm = ({ isOpen, onClose, onSubmit, type }: CrudProps) => {
     const name = formData.get("nombres");
     const email = formData.get("correo");
     // Process form data (e.g., send to API)
-    console.log("Form submitted:", { formData});
+    console.log("Form submitted:", { formData });
     // No need to preventDefault or reset form - React handles it
     if (name === "") {
       toast.warn("El nombre es obligatorio", { theme: "dark" });
@@ -75,18 +76,18 @@ const ContactosForm = ({ isOpen, onClose, onSubmit, type }: CrudProps) => {
     success: false,
     message: "",
   });
-/*-----------------------------*/
+  /*-----------------------------*/
 
   return (
     <div className="">
       <Modal
         isOpen={isOpen}
         onClose={handleClose}
-        //type={type}
+        type={type}
         className="fondoVentanaForm-width fondoVentanaForm-center min-h-3/12"
         //onSubmit={handleSubmit} action={formAction}
       >
-        <form onSubmit={handleSubmit} className="" >
+        <form onSubmit={handleSubmit} className="">
           <div className="grid3cols">
             <div>
               <label htmlFor="nombres" className="lbl">
