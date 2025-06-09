@@ -137,6 +137,10 @@ input[type="button"] {
 .grid3cols{
   @apply grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-4;
 }
+
+.grid2cols{
+  @apply grid grid-cols-1 sm:grid-cols-1 xl:grid-cols-2 gap-x-4;
+}
 /*
 .modal::backdrop {
   background: hsl(0 0% 0% / 50%);
