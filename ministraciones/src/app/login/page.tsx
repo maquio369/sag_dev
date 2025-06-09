@@ -9,14 +9,14 @@ const LoginPage = () => {
       {/*Login*/}
       <div className=" min-h-screen antialiased pt-24 pb-5 ">
         <div className="flex flex-col justify-center sm:w-96 sm:m-auto mx-5 mb-5 space-y-8">
-          <div className="mb-20"></div>
-          
+         
+          <div className=" justify-center items-center mb-15 ml-10">
             <Image
               src="/general/siag-007(322x91).webp"
               alt=""
               width={322}
               height={91}
-              className="absolute -left-center top-[90px] animate-ping "
+              className="absolute top-[90px] animate-ping "
               style={{
                 animationIterationCount: 1,
                 animationFillMode: "forwards",
@@ -28,8 +28,9 @@ const LoginPage = () => {
               alt=""
               width={322}
               height={91}
-              className="absolute -left-center top-[90px] "
+              className="absolute top-[90px] "
             />
+            </div>
             <div
               className="flex flex-col bg-[url(/general/rombos-patron-gob.png)] bg-[auto_88px] z-0 bg-fondoControl mt-2 p-10 rounded-lg shadow-lg space-y-6 text-textoControl dark:text-menuTexto dark:bg-fondoBlancoTransparenteDark"
             >

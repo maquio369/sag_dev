@@ -5,9 +5,9 @@ const TitleName = () => {
     <>
       {" "}
       {/*system name width={68} height={36} */}
-      <div className="flex items-center gap-2 justify-center w-full position relative">
+      <div className="flex items_-center gap-2 ">
         <Image src="/general/siag-007.svg" alt="" width="68" height="19" />
-        <span className="hidden md:block text-lg leading-4 font-medium border-l-1 border-bordeBlancoTransparente px-2 ">
+        <span className="hidden sm:block text-lg leading-4 font-medium border-l-1 border-bordeBlancoTransparente pl-2">
           Sistema Administrativo Gubernamental
         </span>
       </div>

@@ -239,6 +239,7 @@ button {
   --color-menuTextoSeparador: #ffffff90;
   --color-textoSeparadorDark: #575c6670; /*363a42... 393c42=575c66A6*/
   --color-textoEncabezadoDark: #eefbf3;
+  --color-textoEncabezadoTrans: #ffffffd5;
   --color-fondoTablaFilaHover: #20a8a71a; /*f6fef9 20A8a712*/
   --color-fondoTablaHeader: #6b7583; /*gris=e5e7ebFF bordeControl=7c9eaf*/
   --color-TextoTablaHeader: #ffffffe5;

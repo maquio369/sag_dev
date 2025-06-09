@@ -37,7 +37,7 @@ const TopNavbar = ({ toggleSidebar, sidebarOpen = true }: Props) => {
           required
         />
       </div>*/}
-      <div className="w-full -mx-32">
+      <div className="w-full">
         {/*system name*/}
         <TitleName />
       </div>
@@ -73,11 +73,11 @@ const TopNavbar = ({ toggleSidebar, sidebarOpen = true }: Props) => {
         {/*profile*/}
         <div className="flex flex-row gap-2 items-center cursor-pointer_ hover:scale-105 mr-0">
           <div className="flex flex-col text-right">
-            <span className="text-xs leading-4 font-medium">
-              Balam Atziri
+            <span className="text-xs leading-4 font-medium hidden sm:inline">
+              Balam Atziri Coronel Hernández
             </span>
-            <span className="text-sm text-green-100 text-right">
-              Administrador
+            <span className="text-sm text-textoEncabezadoTrans text-right hidden xl:inline">
+              Administrador Recursos Financieros
             </span>
           </div>
           <Image
@@ -85,7 +85,7 @@ const TopNavbar = ({ toggleSidebar, sidebarOpen = true }: Props) => {
             alt=""
             width={36}
             height={36}
-            className="rounded-full md:mr-0"
+            className="rounded-full md:mr-0 min-w-[36px]"
           />
         </div>
 
