@@ -179,7 +179,7 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
             <Link
               className={
                 i.title.length > 0
-                  ? "text-textoEncabezadoTrans font-light pt-3 flex items-center gap-2 focus:outline-none"
+                  ? "text-menuTextoSeparador hover:text-textoEncabezadoTrans font-light pt-3 flex items-center gap-2 focus:outline-none"
                   : "pt-2 text-menuTextoSeparador"
               }
               onClick={
