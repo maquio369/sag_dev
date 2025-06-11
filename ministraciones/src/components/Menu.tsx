@@ -1,12 +1,26 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import React from "react";
 
 interface Props {
   expanded?: boolean;
+  submenu_expanded?: boolean;
 }
 
 const menuItems = [
+  {
+    id: 5,
+    title: "",
+    items: [
+      {
+        icon: "fa-solid fa-money-check-dollar",
+        label: "Ministraciones",
+        link: "/ministraciones",
+        visible: ["admin"],
+      },
+    ],
+  },
   {
     id: 10,
     title: "Adecuaciones presupuestarias",
@@ -73,13 +87,13 @@ const menuItems = [
           "materiales",
           "financieros",
         ],
-      },      
+      },
     ],
   },
 
   {
     id: 30,
-    title: "Consultas",/* "fa-solid fa-sheet-plastic" */
+    title: "Consultas" /* "fa-solid fa-sheet-plastic" */,
     items: [
       {
         icon: "fa-solid fa-file-invoice-dollar",
@@ -94,7 +108,7 @@ const menuItems = [
           "materiales",
           "financieros",
         ],
-      },      
+      },
     ],
   },
 
@@ -154,47 +168,54 @@ const menuItems = [
   },
 ];
 
-const Menu = ({ expanded = false }: Props) => {
+const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
   return (
     <div className="mt-0 text-sm px-2 ">
-      {menuItems.map((i) => (
-        <div className="flex flex-col gap-2" key={i.id}>
-          {expanded && (
-            <span
+      {menuItems.map((i) => {
+        const [open, setOpen] = React.useState(submenu_expanded);
+
+        return (
+          <div className="flex flex-col gap-2" key={i.id}>
+            <Link
               className={
                 i.title.length > 0
-                  ? "text-menuTextoSeparador font-light pt-3"
-                  : "pt-1"
+                  ? "text-textoEncabezadoTrans font-light pt-3 flex items-center gap-2 focus:outline-none"
+                  : "pt-2 text-menuTextoSeparador"
               }
+              onClick={
+                i.title.length > 0 ? () => setOpen((prev) => !prev) : undefined
+              }
+              href=""
+              hidden={!i.title || !expanded}
+              tabIndex={i.title ? 0 : -1}
             >
               {i.title}
-            </span>
-          )}
-          {i.items.map((item) => (
-            <Link
-              href={item.link}
-              key={item.label}
-              className="flex items-center justify-start gap-2 text-menuTexto py-2 rounded-md hover:bg-menuFondoOpcion hover:text-menuTextoHover"
-            >
-              {/*TODO: si es .svg tomar en cuenta como imagen en vez de fa-icon */}
-              {/*<Image
-                src={item.icon}
-                alt=""
-                width={20}
-                height={20}
-                className=" ml-1"
-              />
-              */}
-              <i
-                className={item.icon.concat(
-                  " text-menuIcon hover:text-menuIconHover ml-2 text-lg"
-                )}
-              />
-              {expanded && <span>{item.label}</span>}
+              {i.title && (
+                <span className="ml-auto">
+                  <i
+                    className={`fa-solid fa-chevron-${open ? "down" : "right"} transition-transform`}
+                  />
+                </span>
+              )}
             </Link>
-          ))}
-        </div>
-      ))}
+            {open &&
+              i.items.map((item) => (
+                <Link
+                  href={item.link}
+                  key={item.label}
+                  className="flex items-center justify-start gap-2 text-menuTexto py-2 rounded-md hover:bg-menuFondoOpcion hover:text-menuTextoHover"
+                >
+                  <i
+                    className={item.icon.concat(
+                      " text-menuIcon hover:text-menuIconHover ml-2 text-lg"
+                    )}
+                  />
+                  {expanded && <span>{item.label}</span>}
+                </Link>
+              ))}
+          </div>
+        );
+      })}
     </div>
   );
 };
