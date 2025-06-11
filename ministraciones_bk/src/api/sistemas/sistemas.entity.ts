@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class Sistemas {
   @PrimaryGeneratedColumn()
-  sistema_id: number;
+  id_sistema: number;
 
   @Column({ nullable: false, comment: 'Sistema' })
   sistema: string;
@@ -18,9 +18,9 @@ export class Sistemas {
   objetivo: string;
 
   @Column({ comment: 'Id Padre' })
-  sistema_padre_id: number;
+  id_sistema_padre: number;
 
   @Column({ nullable: false, default: false })
-  esta_activo: boolean;
+  esta_borrado: boolean;
 
 }

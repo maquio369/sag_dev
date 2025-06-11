@@ -30,7 +30,7 @@ export class Usuarios {
   empleado_id: number;
 
   @Column({ nullable: false, default: true })
-  esta_activo: boolean;
+  esta_borrado: boolean;
 
 }
 /*//usuarios
@@ -43,5 +43,5 @@ export class Usuarios {
   "clave": "321654",
   "foto": null,
   "empleado_id": null,
-  "esta_activo": true
+  "esta_borrado": false
 }*/

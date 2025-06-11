@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class Roles {
   @PrimaryGeneratedColumn()
-  rol_id: number;
+  id_rol: number;
 
   @Column({ nullable: false })
   rol: string;
@@ -12,6 +12,6 @@ export class Roles {
   abreviatura: string;
 
   @Column({ nullable: false, default: true })
-  esta_activo: boolean;
+  esta_borrado: boolean;
 
 }

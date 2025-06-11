@@ -19,27 +19,27 @@ export abstract class BaseController<T extends ObjectLiteral> {
   async findAll(): Promise<T[]> {
     return await this.getService().findAll();
   }
-  @Get('findAll/:active')
+  @Get('findAll/:IsDeleted')
   @HttpCode(HttpStatus.OK)
-  async findAllIsActive(
-    @Param('active') active: boolean,
+  async findAllIsDeleted(
+    @Param('IsDeleted') IsDeleted: boolean,
     @Req() req: any,
   ): Promise<T[]> {
     verifyTokenFromAuthHeader(req.headers['authorization'], req.url);
-    const result = await this.getService().findAll(active);
+    const result = await this.getService().findAll(IsDeleted);
     return result ? result : [];
   }
   //verifyToken( this.request, this.response, () => {});
 
-  @Get('findPaginated/:page/:limit/:isActive')
+  @Get('findPaginated/:page/:limit/:isDeleted')
   async findPaginated(
     @Param('page') page: number,
     @Param('limit') limit: number,
-    @Param('isActive') isActive?: boolean,
+    @Param('isDeleted') isDeleted?: boolean,
   ): Promise<T[]> {
     const skip = (page - 1) * limit;
     const take = limit;
-    return await this.getService().findPaginated(skip, take, isActive);
+    return await this.getService().findPaginated(skip, take, isDeleted);
   }
   @Get('findPaginated/:page/:limit')
   async findPaginatedAll(
@@ -100,18 +100,18 @@ export abstract class BaseController<T extends ObjectLiteral> {
   async softDelete(@Param('id') id: number) {
     return this.getService().softDelete(id);
   }
-  @Delete('softDelete/:id/:isActive')
+  @Delete('softDelete/:id/:isDeleted')
   @HttpCode(HttpStatus.OK)
-  async softDeleteIsActive(@Param('id') id:number, @Param('isActive') isActive:boolean) {
-    return this.getService().softDelete(id, isActive);
+  async softDeleteIsDeleted(@Param('id') id:number, @Param('isDeleted') isDeleted:boolean) {
+    return this.getService().softDelete(id, isDeleted);
   }
 
   @Get('count')
   async count(): Promise<number> {
     return await this.getService().count();
   }
-  @Get('count/:isActive')
-  async countIsActive(@Param('isActive') isActive: boolean): Promise<number> {
-    return await this.getService().count(isActive);
+  @Get('count/:isDeleted')
+  async countIsDeleted(@Param('isDeleted') isDeleted: boolean): Promise<number> {
+    return await this.getService().count(isDeleted);
   }
 }

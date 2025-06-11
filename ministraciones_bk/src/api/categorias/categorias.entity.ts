@@ -12,6 +12,6 @@ export class Categorias {
   ubicacion: string;
 
   @Column({ nullable: false, default: true })
-  esta_activo: boolean;
+  esta_borrado: boolean;
 
 }

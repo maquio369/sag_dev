@@ -7,5 +7,5 @@ export class Puestos {
   @Column()
   puesto: string;
   @Column()
-  esta_activo: boolean;
+  esta_borrado: boolean;
 }

@@ -21,13 +21,13 @@ export class PermisosRolesService extends BaseService<PermisosRoles> {
   async updateEstado(rol_id: number, permiso_id: number, estado: boolean): Promise<void> {
     await this.permisosRolesRepo.update(
       { rol_id, permiso_id },
-      { esta_activo: estado }
+      { esta_borrado: estado }
     );
   }
 
   async getPermisosPorRol(rol_id: number): Promise<PermisosRoles[]> {
     return this.permisosRolesRepo.find({ 
-      where: { rol_id, esta_activo: true }
+      where: { rol_id, esta_borrado: false }
     });
   }
 }

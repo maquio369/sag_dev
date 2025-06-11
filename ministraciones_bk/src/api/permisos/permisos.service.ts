@@ -18,9 +18,9 @@ export class PermisosService extends BaseService<Permisos> {
   }
 
   // Método adicional opcional para obtener permisos por sistema
-  async getBySistema(sistema_id: number): Promise<Permisos[]> {
+  async getBySistema(id_sistema: number): Promise<Permisos[]> {
     return this.permisosRepo.find({ 
-      where: { sistema_id },
+      where: { id_sistema },
       order: { orden: 'ASC' }
     });
   }

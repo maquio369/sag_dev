@@ -39,6 +39,6 @@ export class Productos {
   producto_estatus_id: number;
 
   @Column({ nullable: false, default: true })
-  esta_activo: boolean;
+  esta_borrado: boolean;
 
 }

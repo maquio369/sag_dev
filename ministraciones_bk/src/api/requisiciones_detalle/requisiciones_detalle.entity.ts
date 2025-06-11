@@ -21,6 +21,6 @@ export class RequisicionesDetalle {
   precio: number;
 
   @Column({ nullable: false, default: true })
-  esta_activo: boolean;
+  esta_borrado: boolean;
 
 }

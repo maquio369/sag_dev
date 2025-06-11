@@ -9,6 +9,6 @@ export class ProductoEstatus {
   estatus: string;
 
   @Column({ nullable: false, default: true })
-  esta_activo: boolean;
+  esta_borrado: boolean;
 
 }

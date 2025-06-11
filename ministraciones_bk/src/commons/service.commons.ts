@@ -3,16 +3,16 @@ import { FindManyOptions, Repository, ObjectLiteral } from 'typeorm';
 export abstract class BaseService<T extends ObjectLiteral> {
   abstract getRepository(): Repository<T>;
 
-  findAll(IsActive?: boolean): Promise<T[]> {
-    //console.log(this.getRepository().metadata.target + String('-' + IsActive));
+  findAll(IsDeleted?: boolean): Promise<T[]> {
+    //console.log(this.getRepository().metadata.target + String('-' + IsDeleted));
     return this.getRepository().find({
-      where: IsActive === undefined ? ({} as any) : { esta_activo: IsActive },
+      where: IsDeleted === undefined ? ({} as any) : { esta_borrado: IsDeleted },
     });
   }
 
-  findPaginated(skip: number, take: number, IsActive?: boolean): Promise<T[]> {
+  findPaginated(skip: number, take: number, IsDeleted?: boolean): Promise<T[]> {
     return this.getRepository().find({
-      where: IsActive == undefined ? ({} as any) : { esta_activo: IsActive },
+      where: IsDeleted == undefined ? ({} as any) : { esta_borrado: IsDeleted },
       skip,
       take,
     });
@@ -41,29 +41,29 @@ export abstract class BaseService<T extends ObjectLiteral> {
     return result.affected;
   }
 
-  /// <summary>SoftDelete sets IsActive field to false</summary>
+  /// <summary>SoftDelete sets IsDeleted field to false</summary>
   /// <param name="id">identifier of the entity to soft delete</param>
   /// <returns>number of affected rows</returns>
-  async softDelete(id: number, isActive: boolean = false) {
-    const qry = `UPDATE ${this.getRepository().metadata.tableName} SET esta_activo = ${isActive} WHERE ${this.getRepository().metadata.primaryColumns[0].propertyName} = ${id}`;
+  async softDelete(id: number, isDeleted: boolean = true) {
+    const qry = `UPDATE ${this.getRepository().metadata.tableName} SET esta_borrado = ${isDeleted} WHERE ${this.getRepository().metadata.primaryColumns[0].propertyName} = ${id}`;
     const result = await this.getRepository().query(qry);
     return result[1]; //affected rows
   }
 
-  count(isActive?: boolean): Promise<number> {
+  count(IsDeleted?: boolean): Promise<number> {
     return this.getRepository().count({
-      where: isActive == undefined ? ({} as any) : { esta_activo: isActive },
+      where: IsDeleted == undefined ? ({} as any) : { esta_borrado: IsDeleted },
     });
   }
 
-  findByOptions(options: FindManyOptions<T>, isActive?: boolean): Promise<T[]> {
+  findByOptions(options: FindManyOptions<T>, IsDeleted?: boolean): Promise<T[]> {
     console.log(options);
     return this.getRepository().find({
       ...options,
       where:
-        isActive == undefined
+        IsDeleted == undefined
           ? (options.where as any)
-          : { ...(options.where as ObjectLiteral), esta_activo: isActive },
+          : { ...(options.where as ObjectLiteral), esta_borrado: IsDeleted },
     });
   }
 }

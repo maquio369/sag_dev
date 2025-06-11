@@ -12,7 +12,7 @@ export class Persona {
   @Column()
   telefono: string;
   @Column()
-  esta_activo: boolean;
+  esta_borrado: boolean;
 }
 
 /*

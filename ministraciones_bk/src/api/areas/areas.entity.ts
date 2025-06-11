@@ -15,6 +15,6 @@ export class Areas {
   responsable_area_id: number;
 
   @Column({ default: true })
-  esta_activo: boolean;
+  esta_borrado: boolean;
 
 }

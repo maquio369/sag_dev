@@ -30,6 +30,6 @@ export class Requisiciones {
   cambio: number;
 
   @Column({ nullable: false, default: true })
-  esta_activo: boolean;
+  esta_borrado: boolean;
 
 }

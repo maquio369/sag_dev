@@ -12,6 +12,6 @@ export class UnidadesDeMedida {
   abreviatura: string;
 
   @Column({ nullable: false, default: true })
-  esta_activo: boolean;
+  esta_borrado: boolean;
 
 }

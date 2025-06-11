@@ -3,16 +3,16 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class Permisos {
   @PrimaryGeneratedColumn()
-  permiso_id: number;
+  id_opciones: number;
 
   @Column()
-  sistema_id: number;
+  id_sistema: number;
 
   @Column()
-  padre_id: number;
+  id_sistema_padre: number;
 
   @Column()
-  url: string;
+  link: string;
 
   @Column()
   orden: number;
@@ -21,6 +21,6 @@ export class Permisos {
   icono: string;
 
   @Column({ nullable: false, default: true })
-  esta_activo: boolean;
+  esta_borrado: boolean;
 
 }
