@@ -102,7 +102,7 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
         const [open, setOpen] = React.useState(submenu_expanded);
 
         return (
-          <div className="flex flex-col gap-2" key={i.id}>
+          <div className="flex flex-col gap-2" key={i.id_opcion}>
             <Link
               className={
                 i.titulo.length > 0
