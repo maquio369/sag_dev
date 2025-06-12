@@ -10,159 +10,86 @@ interface Props {
 
 const menuItems = [
   {
-    id: 5,
-    title: "",
+    id_opcion: 8,
+    titulo: "",
     items: [
       {
-        icon: "fa-solid fa-money-check-dollar",
-        label: "Ministraciones",
+        icono: "fa-solid fa-money-check-dollar",
+        opcion: "Ministraciones",
         link: "/ministraciones",
-        visible: ["admin"],
       },
     ],
   },
   {
-    id: 10,
-    title: "Adecuaciones presupuestarias",
+    id_opcion: 10,
+    titulo: "Adecuaciones presupuestarias",
     items: [
       {
-        icon: "fa-solid fa-circle-plus",
-        label: "Ampliaciones",
+        icono: "fa-solid fa-circle-plus",
+        opcion : "Ampliaciones",
         link: "/contactos",
-        visible: [
-          "superadmin",
-          "admin",
-          "sistemas",
-          "humanos",
-          "planeacion",
-          "materiales",
-          "financieros",
-        ],
       },
       {
-        icon: "fa-solid fa-circle-minus",
-        label: "Reducciones",
+        icono: "fa-solid fa-circle-minus",
+        opcion : "Reducciones",
         link: "/sistemas",
-        visible: [
-          "superadmin",
-          "admin",
-          "sistemas",
-          "humanos",
-          "planeacion",
-          "materiales",
-          "financieros",
-        ],
       },
       {
-        icon: "fa-solid fa-money-bill-transfer",
-        label: "Traspasos",
+        icono: "fa-solid fa-money-bill-transfer",
+        opcion : "Traspasos",
         link: "/humanos",
-        visible: [
-          "superadmin",
-          "admin",
-          "sistemas",
-          "humanos",
-          "planeacion",
-          "materiales",
-          "financieros",
-        ],
       },
     ],
   },
 
   {
-    id: 20,
-    title: "Operaciones del gasto",
+    id_opcion: 20,
+    titulo: "Operaciones del gasto",
     items: [
       {
-        icon: "fa-regular fa-credit-card",
-        label: "Gastos",
+        icono: "fa-regular fa-credit-card",
+        opcion : "Gastos",
         link: "/admin",
-        visible: [
-          "superadmin",
-          "admin",
-          "sistemas",
-          "humanos",
-          "planeacion",
-          "materiales",
-          "financieros",
-        ],
       },
     ],
   },
 
   {
-    id: 30,
-    title: "Consultas" /* "fa-solid fa-sheet-plastic" */,
+    id_opcion: 30,
+    titulo: "Consultas" /* "fa-solid fa-sheet-plastic" */,
     items: [
       {
-        icon: "fa-solid fa-file-invoice-dollar",
-        label: "Consulta de saldos por ministración",
+        icono: "fa-solid fa-file-invoice-dollar",
+        opcion : "Consulta de saldos por ministración",
         link: "/test",
-        visible: [
-          "superadmin",
-          "admin",
-          "sistemas",
-          "humanos",
-          "planeacion",
-          "materiales",
-          "financieros",
-        ],
       },
     ],
   },
 
   {
-    id: 50,
-    title: "Configuraciones",
+    id_opcion: 50,
+    titulo: "Configuraciones",
     items: [
       /*{
-        icon: "fa-solid fa-user-tag",
-        label: "Roles",
+        icono: "fa-solid fa-user-tag",
+        opcion : "Roles",
         link: "/admin",
-        visible: [
-          "superadmin",
-          "admin",
-          "sistemas",
-          "humanos",
-          "planeacion",
-          "materiales",
-          "financieros",
-        ],
       },*/
       {
-        icon: "fa-solid fa-users",
-        label: "Usuarios",
+        icono: "fa-solid fa-users",
+        opcion : "Usuarios",
         link: "/usuarios",
-        visible: [
-          "superadmin",
-          "admin",
-          "sistemas",
-          "humanos",
-          "planeacion",
-          "materiales",
-          "financieros",
-        ],
       },
     ],
   },
   {
-    id: 999,
-    title: "",
+    id_opcion: 9999,
+    titulo: "",
     items: [
       {
-        icon: "fa-solid fa-arrow-right-from-bracket",
-        label: "Salir",
+        icono: "fa-solid fa-arrow-right-from-bracket",
+        opcion : "Salir",
         link: "/login",
-        visible: [
-          "superadmin",
-          "admin",
-          "sistemas",
-          "humanos",
-          "planeacion",
-          "materiales",
-          "financieros",
-        ],
       },
     ],
   },
@@ -178,23 +105,26 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
           <div className="flex flex-col gap-2" key={i.id}>
             <Link
               className={
-                i.title.length > 0
+                i.titulo.length > 0
                   ? "text-menuTextoSeparador hover:text-textoEncabezadoTrans font-light pt-3 flex items-center gap-2 focus:outline-none"
                   : "pt-2 text-menuTextoSeparador"
               }
               onClick={
-                i.title.length > 0 ? () => setOpen((prev) => !prev) : undefined
+                i.titulo.length > 0 ? () => setOpen((prev) => !prev) : undefined
               }
               href=""
-              hidden={!i.title || !expanded}
-              tabIndex={i.title ? 0 : -1}
+              hidden={!i.titulo || !expanded}
+              tabIndex={i.titulo ? 0 : -1}
             >
-              {i.title}
-              {i.title && (
-                <span className="ml-auto">
-                  <i
-                    className={`fa-solid fa-chevron-${open ? "down" : "right"} transition-transform`}
-                  />
+              {i.titulo}
+              {i.titulo && (
+                <span
+                  className={`ml-auto transition-transform duration-300 ease-in-out ${
+                  open ? "-rotate-180" : ""
+                  }`}
+                  style={{ display: "inline-flex" }}
+                >
+                  <i className="fa-solid fa-chevron-down" />
                 </span>
               )}
             </Link>
@@ -202,15 +132,15 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
               i.items.map((item) => (
                 <Link
                   href={item.link}
-                  key={item.label}
+                  key={item.opcion }
                   className="flex items-center justify-start gap-2 text-menuTexto py-2 rounded-md hover:bg-menuFondoOpcion hover:text-menuTextoHover"
                 >
                   <i
-                    className={item.icon.concat(
-                      " text-menuIcon hover:text-menuIconHover ml-2 text-lg"
+                    className={item.icono.concat(
+                      " text-menuicono hover:text-menuiconoHover ml-2 text-lg"
                     )}
                   />
-                  {expanded && <span>{item.label}</span>}
+                  {expanded && <span>{item.opcion }</span>}
                 </Link>
               ))}
           </div>
