@@ -20,10 +20,10 @@ import { SistemasModule } from './api/sistemas/sistemas.module';
 import { UnidadesDeMedidaModule } from './api/unidades_de_medida/unidades_de_medida.module';
 import { UsuariosModule } from './api/usuarios/usuarios.module';
 import { ProductoEstatusModule } from './api/producto_estatus/producto_estatus.module';
-import { UsuariosService } from './api/usuarios/usuarios.service';
 import { Usuarios } from './api/usuarios/usuarios.entity';
 import { UsuariosSql } from './api/usuarios/usuarios.sql';
-import { DatabaseService } from './lib/DatabaseService';
+//import { UsuariosService } from './api/usuarios/usuarios.service';
+//import { DatabaseService } from './lib/DatabaseService';
 
 @Module({
   imports: [
@@ -57,6 +57,6 @@ import { DatabaseService } from './lib/DatabaseService';
     UsuariosModule,
   ],
   controllers: [AppController],
-  providers: [AppService,UsuariosSql , DatabaseService,UsuariosService],  //,UsuariosService  // ,DatabaseService
+  providers: [AppService,UsuariosSql ],  //,UsuariosService  // ,DatabaseService
 })
 export class AppModule {}

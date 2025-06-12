@@ -1,15 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { BaseService } from 'src/commons/service.commons';
 import { DataSource } from 'typeorm';
 
 @Injectable()
-export class UsuariosSql {//extends BaseService<any> 
-    constructor(
-    @Inject() private dataSource: DataSource 
-  ) {
-      //super();
-    }
-  
+export class UsuariosSql {
+  constructor(@Inject() private dataSource: DataSource) {}
+
   // Métodos adicionales útiles
   async auth(usr: string, pwd: string): Promise<any> {
     const qry =
@@ -18,4 +13,5 @@ export class UsuariosSql {//extends BaseService<any>
     //console.log("service="usr,pwd,result);
     return result;
   }
+
 }

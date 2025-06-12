@@ -16,17 +16,11 @@ export class UsuariosService extends BaseService<Usuarios> {
   getRepository(): Repository<Usuarios> {
     return this.usuariosRepo;
   }
-
+  
+  /*
   // Métodos adicionales útiles
   async create(entity: Usuarios): Promise<Usuarios> {
     return this.getRepository().create(entity);
   }
-
-  async auth2(usr: string, pwd: string): Promise<any> {
-    const qry =
-      'SELECT usuario,id_rol FROM usuarios WHERE esta_borrado=false AND usuario=$1 AND clave=$2';
-    const result = await this.getRepository().query(qry, [usr, pwd]);
-    //console.log("service="usr,pwd,result);
-    return result;
-  }
+*/
 }

@@ -11,14 +11,14 @@ import { AppService } from './app.service';
 import * as jwt from 'jsonwebtoken';
 import type { StringValue } from 'ms';
 import { UsuariosSql } from './api/usuarios/usuarios.sql';
-import { DatabaseService } from './lib/DatabaseService';
+//import { DatabaseService } from './lib/DatabaseService';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly usuariosSql: UsuariosSql,
-    public readonly db: DatabaseService,
+    //public readonly db: DatabaseService,
   ) {}
 
   @Get()

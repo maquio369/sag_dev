@@ -11,13 +11,13 @@ import { BaseController } from 'src/commons/controller.commons';
 import { BaseService } from 'src/commons/service.commons';
 import { Usuarios } from './usuarios.entity';
 import { UsuariosService } from './usuarios.service';
-      import { UsuariosSql } from './usuarios.sql';
+//      import { UsuariosSql } from './usuarios.sql';
 
 @Controller('api/usuarios')
 export class UsuariosController extends BaseController<Usuarios> {
   constructor(
     private readonly usuariosService: UsuariosService,
-          private readonly usuariosSql: UsuariosSql
+  //        private readonly usuariosSql: UsuariosSql
   ) {
     super();
   }
@@ -25,11 +25,11 @@ export class UsuariosController extends BaseController<Usuarios> {
   getService(): BaseService<Usuarios> {
     return this.usuariosService;
   }
-
+/*
   auth(usr: string, pwd: string) {
     return this.usuariosSql.auth(usr, pwd);
   }
-
+*/
   @Post('create')
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() entity: Usuarios, @Req() req:any): Promise<Usuarios> {
