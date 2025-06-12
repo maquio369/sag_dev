@@ -22,6 +22,7 @@ import { UsuariosModule } from './api/usuarios/usuarios.module';
 import { ProductoEstatusModule } from './api/producto_estatus/producto_estatus.module';
 import { UsuariosService } from './api/usuarios/usuarios.service';
 import { Usuarios } from './api/usuarios/usuarios.entity';
+import { UsuariosSql } from './api/usuarios/usuarios.sql';
 import { DatabaseService } from './lib/DatabaseService';
 
 @Module({
@@ -56,6 +57,6 @@ import { DatabaseService } from './lib/DatabaseService';
     UsuariosModule,
   ],
   controllers: [AppController],
-  providers: [AppService,UsuariosService,DatabaseService],
+  providers: [AppService,UsuariosSql , DatabaseService,UsuariosService],  //,UsuariosService  // ,DatabaseService
 })
 export class AppModule {}

@@ -10,14 +10,14 @@ import {
 import { AppService } from './app.service';
 import * as jwt from 'jsonwebtoken';
 import type { StringValue } from 'ms';
-import { UsuariosService } from './api/usuarios/usuarios.service';
+import { UsuariosSql } from './api/usuarios/usuarios.sql';
 import { DatabaseService } from './lib/DatabaseService';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly usuariosService: UsuariosService,
+    private readonly usuariosSql: UsuariosSql,
     public readonly db: DatabaseService,
   ) {}
 
@@ -44,7 +44,7 @@ export class AppController {
     }
     const { usuario, clave } = body;
 
-    const jsonObj = await this.usuariosService.auth(usuario, clave);
+    const jsonObj = await this.usuariosSql.auth(usuario, clave);
     //console.log("app.controller = ",clave, usuario,jsonObj);
     if (jsonObj.length > 0) {
       //console.log('select:', jsonObj[0].usuario, jsonObj[0].rol_id, clave);

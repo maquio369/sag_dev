@@ -14,7 +14,7 @@ export class PermisosController extends BaseController<Permisos> {
     return this.permisosService;
   }
 
-  // Endpoint adicional opcional
+  // Métodos adicionales útiles
   @Get('sistema/:sistema_id')
   async getBySistema(@Param('sistema_id') sistema_id: number) {
     return await this.permisosService.getBySistema(sistema_id);
