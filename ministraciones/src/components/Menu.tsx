@@ -119,12 +119,12 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
               {i.titulo}
               {i.titulo && (
                 <span
-                  className={`ml-auto transition-transform duration-300 ease-in-out ${
-                  open ? "-rotate-180" : ""
+                  className={`ml-auto transition-transform duration-200 ease-in-out ${
+                  open ? "-rotate-270" : ""
                   }`}
                   style={{ display: "inline-flex" }}
                 >
-                  <i className="fa-solid fa-chevron-down" />
+                  <i className="fa-solid fa-chevron-right" />
                 </span>
               )}
             </Link>
@@ -137,7 +137,7 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
                 >
                   <i
                     className={item.icono.concat(
-                      " text-menuicono hover:text-menuiconoHover ml-2 text-lg"
+                      " text-menuIcon hover:text-menuIconHover ml-2 text-lg"
                     )}
                   />
                   {expanded && <span>{item.opcion }</span>}

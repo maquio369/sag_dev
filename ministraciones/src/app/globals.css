@@ -232,11 +232,11 @@ button {
   --color-textoGolden1: #f3dcb4; /*+claro */
   --color-textoGolden2: #f3d090; /*-claro para fondo claro*/
 
-  --color-fondoCeleste: #ff637e; /*-cyan-400*/
+  --color-fondoCeleste: #80deea; /*-cyan-400*/
   --color-fondoNaranja: #ffb900; /*-amber-400 warning*/
 
-  --color-menuIcon: #55b8a7;
-  --color-menuIconHover: #00c6b5;
+  --color-menuIcon: #00c6b5;
+  --color-menuIconHover: #fafafa;
   --color-menuTexto: #ffffffe5; /*verdoso claro #d0fAe5;*/
   --color-menuTextoHover: #ffffff;
   --color-menuFondoOpcion: #49f8e745;
