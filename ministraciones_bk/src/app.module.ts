@@ -10,7 +10,7 @@ import { CategoriasModule } from './api/categorias/categorias.module';
 import { RolesModule } from './api/roles/roles.module';
 import { EmpleadosModule } from './api/empleados/empleados.module';
 import { OrganizacionesModule } from './api/organizaciones/organizaciones.module';
-import { PermisosModule } from './api/permisos/permisos.module';
+import { OpcionesModule } from './api/opciones/opciones.module';
 import { PermisosRoles } from './api/permisos_roles/permisos_roles.entity';
 import { RequisicionesModule } from './api/requisiciones/requisiciones.module';
 import { ProductosNoRegistradosModule } from './api/productos_no_registrado/productos-no-registrados.module';
@@ -45,7 +45,7 @@ import { UsuariosSql } from './api/usuarios/usuarios.sql';
     RolesModule,
     EmpleadosModule,
     OrganizacionesModule,
-    PermisosModule,
+    OpcionesModule,
     PermisosRoles,
     RequisicionesModule,
     ProductoEstatusModule,
