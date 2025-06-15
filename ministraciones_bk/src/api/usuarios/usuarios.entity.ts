@@ -3,10 +3,10 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class Usuarios {
   @PrimaryGeneratedColumn()
-  usuario_id: number;
+  id_usuario: number;
 
   @Column()
-  rol_id: number;
+  id_rol: number;
 
   @Column({ nullable: false })
   nombres: string;
@@ -27,21 +27,9 @@ export class Usuarios {
   foto: string;
 
   @Column()
-  empleado_id: number;
+  id_empleado: number;
 
-  @Column({ nullable: false, default: true })
+  @Column({ nullable: false, default: false })
   esta_borrado: boolean;
 
 }
-/*//usuarios
-{
-  "rol_id": 1,
-  "nombres": "Itzel",
-  "apellidos": "Balam kanan",
-  "correo": "jperex0002@gmail.com",
-  "usuario": "balam",
-  "clave": "321654",
-  "foto": null,
-  "empleado_id": null,
-  "esta_borrado": false
-}*/

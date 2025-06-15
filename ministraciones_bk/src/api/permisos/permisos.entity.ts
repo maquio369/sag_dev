@@ -1,12 +1,12 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Roles {
+export class Permisos {
   @PrimaryGeneratedColumn()
   id_rol: number;
 
-  @Column({ nullable: false, comment: 'Rol' })
-  rol: string;
+  @PrimaryGeneratedColumn()
+  id_opcion: number;
 
   @Column({ nullable: false, default: false, comment: 'Borrado' })
   esta_borrado: boolean;

@@ -14,13 +14,19 @@ export class Sistemas {
   @Column({ comment: 'Sist.' })
   abreviatura: string;
 
-  @Column({ comment: 'Objetivo del  sistema' })
+  @Column({ comment: 'Objetivo del sistema' })
   objetivo: string;
 
-  @Column({ comment: 'Id Padre' })
+  @Column({ comment: 'sistemas' })
   id_sistema_padre: number;
 
-  @Column({ nullable: false, default: false })
+  @Column({ comment: 'Ícono' })
+  icono: string;
+
+  @Column({ comment: 'Estilo' })
+  estilo: string;
+
+  @Column({ default: false, comment: 'Borrado' })
   esta_borrado: boolean;
 
 }
