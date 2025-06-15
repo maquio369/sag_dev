@@ -10,89 +10,94 @@ interface Props {
 
 const menuItems = [
   {
-    id_opcion: 8,
-    titulo: "",
-    items: [
+    "id_opcion": 8,
+    "titulo": "",
+    "items": [
       {
-        icono: "fa-solid fa-money-check-dollar",
-        opcion: "Ministraciones",
-        link: "/ministraciones",
-      },
-    ],
+        "icono": "fa-solid fa-money-check-dollar",
+        "opcion": "Ministraciones",
+        "link": "/ministraciones"
+      }
+    ]
   },
   {
-    id_opcion: 10,
-    titulo: "Adecuaciones presupuestarias",
-    items: [
+    "id_opcion": 10,
+    "titulo": "Adecuaciones presupuestarias",
+    "items": [
       {
-        icono: "fa-solid fa-circle-plus",
-        opcion : "Ampliaciones",
-        link: "/contactos",
+        "icono": "fa-solid fa-circle-plus",
+        "opcion": "Ampliaciones",
+        "link": "/contactos"
       },
       {
-        icono: "fa-solid fa-circle-minus",
-        opcion : "Reducciones",
-        link: "/sistemas",
+        "icono": "fa-solid fa-circle-minus",
+        "opcion": "Reducciones",
+        "link": "/sistemas"
       },
       {
-        icono: "fa-solid fa-money-bill-transfer",
-        opcion : "Traspasos",
-        link: "/humanos",
-      },
-    ],
-  },
-
-  {
-    id_opcion: 20,
-    titulo: "Operaciones del gasto",
-    items: [
-      {
-        icono: "fa-regular fa-credit-card",
-        opcion : "Gastos",
-        link: "/admin",
-      },
-    ],
+        "icono": "fa-solid fa-money-bill-transfer",
+        "opcion": "Traspasos",
+        "link": "/humanos"
+      }
+    ]
   },
 
   {
-    id_opcion: 30,
-    titulo: "Consultas" /* "fa-solid fa-sheet-plastic" */,
-    items: [
+    "id_opcion": 20,
+    "titulo": "Operaciones del gasto",
+    "items": [
       {
-        icono: "fa-solid fa-file-invoice-dollar",
-        opcion : "Consulta de saldos por ministración",
-        link: "/test",
-      },
-    ],
+        "icono": "fa-regular fa-credit-card",
+        "opcion": "Gastos",
+        "link": "/admin"
+      }
+    ]
   },
 
   {
-    id_opcion: 50,
-    titulo: "Configuraciones",
-    items: [
+    "id_opcion": 30,
+    "titulo": "Consultas", 
+    "items": [
+      {
+        "icono": "fa-solid fa-file-invoice-dollar",
+        "opcion": "Consulta de saldos por ministración",
+        "link": "/test"
+      }/*,
+      {
+        "icono": "fa-solid fa-sheet-plastic",
+        "opcion": "Otras Consultas",
+        "link": "/test"
+      }*/
+    ]
+  },
+
+  {
+    "id_opcion": 50,
+    "titulo": "Configuraciones",
+    "items": [
       /*{
-        icono: "fa-solid fa-user-tag",
-        opcion : "Roles",
-        link: "/admin",
+        "icono": "fa-solid fa-user-tag",
+        "opcion": "Roles",
+        "link": "/admin"
       },*/
       {
-        icono: "fa-solid fa-users",
-        opcion : "Usuarios",
-        link: "/usuarios",
-      },
-    ],
+        "icono": "fa-solid fa-users",
+        "opcion": "Usuarios",
+        "link": "/usuarios"
+      }
+    ]
   },
   {
-    id_opcion: 9999,
-    titulo: "",
-    items: [
+    "id_opcion": 9999,
+    "titulo": "",
+    "items": [
       {
-        icono: "fa-solid fa-arrow-right-from-bracket",
-        opcion : "Salir",
-        link: "/login",
-      },
-    ],
-  },
+        "icono": "fa-solid fa-arrow-right-from-bracket",
+        "opcion": "Salir",
+        "link": "/login"
+      }
+    ]
+  }
 ];
 
 const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
