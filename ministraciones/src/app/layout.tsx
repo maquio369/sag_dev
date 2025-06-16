@@ -1,5 +1,8 @@
+"use client";
 import { Inter, Roboto_Condensed } from "next/font/google";
 import "./globals.css";
+
+import {UserCtxProvider} from "@/contexts/UserContext";
 
 const font2 = Roboto_Condensed({ subsets: ["latin"] });
 const font1 = Inter({ subsets: ["latin"] });
@@ -33,8 +36,7 @@ export default function RootLayout({
         />
       </head>
       <body className={font1.className}>
-        
-        {children}
+            <UserCtxProvider >{children}</UserCtxProvider>
       </body>
     </html>
   );

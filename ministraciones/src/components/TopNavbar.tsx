@@ -2,6 +2,7 @@
 import Image from "next/image";
 import TitleName from "./elements/TitleName";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/contexts/UserContext";
 
 interface Props {
   toggleSidebar: () => void;
@@ -10,6 +11,7 @@ interface Props {
 
 const TopNavbar = ({ toggleSidebar, sidebarOpen = true }: Props) => {
   const router = useRouter();
+  const { user,setuser} = useUser();
 
   return (
     <div className="flex items-center justify-between p-2 bg-linear-to-b from-fondoGradienteTopFrom to-fondoGradienteTopTo text-textoBoton1 border-t-1 border-black">
@@ -74,7 +76,7 @@ const TopNavbar = ({ toggleSidebar, sidebarOpen = true }: Props) => {
         <div className="flex flex-row gap-2 items-center cursor-pointer_ hover:scale-105 mr-0">
           <div className="flex flex-col text-right">
             <span className="text-xs leading-4 font-medium hidden sm:inline">
-              Balam Atziri Coronel Hernández
+              {user}
             </span>
             <span className="text-sm text-textoEncabezadoTrans text-right hidden xl:inline">
               Administrador Recursos Financieros
