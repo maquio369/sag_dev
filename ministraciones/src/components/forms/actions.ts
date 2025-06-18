@@ -25,7 +25,7 @@ export async function handleSubmit(formData: FormData): Promise<any> {
         }),
       });
       // console.log(response.headers.get("set-cookie")?.substring(13));
-      
+
       data = await response.json();
       if (data && "token" in data && data.token === "") {
         setError = data.message; //console.log(data.message);
@@ -39,6 +39,34 @@ export async function handleSubmit(formData: FormData): Promise<any> {
       data = { message: setError, token: "" };
     }
     return data;
+  }
+}
+
+export async function getMenuItems(idSistema: number = 2, idRol: number = 1) {
+  let menuItems = [];
+  try {
+    var apiHost = process.env.API_URL !== undefined ? process.env.API_URL : "";
+    const response = await fetch(
+      apiHost + "api/opciones/getmenu/" + idSistema + "/" + idRol,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.ok) {
+      menuItems = await response.json();
+    } else {
+      console.error("Error fetching menu items:", response.statusText);
+      menuItems = [];
+    }
+  } catch (err: any) {
+    console.error("Error fetching menu items:", err.message);
+    menuItems = [];
+  } finally {
+    return menuItems;
+    //return JSON.stringify(menuItems);
   }
 }
 
