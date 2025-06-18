@@ -1,5 +1,5 @@
 "use client"
-import { verifyToken } from "@/Lib/jwt_lib";
+import { verifyToken } from "@/Lib/jwt_lib_front";
 
 export const verificarToken = async () => {
   //Verificar token

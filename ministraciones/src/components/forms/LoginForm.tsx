@@ -9,7 +9,6 @@ import { handleSubmit } from "@/components/forms/actions";
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   //const router = useRouter();
 
@@ -25,6 +24,12 @@ const LoginForm = () => {
     sessionStorage.setItem("message", "Sesión finalizada");
     */
     document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    const msg=sessionStorage.getItem("msg");
+    if (msg){
+      toast.warn(msg);
+      sessionStorage.removeItem("msg");
+    }
+
   }, []);
 
   return (
@@ -61,7 +66,6 @@ const LoginForm = () => {
           autoComplete="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          disabled={isLoading}
         />
       </div>
 
@@ -76,7 +80,6 @@ const LoginForm = () => {
           autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          disabled={isLoading}
         />
       </div>
 

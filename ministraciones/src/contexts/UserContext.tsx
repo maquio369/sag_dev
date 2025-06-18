@@ -51,7 +51,7 @@ export function UserCtxProvider({ children }: { children: React.ReactNode }) {
   const id_rol = 1;*/
   const [user, setuser] = useState({
     id_usuario: 1,
-    id_rol: 1,
+    id_rol: 5,
     usuario: "JC",
     rol: "Administrador",
     nombre: "Julio Arizmendi",
