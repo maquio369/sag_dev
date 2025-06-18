@@ -2,7 +2,7 @@
 import Image from "next/image";
 import TitleName from "./elements/TitleName";
 import { useRouter } from "next/navigation";
-import { useUser } from "@/contexts/UserContext";
+import { useUserCtx } from "@/contexts/UserContext";
 
 interface Props {
   toggleSidebar: () => void;
@@ -11,7 +11,7 @@ interface Props {
 
 const TopNavbar = ({ toggleSidebar, sidebarOpen = true }: Props) => {
   const router = useRouter();
-  const { user,setuser} = useUser();
+  const { user, system, setuser } = useUserCtx();
 
   return (
     <div className="flex items-center justify-between p-2 bg-linear-to-b from-fondoGradienteTopFrom to-fondoGradienteTopTo text-textoBoton1 border-t-1 border-black">
@@ -50,10 +50,10 @@ const TopNavbar = ({ toggleSidebar, sidebarOpen = true }: Props) => {
         {/*Module name*/}
         <div className="hidden_ sm:inline-flex items-center">
           <span className="__className_721240 text-textoGolden1 font-normal leading-4  bg-fondoTransparenteObscuro py-1 px-2 hidden lg:inline-flex rounded_-l-full">
-            FINANCIEROS
+            {system.grupo.toUpperCase()}
           </span>
           <span className="__className_721240 text-textoGolden1 font-medium leading-4 bg-fondoTransparenteObscuro py-1 px-2 hidden_ sm:inline-flex border-l-1 border-bordeBlancoTransparente">
-            Ministraciones
+            {system.nombre}
           </span>
         </div>
 
@@ -75,11 +75,11 @@ const TopNavbar = ({ toggleSidebar, sidebarOpen = true }: Props) => {
         {/*profile*/}
         <div className="flex flex-row gap-2 items-center cursor-pointer_ hover:scale-105 mr-0">
           <div className="flex flex-col text-right">
-            <span className="text-xs leading-4 font-medium hidden sm:inline">
-              {user}
+            <span className="text-xs leading-4 font-medium hidden sm:inline">              
+              {user.nombre}
             </span>
             <span className="text-sm text-textoEncabezadoTrans text-right hidden xl:inline">
-              Administrador Recursos Financieros
+              {user.rol}
             </span>
           </div>
           <Image
