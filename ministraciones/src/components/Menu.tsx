@@ -8,22 +8,6 @@ interface Props {
   submenu_expanded?: boolean;
 }
 
-interface MenusItems {
-  menuitems: {
-    id_opcion: number;
-    titulo: string;
-    items: { icono: string; opcion: string; link: string }[];
-  }[];
-}
-
-interface MenuItems {
-  menuitems: {
-    id_opcion: number;
-    titulo: string;
-    items: { icono: string; opcion: string; link: string }[];
-  };
-}
-
 interface MenuItem {
   id_opcion: number;
   titulo: string;
@@ -31,9 +15,7 @@ interface MenuItem {
 }
 
 const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
-  //const [mnuItems, setMnuItems] = useState<MenuItem[]>([]);
   const [menusItems, setMenusItems] = useState<MenuItem[]>([]);
-  const [open, setOpen] = useState(submenu_expanded);
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -48,17 +30,58 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
     };
     fetchMenuItems();
   }, []);
-
-  return(
-  menusItems.map((i) => (
-        <div className="flex flex-col gap-2 text-TextoTablaHeader" key={i.id_opcion}>          
-          {i.titulo} 
-          <br />
-        </div>
-        
-  ))
+  
+ const [open, setOpen] = useState(submenu_expanded);
+  return (
+    menusItems.map((i) => (
     
-    )
+    <div className="mt-0 text-sm px-2 " key={i.id_opcion}>
+      <div className="flex flex-col gap-2" key={i.id_opcion}>
+        <Link
+          className={
+            i.titulo.length > 0
+              ? "text-menuTextoSeparador hover:text-textoEncabezadoTrans font-light pt-3 flex items-center gap-2 focus:outline-none"
+              : "pt-2 text-menuTextoSeparador"
+          }
+          onClick={
+            i.titulo.length > 0 ? () => setOpen((prev) => !prev) : undefined
+          }
+          href=""
+          hidden={!i.titulo || !expanded}
+          tabIndex={i.titulo ? 0 : -1}
+        >
+          {i.titulo}
+          {i.titulo && (
+            <span
+              className={`ml-auto transition-transform duration-200 ease-in-out ${
+                open ? "-rotate-270" : ""
+              }`}
+              style={{ display: "inline-flex" }}
+            >
+              <i className="fa-solid fa-chevron-right" />
+            </span>
+          )}
+        </Link>
+        {open &&
+          i.items.map((item) => (
+            <Link
+              href={item.link}
+              key={item.opcion}
+              className="flex items-center justify-start gap-2 text-menuTexto py-2 rounded-md hover:bg-menuFondoOpcion hover:text-menuTextoHover"
+            >
+              <i
+                className={item.icono.concat(
+                  " text-menuIcon hover:text-menuIconHover ml-2 text-lg"
+                )}
+              />
+              {expanded && <span>{item.opcion}</span>}
+            </Link>
+          ))}
+      </div>
+    </div>
+  )
+  )
+)
 };
 
 export default Menu;
