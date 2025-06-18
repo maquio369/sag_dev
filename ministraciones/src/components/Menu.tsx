@@ -8,12 +8,20 @@ interface Props {
   submenu_expanded?: boolean;
 }
 
-interface MenuItems {
+interface MenusItems {
   menuitems: {
     id_opcion: number;
     titulo: string;
     items: { icono: string; opcion: string; link: string }[];
   }[];
+}
+
+interface MenuItems {
+  menuitems: {
+    id_opcion: number;
+    titulo: string;
+    items: { icono: string; opcion: string; link: string }[];
+  };
 }
 
 interface MenuItem {
@@ -23,32 +31,34 @@ interface MenuItem {
 }
 
 const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
-  const [menusItems, setMenusItems] = useState<MenuItems[]>([]);
+  //const [mnuItems, setMnuItems] = useState<MenuItem[]>([]);
+  const [menusItems, setMenusItems] = useState<MenuItem[]>([]);
+  const [open, setOpen] = useState(submenu_expanded);
+
   useEffect(() => {
-    try {
-      const fetchMenuItems = async () => {
+    const fetchMenuItems = async () => {
+      try {
         const mnu = await getMenuItems(2, 1);
-        console.log("Menu items fetched:", mnu[0].menuitems);
+        //console.log("Menu items fetched:", mnu[0].menuitems);
         setMenusItems(mnu[0].menuitems);
-      };
-      fetchMenuItems();
-    } catch (error) {
-      console.error("Error fetching menu items:", error);
-      //setMenusItems([{ api_error: "Error fetching menu items" }]);
-    }
+      } catch (error) {
+        console.error("Error fetching menu items:", error);
+        // Optionally handle error state here
+      }
+    };
+    fetchMenuItems();
   }, []);
 
-  
-    return (
-      menusItems.map((i: any) => {
-      <div className="flex flex-col gap-2 text-TextoTablaHeader" key={i.id_opcion}>
-        hey
-        {i.titulo}
-        hola
-      </div>
-      })
-    );
-  
+  return(
+  menusItems.map((i) => (
+        <div className="flex flex-col gap-2 text-TextoTablaHeader" key={i.id_opcion}>          
+          {i.titulo} 
+          <br />
+        </div>
+        
+  ))
+    
+    )
 };
 
 export default Menu;
