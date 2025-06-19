@@ -1,13 +1,16 @@
 "use client";
-import PersonalListPage from "@/app/(dashboard)/list/personal/page";
-import { useEffect, useState } from "react";
+import { useUserCtx } from "@/contexts/UserContext";
+
 
 const Home = () => {
+  const { system } = useUserCtx();
   return (
     <div className="flex flex-col overflow-auto pb-3">
       <span className="lblEncabezado ml-4 mt-3">
-        <i className="fa-solid fa-money-check-dollar mr-4 scale-200"></i>
-        Sistema de Control de Ministraciones</span>
+        
+        <i className={`${system.icono} mr-4 scale-200`}></i>
+        {system.descripcion}
+        </span>
       <div className="flex flex-wrap w-full gap-4 px-4">
         <hr className="mb-3" />
       </div>

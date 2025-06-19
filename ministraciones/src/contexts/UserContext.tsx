@@ -57,16 +57,18 @@ export function UserCtxProvider({ children }: { children: React.ReactNode }) {
     nombre: "Julio Arizmendi",
     email: "jperex0002@example.com",
     //setusuario: (usuario: string) => setuser({ ...user, usuario }),
-    
   });
   const system = {
     id_sistema: 2,
     grupo: "Financieros",
     nombre: "Ministraciones",
     descripcion: "Sistema de Control de Ministraciones",
+    icono: "fa-solid fa-money-check-dollar",
   };
   return (
-    <UserCtx.Provider value={{ user, system, setuser }}>{children}</UserCtx.Provider>
+    <UserCtx.Provider value={{ user, system, setuser }}>
+      {children}
+    </UserCtx.Provider>
   );
 }
 
