@@ -30,21 +30,22 @@ export class AppController {
   BODY (JSON):
   {
     "usuario": "admin",
-    "clave": "123"
+    "clave": "123",
+    "id_sistema": 2
   }    */
   @Post('api/auth')
   @HttpCode(HttpStatus.OK)
   async auth(
-    @Body() body: { usuario: string; clave: string },
+    @Body() body: { usuario: string; clave: string; id_sistema: number },
     @Res() res: any
   ): Promise<any> {
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
       throw new Error('JWT_SECRET no definida');
     }
-    const { usuario, clave } = body;
+    const { usuario, clave, id_sistema } = body;
 
-    const jsonObj = await this.usuariosSql.auth(usuario, clave);
+    const jsonObj = await this.usuariosSql.auth(usuario, clave, id_sistema);
     //console.log("app.controller = ",clave, usuario,jsonObj);
     if (jsonObj.length > 0) {
       //console.log('select:', jsonObj[0].usuario, jsonObj[0].id_rol, clave);
@@ -54,7 +55,8 @@ export class AppController {
       });
       //set cookie with token
       res.cookie("access_token", token);//.httpOnly(); 
-      return res.json({ message: 'Acceso autorizado', token,payload:jsonObj[0].id });
+      res.cookie("n1", jsonObj[0].ns);
+      return res.json({ message: 'Acceso autorizado', token, ns:jsonObj[0].ns, nu:jsonObj[0].nu, nr:jsonObj[0].nr });
     } else {
       return res.json({ message: 'Credenciales inválidas', token: '' });
     }

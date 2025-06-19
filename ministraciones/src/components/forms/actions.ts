@@ -6,6 +6,7 @@ export async function handleSubmit(formData: FormData): Promise<any> {
   try {
     const username = formData.get("username");
     const password = formData.get("password");
+    const idSistema = formData.get("id_sistema");
     if (!username || !password) {
       setError = "Por favor, ingrese usuario y contraseña";
     } else {
@@ -13,7 +14,7 @@ export async function handleSubmit(formData: FormData): Promise<any> {
       var apiHost =
         process.env.API_URL !== undefined ? process.env.API_URL : "";
       //console.log(apiHost);
-
+      //console.log(formData);
       const response = await fetch(apiHost + "api/auth", {
         method: "POST",
         headers: {
@@ -22,6 +23,7 @@ export async function handleSubmit(formData: FormData): Promise<any> {
         body: JSON.stringify({
           usuario: username,
           clave: password,
+          id_sistema: idSistema,
         }),
       });
       // console.log(response.headers.get("set-cookie")?.substring(13));
