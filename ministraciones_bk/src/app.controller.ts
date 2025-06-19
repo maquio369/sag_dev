@@ -47,14 +47,14 @@ export class AppController {
     const jsonObj = await this.usuariosSql.auth(usuario, clave);
     //console.log("app.controller = ",clave, usuario,jsonObj);
     if (jsonObj.length > 0) {
-      //console.log('select:', jsonObj[0].usuario, jsonObj[0].rol_id, clave);
+      //console.log('select:', jsonObj[0].usuario, jsonObj[0].id_rol, clave);
       var expTime = process.env.JWT_EXPIRATION as StringValue;
       const token = jwt.sign(jsonObj[0], jwtSecret as string, {
         expiresIn: expTime ? expTime : '7h',
       });
       //set cookie with token
       res.cookie("access_token", token);//.httpOnly(); 
-      return res.json({ message: 'Acceso autorizado', token });
+      return res.json({ message: 'Acceso autorizado', token,payload:jsonObj[0].id });
     } else {
       return res.json({ message: 'Credenciales inválidas', token: '' });
     }
