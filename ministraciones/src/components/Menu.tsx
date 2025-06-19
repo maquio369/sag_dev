@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { getMenuItems } from "./forms/actions";
 import Link from "next/link";
 import { useUserCtx } from "@/contexts/UserContext";
-import { toast } from "react-toastify";
 
 interface Props {
   expanded?: boolean;
@@ -24,6 +23,11 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
+        console.log("rolex:", user.id_rol);
+        sessionStorage.setItem(
+          "msg",
+          user.id_rol.toString(),
+        );
         const mnu = await getMenuItems(system.id_sistema, user.id_rol);
         setMenusItems(mnu[0].menuitems);
         // Inicializar el estado de los ítems abiertos
