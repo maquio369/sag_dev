@@ -36,7 +36,7 @@ export default function RootLayout({
         />
       </head>
       <body className={font1.className}>
-            <UserCtxProvider >{children}</UserCtxProvider>
+            <UserCtxProvider>{children}</UserCtxProvider >
       </body>
     </html>
   );

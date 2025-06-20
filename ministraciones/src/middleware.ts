@@ -1,3 +1,4 @@
+import { getCookie } from "./utils/util";
 
 const protectedPages = ["/home", "/admin", "/contactos", "/humanos", "/sistemas", "/usuarios", "/test"];
 
@@ -19,17 +20,3 @@ export default function middleware(req: any, res: any) {
   }
 }
 
-function getCookie(cname: string, documentcookie: string): string {
-  let name = cname + "=";
-  let ca = documentcookie.split(";");
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == " ") {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}

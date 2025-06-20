@@ -44,7 +44,7 @@ export async function handleSubmit(formData: FormData): Promise<any> {
   }
 }
 
-export async function getMenuItems(idSistema: number = 2, idRol: number = 1) {
+export async function getMenuItems(idSistema: number = 0, idRol: number = 0) {
   let menuItems = [];
   try {
     var apiHost = process.env.API_URL !== undefined ? process.env.API_URL : "";

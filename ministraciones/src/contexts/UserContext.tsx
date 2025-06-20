@@ -46,8 +46,9 @@ export const UserCtx = createContext<UserCtxType>({
 });
 
 export function UserCtxProvider({ children }: { children: React.ReactNode }) {
+  const [idSistema,setIdSistema] = useState(2);
   /*const [usuario, setusuario] = useState("JC");
-  const id_sistema = 2;
+  
   const id_rol = 1;*/
   const [user, setuser] = useState({
     id_usuario: 1,

@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { ToastContainer, ToastOptions, toast } from "react-toastify";
 import SubmitBtn from "../elements/SubmitBtn";
-import { handleSubmit } from "@/components/forms/actions";
-import { useUserCtx } from "@/contexts/UserContext";
+import { handleSubmit, getMenuItems } from "@/components/forms/actions";
+import { ofuscad } from "@/utils/util";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
@@ -12,7 +12,6 @@ const LoginForm = () => {
   const [idSistema, setIdSistema] = useState<string>("2"); // Valor por defecto: 2 (Ministraciones)
 
   const [error, setError] = useState("");
-  const { user, system, setuser } = useUserCtx();
 
   //const router = useRouter();
 
@@ -29,6 +28,10 @@ const LoginForm = () => {
     */
     document.cookie =
       "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "mnu=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "ns=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie =
+      "options=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     const msg = sessionStorage.getItem("msg");
     if (msg) {
       toast.warn(msg);
@@ -39,7 +42,7 @@ const LoginForm = () => {
   return (
     /*< form onSubmit={handleSubmit} className="flex flex-col space-y-6" > */
     //<form action={(e) => {  handleSubmit(); }}>
-    
+
     <form
       className="flex flex-col space-y-6"
       action={async (formData) => {
@@ -52,16 +55,22 @@ const LoginForm = () => {
           if (jsonData.token === undefined || jsonData.token === "") {
             setError(jsonData.message as string);
           } else {
+            //Sí se obtuvo un token válido obtener opociones
+
             document.cookie = `access_token=${jsonData.token}; `; //path=/; max-age=3600; secure; SameSite=Strict`;
             document.cookie = `ns=${jsonData.ns}; `;
-            { user.id_rol = jsonData.nr }
-            document.cookie = `nr=${user.id_rol}; `;
+            //document.cookie = `nr=${jsonData.nr }; `;
+
+            const jsonOptions = await getMenuItems(jsonData.ns, jsonData.nr);
+            if (jsonOptions) {
+              document.cookie = `mnu=${ofuscad( JSON.stringify(jsonOptions), true)}; `;
+            }
+
             window.location.href = "/home";
           }
         }
       }}
     >
-      
       {/* Selector de Sistema */}
       <select
         name="id_sistema"
@@ -69,11 +78,9 @@ const LoginForm = () => {
         value={idSistema}
         onChange={(e) => setIdSistema(e.target.value)}
         className="w-full rounded-md text-center text-xl font-bold border-0 appearance-none"
-        
       >
         <option value="1">Administración SAG</option>
         <option value="2">Ministraciones</option>
-        <option value="3">Almacén</option>
       </select>
 
       <div className="flex flex-col space-y-1">
@@ -118,6 +125,7 @@ const LoginForm = () => {
           </div>
         </div>
       )}
+      <ToastContainer />
     </form>
   );
 };

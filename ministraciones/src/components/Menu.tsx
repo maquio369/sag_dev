@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getMenuItems } from "./forms/actions";
 import Link from "next/link";
 import { useUserCtx } from "@/contexts/UserContext";
+import { getCookie, ofuscad } from "@/utils/util";
 
 interface Props {
   expanded?: boolean;
@@ -23,12 +23,14 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        console.log("rolex:", user.id_rol);
-        sessionStorage.setItem(
-          "msg",
-          user.id_rol.toString(),
+        //console.log("rolex:", user.id_rol);
+        sessionStorage.setItem("msg", user.id_rol.toString() + " ");
+
+        //const mnu = await getMenuItems(system.id_sistema, user.id_rol);
+        const mnu = JSON.parse(
+          ofuscad(getCookie("mnu", document.cookie), false)
         );
-        const mnu = await getMenuItems(system.id_sistema, user.id_rol);
+
         setMenusItems(mnu[0].menuitems);
         // Inicializar el estado de los ítems abiertos
         const initialOpenState = mnu[0].menuitems.reduce(
@@ -45,7 +47,8 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
           "msg",
           "Su rol no tiene permisos asignados para este sistema"
         );
-        window.location.href = "/login";
+
+        //  window.location.href = "/login";
       }
     };
     fetchMenuItems();
