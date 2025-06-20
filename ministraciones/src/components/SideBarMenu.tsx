@@ -33,7 +33,7 @@ const SideBarMenu = ({ sidebarOpen = true, isMobile = false }: Props) => {
               src="/general/Recurso3a(231x178).webp"
               alt=""
               width={sidebarOpen ? 170 : 32}
-              height={sidebarOpen ? 131 : 25}
+              height={sidebarOpen ? 131 : 24}
               className={`transition-all duration-200 ease-in-out ${sidebarOpen ? "" : " pb-3.5"} `}
             />
             </Link>
