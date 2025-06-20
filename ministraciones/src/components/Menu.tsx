@@ -113,7 +113,7 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
         className="flex items-center justify-start gap-2 text-menuTexto py-2 rounded-md hover:bg-menuFondoOpcion hover:text-menuTextoHover mt-4"
       >
         <i className="fa-solid fa-arrow-right-from-bracket text-menuIcon hover:text-menuIconHover ml-2 text-lg" />
-        <span>Salir</span>
+        {expanded && <span>Salir</span>}
       </Link>
     </div>
   );

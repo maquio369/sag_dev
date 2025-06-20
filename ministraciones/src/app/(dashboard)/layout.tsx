@@ -17,12 +17,17 @@ export default function DashboardLayout({
     if (typeof window !== "undefined") {
       const checkIsMobile = () => {
         setIsMobile(window.innerWidth < 768);
-        if (window.innerWidth < 768) {
-          setSidebarOpen(false);
-        } else {
-          setSidebarOpen(true);
-        }
       };
+      let localStorageVar = localStorage.getItem("isSidebarOpen");
+      let isSidebarOpen = true;
+      console.log(localStorageVar);
+      if (localStorageVar === null) {
+        localStorage.setItem("isSidebarOpen", "true");
+      } else {
+        isSidebarOpen = localStorageVar === "true";
+      }
+      console.log(isSidebarOpen);
+      setSidebarOpen(isSidebarOpen);
 
       checkIsMobile();
       window.addEventListener("resize", checkIsMobile);
@@ -33,7 +38,9 @@ export default function DashboardLayout({
   }, []);
 
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
+    let isSidebarOpen = !sidebarOpen;
+    setSidebarOpen(isSidebarOpen);
+    localStorage.setItem("isSidebarOpen", String(isSidebarOpen));
   };
 
   return (
