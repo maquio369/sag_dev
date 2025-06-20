@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Menu from "@/components/Menu";
 import ToggleDarkMode from "@/components/elements/ToggleDarkMode";
+import Link from "next/link";
 
 interface Props {
   sidebarOpen?: boolean;
@@ -27,14 +28,24 @@ const SideBarMenu = ({ sidebarOpen = true, isMobile = false }: Props) => {
         >
           <div
             className={`${sidebarOpen ? " h-56" : "h-7.5 w-8 pt-3 overflow-hidden flex items-center"}`}
-          >
+          ><Link href="/home" >
             <Image
-              src="/general/recurso3(231x305).webp"
+              src="/general/Recurso3a(231x178).webp"
               alt=""
               width={sidebarOpen ? 170 : 32}
-              height={sidebarOpen ? 224 : 42}
-              className="transition-all duration-200  ease-in-out"
+              height={sidebarOpen ? 131 : 25}
+              className={`transition-all duration-200 ease-in-out ${sidebarOpen ? "" : " pb-3.5"} `}
             />
+            </Link>
+            
+            <Image
+              src="/general/Recurso3b(231x127).webp"
+              alt=""
+              width={sidebarOpen ? 170 : 32}
+              height={sidebarOpen ? 131 : 18}
+              className={`transition-all duration-200 ease-in-out ${sidebarOpen ? "" : " h-0 w-0"} `}
+            />
+            
           </div>
         </div>
         <div className="  mb-auto h-70">

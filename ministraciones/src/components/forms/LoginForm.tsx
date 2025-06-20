@@ -32,10 +32,13 @@ const LoginForm = () => {
     document.cookie = "ns=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie =
       "options=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    const msg = sessionStorage.getItem("msg");
-    if (msg) {
-      toast.warn(msg);
-      sessionStorage.removeItem("msg");
+    try {
+      const msg = sessionStorage.getItem("msg");
+      if (msg) {
+        toast.warn(msg);
+        sessionStorage.removeItem("msg");
+      }
+    } finally {
     }
   }, []);
 
@@ -63,7 +66,7 @@ const LoginForm = () => {
 
             const jsonOptions = await getMenuItems(jsonData.ns, jsonData.nr);
             if (jsonOptions) {
-              document.cookie = `mnu=${ofuscad( JSON.stringify(jsonOptions), true)}; `;
+              document.cookie = `mnu=${ofuscad(JSON.stringify(jsonOptions), true)}; `;
             }
 
             window.location.href = "/home";
