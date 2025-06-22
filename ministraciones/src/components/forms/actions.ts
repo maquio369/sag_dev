@@ -72,33 +72,58 @@ export async function getMenuItems(idSistema: number = 0, idRol: number = 0) {
   }
 }
 
+//get request
 export async function get(request: string) {
   let r = [];
   try {
     var apiHost = process.env.API_URL !== undefined ? process.env.API_URL : "";
-    const response = await fetch(
-      apiHost + request,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch(apiHost + request, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     if (response.ok) {
       r = await response.json();
     } else {
-      console.error("Error fetching data:", response.statusText);
+      console.error("Error fetching " + request + ":", response.statusText);
       r = [];
     }
   } catch (err: any) {
-    console.error("Error fetching data", err.message);
+    console.error("Error fetching data" + request + ":", err.message);
     r = [];
   } finally {
     return r;
     //return JSON.stringify(r);
   }
 }
+
+//get request as affected number of rows (count, delete)
+export async function getAffected(request: string):Promise<number> {
+  let r = -1;
+  try {
+    var apiHost = process.env.API_URL !== undefined ? process.env.API_URL : "";
+    const response = await fetch(apiHost + request, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.ok) {
+      r = await response.json();
+    } else {
+      console.error("Error fetching affected " + request + ":", response.statusText);
+      r = -1;
+    }
+  } catch (err: any) {
+    console.error("Error fetching affected " + request + ":", err.message);
+    r = -1;
+  } finally {
+    return r;
+    //return JSON.stringify(r);
+  }
+}
+
 
 export async function handleSubmitExample() {
   await new Promise((resolve) => setTimeout(resolve, 2000));
