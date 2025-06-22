@@ -175,7 +175,7 @@ const ContactosForm = ({ isOpen, onClose, onSubmit, type }: CrudProps) => {
 <div className="">
             <div>
               <label htmlFor="nombres" className="lbl">
-                Apellidos
+                Domicilio
               </label>
               <input
                 type="text"
@@ -186,6 +186,72 @@ const ContactosForm = ({ isOpen, onClose, onSubmit, type }: CrudProps) => {
                 onChange={handleChange}                
               />
             </div>            
+          </div>
+
+<div className="grid4cols">
+            <div>
+              <label htmlFor="nombres" className="lbl">
+                Nombres
+              </label>
+              <input
+                type="text"
+                id="nombres"
+                name="nombres"
+                className="w-full"
+                value={formData ? formData.nombres : ""}
+                onChange={handleChange}
+                autoFocus
+              />
+            </div>
+            <div>
+              <label htmlFor="nombres" className="lbl">
+                Apellidos
+              </label>
+              <input
+                type="text"
+                id="nombres"
+                name="nombres"
+                className="w-full"
+                value={formData ? formData.nombres : ""}
+                onChange={handleChange}                
+              />
+            </div>   
+            <div>
+              <label htmlFor="correo" className="lbl">
+                Correo
+              </label>
+              <input
+                type="email"
+                id="correo"
+                name="correo"
+                className="w-full"
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="telefono" className="lbl">
+                Teléfono
+              </label>
+              <input
+                type="text"
+                id="telefono"
+                name="telefono"
+                className="w-full"
+                onChange={handleChange}
+              />
+            </div>
+             <div>
+              <label htmlFor="telefono" className="lbl">
+                Rol
+              </label>
+              <input
+                type="text"
+                id="telefono"
+                name="telefono"
+                className="w-full"
+                onChange={handleChange}
+              />
+            </div>
           </div>
 
 

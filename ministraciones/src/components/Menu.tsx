@@ -26,7 +26,7 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
         const mnu = JSON.parse(
           ofuscad(getCookie("mnu", document.cookie), false)
         );
-
+        //if has rol without options: mnu is null [{"menuitems":null}]
         setMenusItems(mnu[0].menuitems);
         // Inicializar el estado de los ítems abiertos
         const initialOpenState = mnu[0].menuitems.reduce(
@@ -59,7 +59,7 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
 
   return (
     <div className="mt-0 text-sm px-2 ">
-      {menusItems.map((i) => (
+      {menusItems && menusItems.map((i) => (
         <div className="flex flex-col gap-2" key={i.id_opcion}>
           <Link
             className={

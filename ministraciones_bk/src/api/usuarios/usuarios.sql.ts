@@ -16,7 +16,7 @@ export class UsuariosSql {
 
   async getUser(id: number): Promise<any> {
     const qry =
-      'SELECT usr.usuario,usr.correo,usr.nombres as nombre_apellido,rls.rol FROM public.usuarios usr INNER JOIN roles rls USING (id_rol) WHERE usr.id_usuario = $1';
+      "SELECT usr.usuario,usr.correo, CONCAT_WS(' ', SPLIT_PART(TRIM(usr.nombres), ' ', 1), SPLIT_PART(TRIM(usr.apellidos), ' ', 1)) AS nombre_apellido,rls.rol FROM public.usuarios usr INNER JOIN roles rls USING (id_rol) WHERE usr.id_usuario = $1";
     const result = await this.dataSource.query(qry, [id]);
     return result;
   }
