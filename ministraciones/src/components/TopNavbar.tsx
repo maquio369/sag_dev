@@ -3,6 +3,8 @@ import Image from "next/image";
 import TitleName from "./elements/TitleName";
 import { useRouter } from "next/navigation";
 import { useUserCtx } from "@/contexts/UserContext";
+import { useEffect, useState } from "react";
+import { getCookie, ofuscad } from "@/utils/util";
 
 interface Props {
   toggleSidebar: () => void;
@@ -11,7 +13,23 @@ interface Props {
 
 const TopNavbar = ({ toggleSidebar, sidebarOpen = true }: Props) => {
   const router = useRouter();
-  const { user, system, setuser } = useUserCtx();
+  const { system } = useUserCtx();
+  const [nombre_apellido, setNombre_apellido] = useState("");
+  const [rol, setRol] = useState("");
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const u = JSON.parse(ofuscad(getCookie("u", document.cookie), false));
+        setNombre_apellido(u[0].nombre_apellido);
+        setRol(u[0].rol);
+      } catch (error) {
+        console.log("Error fetching data:", error);
+        sessionStorage.setItem("msg", "No hay más datos del Usuario");
+        //  window.location.href = "/login";
+      }
+    };
+    fetchUser();
+  }, []);
 
   return (
     <div className="flex items-center justify-between p-2 bg-linear-to-b from-fondoGradienteTopFrom to-fondoGradienteTopTo text-textoBoton1 border-t-1 border-black">
@@ -75,11 +93,11 @@ const TopNavbar = ({ toggleSidebar, sidebarOpen = true }: Props) => {
         {/*profile*/}
         <div className="flex flex-row gap-2 items-center cursor-pointer_ hover:scale-105 mr-0">
           <div className="flex flex-col text-right">
-            <span className="text-xs leading-4 font-medium hidden sm:inline">              
-              {user.nombre}
+            <span className="text-xs leading-4 font-medium hidden sm:inline">
+              {nombre_apellido}
             </span>
             <span className="text-sm text-textoEncabezadoTrans text-right hidden xl:inline">
-              {user.rol}
+              {rol}
             </span>
           </div>
           <Image

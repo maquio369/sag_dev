@@ -23,10 +23,6 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        //console.log("rolex:", user.id_rol);
-        sessionStorage.setItem("msg", user.id_rol.toString() + " ");
-
-        //const mnu = await getMenuItems(system.id_sistema, user.id_rol);
         const mnu = JSON.parse(
           ofuscad(getCookie("mnu", document.cookie), false)
         );

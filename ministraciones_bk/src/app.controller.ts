@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Body,
   Res,
+  Param,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import * as jwt from 'jsonwebtoken';
@@ -55,10 +56,15 @@ export class AppController {
       });
       //set cookie with token
       res.cookie("access_token", token);//.httpOnly(); 
-      res.cookie("n1", jsonObj[0].ns);
+      //res.cookie("n1", jsonObj[0].ns);
       return res.json({ message: 'Acceso autorizado', token, ns:jsonObj[0].ns, nu:jsonObj[0].nu, nr:jsonObj[0].nr });
     } else {
       return res.json({ message: 'Credenciales inválidas', token: '' });
     }
   }
+
+    @Get('api/usuarios/getUser/:id')
+    async getUser(@Param('id') id: number): Promise<any | null> {
+      return await this.usuariosSql.getUser(id);
+    }
 }
