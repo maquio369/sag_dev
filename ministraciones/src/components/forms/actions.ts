@@ -123,7 +123,30 @@ export async function getAffected(request: string):Promise<number> {
     //return JSON.stringify(r);
   }
 }
-
+export async function post(request: string) {
+  let r = [];
+  try {
+    var apiHost = process.env.API_URL !== undefined ? process.env.API_URL : "";
+    const response = await fetch(apiHost + request, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.ok) {
+      r = await response.json();
+    } else {
+      console.error("Error fetching " + request + ":", response.statusText);
+      r = [];
+    }
+  } catch (err: any) {
+    console.error("Error fetching data" + request + ":", err.message);
+    r = [];
+  } finally {
+    return r;
+  } 
+  
+}
 
 export async function handleSubmitExample() {
   await new Promise((resolve) => setTimeout(resolve, 2000));
