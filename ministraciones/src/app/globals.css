@@ -14,6 +14,9 @@
 hr {
   @apply text-fondoTransparenteObscuroBoton dark:text-textoSeparadorDark mb-2 mt-1;
 }
+.separador{
+  @apply text-textoSeparadorDark pt-1.5 border-b-1;
+}
 
 ::-webkit-scrollbar {
   @apply w-1.5 h-1.5 rounded-full bg-textoSeparadorDark;
