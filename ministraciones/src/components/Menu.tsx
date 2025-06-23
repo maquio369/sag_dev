@@ -44,7 +44,7 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
           "Su rol no tiene permisos asignados para este sistema"
         );
 
-        //  window.location.href = "/login";
+          window.location.href = "/login";
       }
     };
     fetchMenuItems();

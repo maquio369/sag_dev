@@ -21,11 +21,6 @@ const LoginForm = () => {
   } as ToastOptions;
 
   useEffect(() => {
-    //Cerrar sesión
-    /*
-    sessionStorage.setItem("token", "");
-    sessionStorage.setItem("message", "Sesión finalizada");
-    */
     document.cookie =
       "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie = "mnu=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -38,8 +33,9 @@ const LoginForm = () => {
     try {
       const msg = sessionStorage.getItem("msg");
       if (msg) {
-        toast.warn(msg);
-        sessionStorage.removeItem("msg");
+        //setError(msg);
+        toast.info(msg)
+        sessionStorage.setItem("msg","");
       }
     } finally {
     }
@@ -54,10 +50,6 @@ const LoginForm = () => {
       action={async (formData) => {
         const jsonData = await handleSubmit(formData);
         if (jsonData) {
-          /*
-          sessionStorage.setItem("token", jsonData.token);
-          sessionStorage.setItem("message", jsonData.message);
-          */
           if (jsonData.token === undefined || jsonData.token === "") {
             setError(jsonData.message as string);
           } else {
@@ -128,7 +120,6 @@ const LoginForm = () => {
       <div className="items-center gap-2 ">
         <SubmitBtn.Enter className="w-full" />
       </div>
-      <ToastContainer />
       {error && (
         <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-200 rounded-md text-sm">
           <div className="flex items-center">
