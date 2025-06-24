@@ -2,7 +2,6 @@
 import Image from "next/image";
 import TitleName from "./elements/TitleName";
 import { useRouter } from "next/navigation";
-import { useUserCtx } from "@/contexts/UserContext";
 import { useEffect, useState } from "react";
 import { getCookie, ofuscad } from "@/utils/util";
 
@@ -13,7 +12,6 @@ interface Props {
 
 const TopNavbar = ({ toggleSidebar, sidebarOpen = true }: Props) => {
   const router = useRouter();
-  const { system } = useUserCtx();
   const [nombre_apellido, setNombre_apellido] = useState("");
   const [rol, setRol] = useState("");
   useEffect(() => {
@@ -68,10 +66,10 @@ const TopNavbar = ({ toggleSidebar, sidebarOpen = true }: Props) => {
         {/*Module name*/}
         <div className="hidden_ sm:inline-flex items-center">
           <span className="__className_721240 text-textoGolden1 font-normal leading-4  bg-fondoTransparenteObscuro py-1 px-2 hidden lg:inline-flex rounded_-l-full">
-            {system.grupo.toUpperCase()}
+            {"Financieros".toUpperCase()}
           </span>
           <span className="__className_721240 text-textoGolden1 font-medium leading-4 bg-fondoTransparenteObscuro py-1 px-2 hidden_ sm:inline-flex border-l-1 border-bordeBlancoTransparente">
-            {system.nombre}
+            {"Ministraciones"}
           </span>
         </div>
 

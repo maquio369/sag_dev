@@ -22,8 +22,8 @@ const Roles = () => {
     }
 })};
 
-add env 
-API_URL2="http://172.16.35.43:4000/"
+//add env 
+//API_URL2="http://172.16.35.43:4000/"
 
 export default Roles;
 

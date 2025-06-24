@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useUserCtx } from "@/contexts/UserContext";
 import { getCookie, ofuscad } from "@/utils/util";
 
 interface Props {
@@ -18,7 +17,6 @@ interface MenuItem {
 const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
   const [menusItems, setMenusItems] = useState<MenuItem[]>([]);
   const [openItems, setOpenItems] = useState<Record<number, boolean>>({});
-  const { user, system } = useUserCtx();
 
   useEffect(() => {
     const fetchMenuItems = async () => {
