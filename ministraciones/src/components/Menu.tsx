@@ -39,7 +39,7 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
         console.log("Error fetching menu items:", error);
         sessionStorage.setItem(
           "msg",
-          "Su rol no tiene permisos asignados para este sistema"
+          "Su usuario no tiene permisos asignados para este sistema"
         );
 
           window.location.href = "/login";
@@ -100,6 +100,7 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
                   title={!expanded? item.opcion:""} 
                   key={item.opcion}
                   className="flex items-center justify-start gap-2 text-menuTexto py-2 rounded-md hover:bg-menuFondoOpcion hover:text-menuTextoHover"
+                  onClick={() =>{ document.cookie="option="+item.opcion }}
                 >
                   <i
                     className={item.icono.concat(

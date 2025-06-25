@@ -30,6 +30,7 @@ const LoginForm = () => {
     document.cookie =
       "options=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie = "u=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "option=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     try {
       const msg = sessionStorage.getItem("msg");
       if (msg) {

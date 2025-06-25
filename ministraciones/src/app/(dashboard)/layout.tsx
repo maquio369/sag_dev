@@ -20,13 +20,13 @@ export default function DashboardLayout({
       };
       let localStorageVar = localStorage.getItem("isSidebarOpen");
       let isSidebarOpen = true;
-      console.log(localStorageVar);
+      //console.log(localStorageVar);
       if (localStorageVar === null) {
         localStorage.setItem("isSidebarOpen", "true");
       } else {
         isSidebarOpen = localStorageVar === "true";
       }
-      console.log(isSidebarOpen);
+      //console.log(isSidebarOpen);
       setSidebarOpen(isSidebarOpen);
 
       checkIsMobile();

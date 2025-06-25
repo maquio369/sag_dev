@@ -1,29 +1,16 @@
 "use client";
-import { get2 } from "@/components/forms/actions";
-import React, { useEffect, useState } from "react";
+import DataPanel from "@/components/DataPanel";
 
 const Roles = () => {
-  const [jsonUsr, setJsonUsr] = useState<any>(null);
+  return (
+    <div className="flex flex-col overflow-auto pb-3">
+      <span className="lblEncabezado ml-4 mt-3">
+        {/*Administración de usuarios*/}
+      </span>
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await get2("api/roles");
-      setJsonUsr(data);
-      <div className="flex flex-wrap w-full gap-4 px-4">
-        <hr className="mb-3" />
-        <div className="separador"> </div>
-        {/* Render user data */}
-        {jsonUsr && (
-          <div>
-            {jsonUsr[0]?.esta_borrado}
-          </div>
-        )}
-      </div>
-    }
-})};
-
-//add env 
-//API_URL2="http://172.16.35.43:4000/"
+      <DataPanel entity={"Roles"}></DataPanel>
+    </div>
+  );
+};
 
 export default Roles;
-
