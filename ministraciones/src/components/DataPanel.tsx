@@ -1,10 +1,12 @@
 "use client";
 import PersonalListPage from "@/app/(dashboard)/list/personal/page";
-import ContactosForm, { modelContactos } from "@/app/(dashboard)/contactos/ContactosForm";
+import ContactosForm, {
+  modelContactos,
+} from "@/app/(dashboard)/contactos/ContactosForm";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-const DataPanel = ( {entity} : {entity:String} ) => {
+const DataPanel = ({ entity }: { entity: String }) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [userData, setUserData] = useState<modelContactos | null>(null);
 
@@ -18,16 +20,16 @@ const DataPanel = ( {entity} : {entity:String} ) => {
 
   const handleFormSubmit = async (data: modelContactos): Promise<void> => {
     setUserData(data);
-    
-    console.log("Form submitted:", { data});
-        // No need to preventDefault or reset form - React handles it
-        if (data.nombres === "") {
-          toast.warn("El nombre es obligatorio", { theme: "dark" });
-          //return { success: false, message: "¡El nombre es obligatorio!" };
-        } else {
-          await new Promise((resolve) => setTimeout(resolve, 777));
-          toast.success("¡Registro guardado con éxito!", { theme: "light" });          
-        }
+
+    console.log("Form submitted:", { data });
+    // No need to preventDefault or reset form - React handles it
+    if (data.nombres === "") {
+      toast.warn("El nombre es obligatorio", { theme: "dark" });
+      //return { success: false, message: "¡El nombre es obligatorio!" };
+    } else {
+      await new Promise((resolve) => setTimeout(resolve, 777));
+      toast.success("¡Registro guardado con éxito!", { theme: "light" });
+    }
 
     handleCloseUserModal();
   };
@@ -35,7 +37,6 @@ const DataPanel = ( {entity} : {entity:String} ) => {
 
   return (
     <div className="flex flex-col overflow-auto pb-3">
-      
       <div className="flex flex-wrap w-full gap-4 px-4">
         <div
           className="flex-1 bg-bordeBlancoTransparente rounded-lg shadow-sm p-4 dark:bg-fondoBlancoTransparenteDark
@@ -49,7 +50,6 @@ const DataPanel = ( {entity} : {entity:String} ) => {
               </div>
             </div>
             <div className="flex items-center gap-4 text-base">
-
               <ContactosForm
                 isOpen={isModalOpen}
                 onSubmit={handleFormSubmit}
@@ -85,7 +85,7 @@ const DataPanel = ( {entity} : {entity:String} ) => {
                 <span className="lblBtn">Imprimir</span>
               </button>
               */}
-              </div><div className="flex items-center gap-4 text-base">
+            
               <button className="btn3 w-[2em]" title="Menú contextual">
                 <i className="fa-solid fa-ellipsis-vertical"></i>
               </button>
