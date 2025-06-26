@@ -8,33 +8,28 @@ interface Props {
     entidad: string;
   };
 }
+
 const Data = async ({ params }: Props) => {
-  const cookieStore = cookies();
   const myCookie = (await cookies()).get("mnu");
 
   if (myCookie) {
-    const cookie_value = ofuscad(myCookie.value, false);
-
     const { entidad } = await params;
-    let menuOptions = Array(cookie_value);
+    let menuOptions = Array(ofuscad(myCookie.value, false));
     //console.log(menuOptions);
-    const tienPermiso = menuOptions[0].includes("/data/" + entidad);
+    const tienePermiso = menuOptions[0].includes('"/data/' + entidad + '"');
     return (
-      tienPermiso &&
+      tienePermiso &&
       entidad && (
         <div className="flex flex-col overflow-auto pb-3">
           <span className="lblEncabezado ml-4 mt-3">
             {"Administración de " + entidad}
           </span>
-
           <DataPanel entity={entidad}></DataPanel>
         </div>
       )
     );
-
-    return cookie_value;
   } else {
-    console.log("Cookie not found");
+    //console.log("Cookie not found");
     return null;
   }
 };

@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { ToastContainer, ToastOptions, toast } from "react-toastify";
 import SubmitBtn from "../elements/SubmitBtn";
-import { handleSubmit, getMenuItems,get } from "@/components/forms/actions";
-import { ofuscad } from "@/utils/util";
+import { handleSubmit, getMenuItems, get } from "@/components/forms/actions";
+import { ofuscad, ofuscadAwait } from "@/utils/util";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
@@ -35,8 +35,8 @@ const LoginForm = () => {
       const msg = sessionStorage.getItem("msg");
       if (msg) {
         //setError(msg);
-        toast.info(msg)
-        sessionStorage.setItem("msg","");
+        toast.info(msg);
+        sessionStorage.setItem("msg", "");
       }
     } finally {
     }
@@ -63,7 +63,8 @@ const LoginForm = () => {
             //Get menu options
             const jsonOptions = await getMenuItems(jsonData.ns, jsonData.nr);
             if (jsonOptions) {
-              document.cookie = `mnu=${ofuscad(JSON.stringify(jsonOptions), true)}; `;
+              document.cookie = `mnu=${ofuscad(JSON.stringify(jsonOptions), true)};`;
+              document.cookie = `mnus=${await ofuscadAwait(JSON.stringify(jsonOptions), true, true)};`;
             }
             //Get usr data
             const jsonUsr = await get("api/usuarios/getUser/" + jsonData.nu);
