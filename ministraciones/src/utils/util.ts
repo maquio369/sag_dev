@@ -99,3 +99,8 @@ export function unzip64(str64zip: string) {
     });
   });
 }
+
+export function aOracion(cadena: string) {
+  const frase = cadena.replace(/_/g, ' ').toLowerCase();
+  return frase.charAt(0).toUpperCase() + frase.slice(1);
+}

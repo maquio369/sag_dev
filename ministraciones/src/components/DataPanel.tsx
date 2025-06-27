@@ -3,10 +3,13 @@ import PersonalListPage from "@/app/(dashboard)/list/personal/page";
 import ContactosForm, {
   modelContactos,
 } from "@/app/(dashboard)/contactos/ContactosForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { aOracion } from "@/utils/util";
 
-const DataPanel = ({ entity }: { entity: String }) => {
+import { apiConfig, apiService } from "../services/api";
+
+const DataPanel = ({ entity }: { entity: string }) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [userData, setUserData] = useState<modelContactos | null>(null);
 
@@ -34,6 +37,31 @@ const DataPanel = ({ entity }: { entity: String }) => {
     handleCloseUserModal();
   };
   //const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  // Cargar tablas al montar el componente
+  const [tables, setTables] = useState([]);
+  const [selectedTable, setSelectedTable] = useState(null);
+  const [records, setRecords] = useState([]);
+  const [schema, setSchema] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    loadTables();
+  }, []);
+
+  const loadTables = async () => {
+    try {
+      setLoading(true);
+      const response = await apiService.getTables();
+      setTables(response.data.data);
+      setError("");
+    } catch (err: any) {
+      setError("Error al cargar las tablas: " + err.message);
+      console.error("Error loading tables:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col overflow-auto pb-3">
@@ -46,7 +74,12 @@ const DataPanel = ({ entity }: { entity: String }) => {
             <div className="flex items-center gap-0">
               <div className="inline-flex">
                 <span className="text-bordeControl">■</span>
-                <span className="mr-6 text-lg">&nbsp;{entity}</span>
+                <span className="mr-6 text-lg">&nbsp;{aOracion(entity)}</span>
+
+                <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                URL: {apiConfig.baseURL}
+                <span>{tables.length} tablas detectadas</span>
+                
               </div>
             </div>
             <div className="flex items-center gap-4 text-base">
@@ -85,7 +118,7 @@ const DataPanel = ({ entity }: { entity: String }) => {
                 <span className="lblBtn">Imprimir</span>
               </button>
               */}
-            
+
               <button className="btn3 w-[2em]" title="Menú contextual">
                 <i className="fa-solid fa-ellipsis-vertical"></i>
               </button>
