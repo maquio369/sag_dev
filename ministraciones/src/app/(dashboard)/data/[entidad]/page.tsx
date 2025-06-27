@@ -1,6 +1,6 @@
 "use server";
 import DataPanel from "@/components/DataPanel";
-import { ofuscad } from "@/utils/util";
+import { ofuscadAwait } from "@/utils/util";
 import { cookies } from "next/headers";
 
 interface Props {
@@ -10,21 +10,28 @@ interface Props {
 }
 
 const Data = async ({ params }: Props) => {
-  const myCookie = (await cookies()).get("mnu");
-
-  if (myCookie) {
+  const mnusCookie = (await cookies()).get("mnus");
+  let entityVal =  (await cookies()).get("lnk_opt")?.value ;
+  
+  if (mnusCookie) {
     const { entidad } = await params;
-    let menuOptions = Array(ofuscad(myCookie.value, false));
-    //console.log(menuOptions);
-    const tienePermiso = menuOptions[0].includes('"/data/' + entidad + '"');
+          //console.log("entity: ", entity);
+    entityVal =String( entityVal?.replace('/data/', ''));
+    console.log("entityVal: ", entityVal);
+    
+    let menuOptions = Array(await ofuscadAwait(mnusCookie.value, false,true));
+    console.log("menuOptions: ", menuOptions);
+    
+    const tienePermiso = menuOptions[0].includes('"/data/' + entityVal + '"');
+    console.log("tienePermiso: ", tienePermiso," + ",entidad);
     return (
       tienePermiso &&
       entidad && (
         <div className="flex flex-col overflow-auto pb-3">
           <span className="lblEncabezado ml-4 mt-3">
-            {"Administración de " + entidad}
+            {"Administración de " + entityVal}
           </span>
-          <DataPanel entity={entidad}></DataPanel>
+          <DataPanel entity={entityVal}></DataPanel>
         </div>
       )
     );

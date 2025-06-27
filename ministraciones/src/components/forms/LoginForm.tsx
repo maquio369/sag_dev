@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { ToastContainer, ToastOptions, toast } from "react-toastify";
 import SubmitBtn from "../elements/SubmitBtn";
 import { handleSubmit, getMenuItems, get } from "@/components/forms/actions";
-import { ofuscad, ofuscadAwait } from "@/utils/util";
+import { ofuscad, ofuscadAwait, setCookie } from "@/utils/util";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
@@ -21,16 +21,13 @@ const LoginForm = () => {
   } as ToastOptions;
 
   useEffect(() => {
-    document.cookie =
-      "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "mnu=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "ns=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "nu=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "nr=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie =
-      "options=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "u=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "option=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    setCookie("access_token", null);
+    setCookie("mnus", null);
+    setCookie("ns", null);
+    setCookie("nu", null);
+    setCookie("nr", null);
+    setCookie("lnk_opt", null);
+    setCookie("u", null);
     try {
       const msg = sessionStorage.getItem("msg");
       if (msg) {
@@ -55,21 +52,21 @@ const LoginForm = () => {
             setError(jsonData.message as string);
           } else {
             //Sí se obtuvo un token válido obtener opociones
-
-            document.cookie = `access_token=${jsonData.token}; `; //path=/; max-age=3600; secure; SameSite=Strict`;
-            document.cookie = `ns=${jsonData.ns}; `;
-            document.cookie = `nu=${jsonData.nu}; `;
-            document.cookie = `nr=${jsonData.nr}; `;
+setCookie("access_token", jsonData.token); //path=/; max-age=3600; secure; SameSite=Strict`;
+            setCookie("ns", jsonData.ns);
+            setCookie("nu", jsonData.nu);
+            setCookie("nr", jsonData.nr);
             //Get menu options
             const jsonOptions = await getMenuItems(jsonData.ns, jsonData.nr);
-            if (jsonOptions) {
-              document.cookie = `mnu=${ofuscad(JSON.stringify(jsonOptions), true)};`;
-              document.cookie = `mnus=${await ofuscadAwait(JSON.stringify(jsonOptions), true, true)};`;
+            if (jsonOptions) {              
+              setCookie("mnus",await ofuscadAwait(JSON.stringify(jsonOptions), true, true));
+              //document.cookie = `mnus=${await ofuscadAwait(JSON.stringify(jsonOptions), true, true)};`;
             }
             //Get usr data
             const jsonUsr = await get("api/usuarios/getUser/" + jsonData.nu);
             if (jsonUsr) {
-              document.cookie = `u=${ofuscad(JSON.stringify(jsonUsr), true)}; `;
+              setCookie("u", ofuscad(JSON.stringify(jsonUsr), true));
+              //document.cookie = `u=${ofuscad(JSON.stringify(jsonUsr), true)}; `;
             }
 
             window.location.href = "/home";

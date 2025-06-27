@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getCookie, ofuscad } from "@/utils/util";
+import { getCookie, ofuscad, ofuscadAwait, setCookie } from "@/utils/util";
 
 interface Props {
   expanded?: boolean;
@@ -21,13 +21,16 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        const mnu = JSON.parse(
-          ofuscad(getCookie("mnu", document.cookie), false)
-        );
-        //if has rol without options: mnu is null [{"menuitems":null}]
-        setMenusItems(mnu[0].menuitems);
+         const mnus = JSON.parse(await ofuscadAwait(
+          getCookie("mnus", document.cookie),
+          false,
+          true
+        ));
+
+        //if has rol without options: mnus is null [{"menuitems":null}]
+        setMenusItems(mnus[0].menuitems);
         // Inicializar el estado de los ítems abiertos
-        const initialOpenState = mnu[0].menuitems.reduce(
+        const initialOpenState = mnus[0].menuitems.reduce(
           (acc: any, item: any) => {
             acc[item.id_opcion] = submenu_expanded;
             return acc;
@@ -42,7 +45,7 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
           "Su usuario no tiene permisos asignados para este sistema"
         );
 
-          window.location.href = "/login";
+        window.location.href = "/login";
       }
     };
     fetchMenuItems();
@@ -73,11 +76,11 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
                     : undefined
                 }
                 href=""
-                title={!expanded? i.titulo:""} 
+                title={!expanded ? i.titulo : ""}
                 //hidden={Boolean(i.titulo) && !expanded}
-                tabIndex={i.titulo ? 0 : -1}                 
+                tabIndex={i.titulo ? 0 : -1}
               >
-                {i.titulo && expanded? i.titulo:'...'}
+                {i.titulo && expanded ? i.titulo : "..."}
                 {i.titulo && (
                   <span
                     className={`ml-auto transition-transform duration-200 ease-in-out ${
@@ -97,10 +100,13 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
               i.items.map((item) => (
                 <Link
                   href={item.link}
-                  title={!expanded? item.opcion:""} 
+                  title={!expanded ? item.opcion : ""}
                   key={item.opcion}
                   className="flex items-center justify-start gap-2 text-menuTexto py-2 rounded-md hover:bg-menuFondoOpcion hover:text-menuTextoHover"
-                  onClick={() =>{ document.cookie="option="+item.opcion }}
+                  onClick={() => {
+                    setCookie("lnk_opt", item.link);
+                    //document.cookie = "lnk_opt=" + item.link;
+                  }}
                 >
                   <i
                     className={item.icono.concat(
@@ -115,7 +121,7 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
       <div className="separador"></div>
       <Link
         href="/login"
-        title={!expanded? "Salir":""} 
+        title={!expanded ? "Salir" : ""}
         key="9999"
         className="flex items-center justify-start gap-2 text-menuTexto py-0.5 rounded-md hover:bg-menuFondoOpcion hover:text-menuTextoHover mt-4"
       >

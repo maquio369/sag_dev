@@ -16,7 +16,15 @@ export function getCookie(cname: string, documentcookie: string): any {
   }
   return "";
 }
-
+export function setCookie(cname: string, cvalue: string | null) {
+  if (cvalue === null) {
+    document.cookie =
+      cname + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  } else {
+    document.cookie =
+      cname + "=" + cvalue + ";" + process.env.JWT_EXPIRATION + ";path=/";
+  }
+}
 export function ofuscad(cad: string, encode: boolean): string {
   let encoded = "";
   if (encode) {
@@ -30,55 +38,48 @@ export function ofuscad(cad: string, encode: boolean): string {
 }
 
 /**Ejemplo de uso
- * document.cookie = `mnu2=${await ofuscadAwait(JSON.stringify(jsonOptions), true, true)}; `;
+ * document.cookie = `mnus=${await ofuscadAwait(JSON.stringify(jsonOptions), true, true)}; `;
  */
 export async function ofuscadAwait(
   cad: string,
   encode: boolean,
   zippear: boolean
 ) {
-  //const [encodedStr,setEncodedStr]= useState("");
   let encodedStr = "*";
   let encoded = "";
   if (encode) {
     encoded = Buffer.from(cad).toString("base64").split("").reverse().join("");
-    if (zippear===true) {
-      await zip64(encodedStr).then((txtZip) => {
-        encodedStr = String(txtZip);
-        console.log(encodedStr);        
-        return encodedStr;
-      });
+    if (zippear === true) {
+      encodedStr = String(await zip64(encoded));
+      //console.log("encodedStr: ", encodedStr);
+      return encodedStr;
+    } else {
+      return encoded;
     }
   } else {
-    encoded = Buffer.from(cad.split("").reverse().join(""), "base64").toString(
-      "utf-8"
-    );
+    //decoding
     if (zippear) {
-      await unzip64(encodedStr).then((txtUnZip) => {
-        encodedStr = String(txtUnZip);
-        return encodedStr;
-      });
+      const txtUnZip = await unzip64(cad);
+      //console.log("txtUnZip: ", txtUnZip);
+      encodedStr = Buffer.from(
+        String(txtUnZip).split("").reverse().join(""),
+        "base64"
+      ).toString("utf-8");
+      return encodedStr;
+    } else {
+      encodedStr = Buffer.from(
+        cad.split("").reverse().join(""),
+        "base64"
+      ).toString("utf-8");
+      return encodedStr;
     }
   }
-  return encodedStr;
 }
 
-/**Ejemplos zip64 / unzip64 
- * 
-  zip64(ofuscad(JSON.stringify(jsonOptions), true)).then(
-    (txtZip) => {
-      document.cookie = `mnuZIP=${txtZip}; `;
-    }
-  );
-
-  zip64(ofuscad(JSON.stringify(jsonOptions), true)).then(
-    (txtZip) => {
-      unzip64(String(txtZip)).then((txtUnZip) => {
-        document.cookie = `mnuUnZIP=${txtUnZip}; `;
-      });
-    }
-  );
-*/
+/**Ejemplos zip64 / unzip64
+ * encodedStr = String(await zip64(encoded));
+ * const txtUnZip = await unzip64(cad);
+ */
 export function zip64(str: string) {
   return new Promise((resolve, reject) => {
     const buffer = Buffer.from(str, "utf8");
