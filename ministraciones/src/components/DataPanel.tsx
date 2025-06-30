@@ -75,11 +75,10 @@ const DataPanel = ({ entity }: { entity: string }) => {
               <div className="inline-flex">
                 <span className="text-bordeControl">■</span>
                 <span className="mr-6 text-lg">&nbsp;{aOracion(entity)}</span>
-
-                <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                URL: {apiConfig.baseURL}
+              {/*
+                <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
                 <span>{tables.length} tablas detectadas</span>
-                
+              */}
               </div>
             </div>
             <div className="flex items-center gap-4 text-base">

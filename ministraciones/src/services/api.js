@@ -7,7 +7,7 @@ const IS_DEV_MODE = process.env.MODE === 'DEV';
 
 // Configurar axios
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: process.env.API_URL2 !== undefined ? process.env.API_URL2 : "http://localhost:3001/api",
   timeout: CONNECTION_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
