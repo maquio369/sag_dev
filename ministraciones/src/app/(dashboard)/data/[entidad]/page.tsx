@@ -27,10 +27,10 @@ const Data = async ({ params }: Props) => {
     return (
       tienePermiso &&
       entidad && (
-        <div className="flex flex-col overflow-auto pb-3">
-          <span className="lblEncabezado ml-4 mt-3">
-            {"Administración de " + aOracion(entityVal)}
-          </span>
+        <div className="flex flex-col overflow-auto pb-3 pt-1">
+          {/*<span className="lblEncabezado ml-4 mt-2">
+            
+          </span>*/}
           <DataPanel entity={entityVal}></DataPanel>
         </div>
       )

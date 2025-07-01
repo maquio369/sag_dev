@@ -1,5 +1,4 @@
 "use client";
-import PersonalListPage from "@/app/(dashboard)/list/personal/page";
 import ContactosForm, {
   modelContactos,
 } from "@/app/(dashboard)/contactos/ContactosForm";
@@ -7,8 +6,8 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { aOracion } from "@/utils/util";
 
-import { apiConfig, apiService } from "../services/api";
-
+import { apiService } from "../services/api";
+//import { apiConfig, apiService } from "../utils/api";
 
 const DataPanel = ({ entity }: { entity: string }) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
@@ -40,7 +39,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
   //const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   // Cargar tablas al montar el componente
   const [tables, setTables] = useState([]);
-  const [selectedTable, setSelectedTable] = useState("");
+  const [selectedTable, setSelectedTable] = useState(entity);
   const [records, setRecords] = useState([]);
   const [schema, setSchema] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -56,7 +55,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
   const [crudLoading, setCrudLoading] = useState(false);
 
   useEffect(() => {
-    loadTables();
+    selectTable(entity);
   }, []);
 
   const loadTables = async () => {
@@ -133,7 +132,7 @@ const renderCellValue = (value:any, column:any, record:any) => {
     if (column.data_type === 'boolean') {
       return (
         <span className={`text-xs`}> 
-          {value ? '✔️' : '❌'}
+          {value ? 'SI' : 'NO'}
         </span>
       );
     }
@@ -143,6 +142,13 @@ const renderCellValue = (value:any, column:any, record:any) => {
         <span className="font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
           {value}
         </span>
+      );
+    }
+
+    if ( value.toString().includes("fa-solid") || value.toString().includes("fa-regular")) {
+      return (
+        <i className={`${value} justify-center px-2`}>           
+        </i>
       );
     }
 
@@ -182,13 +188,13 @@ const renderCellValue = (value:any, column:any, record:any) => {
           </div>
         </div>
       ) : records.length === 0 ? (
-        <div className="flex items-center justify-center h-96">
+        <div className="flex items-center justify-center h-52">
           <div className="text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl">📁</span>
+            <div className="mx-auto mb-2">
+              <span className="text-4xl text-textoSeparadorDark"><i className="fa-regular fa-folder"></i></span>
             </div>
-            <p className="text-lg text-gray-600 font-medium">No hay registros en esta tabla</p>
-            <p className="text-gray-500 mt-1">Crea el primer registro para comenzar</p>
+            <p className="text-sm text-fondoBlancoTransparenteDark font-medium">No hay registros en esta tabla</p>
+            <p className="text-fondoTablaHeader mt-1 text-sm font-light">para añadir un registro usa: +Agregar</p>
           </div>
         </div>
       ) : (

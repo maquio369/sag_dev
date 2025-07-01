@@ -1,13 +1,14 @@
+require('dotenv').config();
 import axios from "axios";
 
 // Configuración desde variables de entorno
-const API_BASE_URL = process.env.API_URL2 !== undefined ? process.env.API_URL2 : "";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE;
 const CONNECTION_TIMEOUT =  10000;
 const IS_DEV_MODE = process.env.MODE === 'DEV';
 
 // Configurar axios
 const api = axios.create({
-  baseURL: process.env.API_URL2 !== undefined ? process.env.API_URL2 : "http://localhost:3001/api",
+  baseURL: API_BASE_URL,
   timeout: CONNECTION_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
