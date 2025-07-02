@@ -2,7 +2,7 @@ require('dotenv').config();
 import axios from "axios";
 
 // Configuración desde variables de entorno
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE+'/api';
 const CONNECTION_TIMEOUT =  10000;
 const IS_DEV_MODE = process.env.MODE === 'DEV';
 
@@ -153,7 +153,7 @@ export const apiService = {
 
   // Método para verificar la salud del backend
   healthCheck: () => {
-    const healthUrl = import.meta.env.VITE_BACKEND_HEALTH_URL || 'http://localhost:3001/health';
+    const healthUrl = process.env.NEXT_PUBLIC_API_BASE+'/health';
     return axios.get(healthUrl, { timeout: 5000 });
   },
 

@@ -97,7 +97,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
       setError("");
     } catch (err:any) {
       setError('Error al cargar la tabla: ' + err.message);
-      console.error('Error loading table:', err);
+      console.warn('Error loading table:', err);
     } finally {
       setLoading(false);
     }
@@ -115,7 +115,7 @@ const renderCellValue = (value:any, column:any, record:any) => {
     // NUEVO: Si es una foreign key y tenemos el mapping, mostrar el nombre
     if (column.is_foreign_key && foreignKeyMappings[column.column_name]) {
       const displayField = foreignKeyMappings[column.column_name];
-      const displayValue = record[displayField];
+      const displayValue = record[displayField+"_text"];
       
       return (
         <div className="flex flex-col">
@@ -131,7 +131,7 @@ const renderCellValue = (value:any, column:any, record:any) => {
 
     if (column.data_type === 'boolean') {
       return (
-        <span className={`text-xs`}> 
+        <span className={`text-xs text-textoTabla `}> 
           {value ? 'SI' : 'NO'}
         </span>
       );
@@ -139,7 +139,7 @@ const renderCellValue = (value:any, column:any, record:any) => {
 
     if (column.is_primary_key) {
       return (
-        <span className="font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+        <span className="font-normal text-gray-500  px-2 py-1 rounded-full">
           {value}
         </span>
       );
@@ -176,7 +176,8 @@ const renderCellValue = (value:any, column:any, record:any) => {
   };
 
 
- const DataTableView = ({ schema }: { schema: any }) => {
+  const DataTableView = ({ schema }: { schema: any }) => {
+    const PK_COLUMN_NAME = process.env.NEXT_PUBLIC_PK_COLUMN_NAME;
   return (
     <div className="flex-1 overflow-auto">
       {/* Tabla de datos */}
@@ -205,34 +206,18 @@ const renderCellValue = (value:any, column:any, record:any) => {
                 {schema.columns.map((column:any) => (
                   <th
                     key={column.column_name}
-                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200"
+                    className="px-6 py-4 text-left text-xs font-semibold text-gray-700  tracking-wider border-b-2 border-gray-200"
                   >
                     <div className="flex items-center space-x-2">
-                      <span>{column.column_name}</span>
+                      <span>{column.column_desc? column.is_primary_key? PK_COLUMN_NAME:column.column_desc:column.column_name}</span>
                       <div className="flex space-x-1">
-                        {column.is_primary_key && (
-                          <span className="inline-flex items-center justify-center w-5 h-5 bg-yellow-100 text-yellow-600 rounded-full text-xs">
-                            🔑
-                          </span>
-                        )}
-                        {column.is_foreign_key && (
-                          <span className="inline-flex items-center justify-center w-5 h-5 bg-purple-100 text-purple-600 rounded-full text-xs">
-                            🔗
-                          </span>
-                        )}
+                        
                       </div>
                     </div>
-                    <div className="text-xs font-normal text-gray-500 mt-1 normal-case">
-                      <span className="px-2 py-1 bg-gray-200 rounded-md mr-2">
-                        {String(column.data_type).substring(0, column.data_type === 'integer' ? 3 : 4)}
-                      </span>
-                      {column.is_nullable === 'NO' && (
-                        <span className="px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs">req</span>
-                      )}
-                    </div>
+                    
                   </th>
                 ))}
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700  tracking-wider border-b-2 border-gray-200">
                   Acciones
                 </th>
               </tr>
