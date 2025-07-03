@@ -154,7 +154,10 @@ input[type="button"] {
   @apply h-9 border-b-1 border-y-fondoTransparenteObscuroBoton dark:border-y-textoSeparadorDark odd:bg-fondoTablaFilaZebra dark:bg-fondoObscuroVentana dark:odd:bg-textoControl text-sm text-textoTabla dark:text-textoTablaDark hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion;
 }
 thead{
-  @apply border-y-fondoTablaHeader border-b-1 text-left text-sm;
+  @apply border-y-fondoTablaHeader border-b-1 text-left text-xs font-normal tracking-normal;
+}
+th{
+  @apply font-medium py-2;
 }
 table{
   @apply w-full dark:border-textoSeparadorDark  border-fondoTransparenteObscuro rounded-sm overflow-hidden shadow border-0 border-r-0;

@@ -11,10 +11,10 @@ const Table = ({
   return (
     
     <table className="table">
-      <thead className="thead">
+      <thead className="thead ">
         <tr className="">
           {columns.map((column) => (
-            <th key={column.accessor} className={column.className + " font-medium py-2 "}>
+            <th key={column.accessor} className={column.className + "  "}>
               {column.header === "checkbox" ? (
                 <div className="inline-flex items-center">
                   <input type="checkbox" name="chkColSelect" />                  
