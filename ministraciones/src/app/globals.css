@@ -149,6 +149,16 @@ input[type="button"] {
 .grid2cols{
   @apply grid grid-cols-1 sm:grid-cols-1 xl:grid-cols-2 gap-x-4;
 }
+
+.trZebra{
+  @apply h-9 border-b-1 border-y-fondoTransparenteObscuroBoton dark:border-y-textoSeparadorDark odd:bg-fondoTablaFilaZebra dark:bg-fondoObscuroVentana dark:odd:bg-textoControl text-sm text-textoTabla dark:text-textoTablaDark hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion;
+}
+thead{
+  @apply border-y-fondoTablaHeader border-b-1 text-left text-sm;
+}
+table{
+  @apply w-full dark:border-textoSeparadorDark  border-fondoTransparenteObscuro rounded-sm overflow-hidden shadow border-0 border-r-0;
+}
 /*
 .modal::backdrop {
   background: hsl(0 0% 0% / 50%);
@@ -200,7 +210,7 @@ button {
   --color-fondoControl: #ffffff;
   --color-fondoControlValido: #f6fef9; /*eefbf3*/
   --color-bordeBlancoTransparente: #ffffff99;
-  --color-fondoContenido: #fafafa; /*f5f8fa*/
+  --color-fondoContenido: #f3f3f3; /* #e5e8ea #f5f8fa #fafafa;*/
   --color-fondoContenidoDark: #070c11; /* 171c21 */
 
   --color-bordeExteriorBotonSeleccionado: #009887a0;
@@ -227,6 +237,7 @@ button {
 
   --color-textoControl: #272c3c;
   --color-textoTabla: #464a48;
+  --color-textoTablaDark: #f1f1f1;
   --color-fondoObscuro: var(--color-fondoObscuro); /* 171c26 */
   --color-fondoObscuroTransparente: #00000099; /* Ventana para obscurecer fondo */
   --color-fondoObscuroVentana: #19212dee; /* PopOver window dark 1c2029 */
@@ -252,10 +263,10 @@ button {
   --color-textoSeparadorDark: #575c6670; /*363a42... 393c42=575c66A6*/
   --color-textoEncabezadoDark: #eefbf3;
   --color-textoEncabezadoTrans: #ffffffd5;
-  --color-fondoTablaFilaHover: #20a8a71a; /*f6fef9 20A8a712*/
+  --color-fondoTablaFilaHover: #20a8a72a; /*#20a8a71a f6fef9 20A8a712*/
   --color-fondoTablaHeader: #6b7583; /*gris=e5e7ebFF bordeControl=7c9eaf*/
   --color-TextoTablaHeader: #ffffffe5;
-  --color-fondoTablaFilaZebra: #00000005;
+  --color-fondoTablaFilaZebra: #eEf0f2;/*#eff1f2 #ededed #00000005*/
   --color-TextoLblError: #ff4564;
   --color-TextoLblErrorDark: #fc93a5;
 }

@@ -10,8 +10,8 @@ const Table = ({
 }) => {
   return (
     
-    <table className="w-full dark:border-textoSeparadorDark border-0 border-r-0 border-fondoTransparenteObscuro rounded-xl shadow overflow-hidden">
-      <thead className="bg_-fondoTablaHeader border-y-fondoTablaHeader border-b-1 text-left text-sm  text_-TextoTablaHeader">
+    <table className="table">
+      <thead className="thead">
         <tr className="">
           {columns.map((column) => (
             <th key={column.accessor} className={column.className + " font-medium py-2 "}>

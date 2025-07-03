@@ -106,8 +106,8 @@ const DataPanel = ({ entity }: { entity: string }) => {
 const renderCellValue = (value:any, column:any, record:any) => {
     if (value === null || value === undefined) {
       return (
-        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-500 italic">
-          null
+        <span className="inline-flex items-center px-2 py-1 ">
+          ⿻
         </span>
       );
     }
@@ -132,7 +132,7 @@ const renderCellValue = (value:any, column:any, record:any) => {
     if (column.data_type === 'boolean') {
       return (
         <span className={`text-xs text-textoTabla `}> 
-          {value ? 'SI' : 'NO'}
+          {value ? 'Si' : 'No'}
         </span>
       );
     }
@@ -177,7 +177,7 @@ const renderCellValue = (value:any, column:any, record:any) => {
 
 
   const DataTableView = ({ schema }: { schema: any }) => {
-    const PK_COLUMN_NAME = process.env.NEXT_PUBLIC_PK_COLUMN_NAME;
+    
   return (
     <div className="flex-1 overflow-auto">
       {/* Tabla de datos */}
@@ -209,7 +209,7 @@ const renderCellValue = (value:any, column:any, record:any) => {
                     className="px-6 py-4 text-left text-xs font-semibold text-gray-700  tracking-wider border-b-2 border-gray-200"
                   >
                     <div className="flex items-center space-x-2">
-                      <span>{column.column_desc? column.is_primary_key? PK_COLUMN_NAME:column.column_desc:column.column_name}</span>
+                      <span>{column.column_desc? column.column_desc:column.column_name}</span>
                       <div className="flex space-x-1">
                         
                       </div>

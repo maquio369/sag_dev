@@ -48,7 +48,7 @@ const PersonalListPage = () => {
     return (
       <tr
         key={row.id}
-        className="border-b-1 border-y-fondoTransparenteObscuroBoton dark:border-y-textoSeparadorDark odd:bg-fondoTablaFilaZebra dark:bg-textoControl text-sm text-tableText hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion"
+        className="trZebra"
       >
         {/*<td className="flex p-2 items-center gap-2 w-fit">
           <input
@@ -64,7 +64,7 @@ const PersonalListPage = () => {
         </td>
         <td>{row.id}</td>
         <td>{row.name}</td>
-        <td className="hover:text-textoLinkHover dark:hover:text-menuIconHover">
+        <td className="hover:text-textoLinkHover dark:hover:text-textoGolden1">
           {row.email}
         </td>
         <td>{row.role}</td>

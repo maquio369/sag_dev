@@ -65,7 +65,7 @@ export default function DashboardLayout({
           className={`
             flex-1 w-full transition-all duration-300 ease-in-out 
             bg-fondoContenido dark:bg-fondoContenidoDark overflow-auto             
-            bg-[url(/general/rombos-patron-der-x2.png)] bg-[auto_220px] bg-repeat-y bg-right 
+            bg-[url(/general/rombos-patron-der-2x.webp)] bg-[auto_220px] bg-repeat-y bg-right 
             flex_ flex_-col 
             h_-full
           `}
