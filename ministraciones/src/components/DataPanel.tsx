@@ -107,7 +107,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
 
   const renderCellValue = (value: any, column: any, record: any) => {
     if (value === null || value === undefined) {
-      return <span className="flex justify-center">⿻</span>;
+      return <span className="text-textoSeparadorDark dark:text-textoEtiqueta">ⓝ</span>;
     }
 
     // NUEVO: Si es una foreign key y tenemos el mapping, mostrar el nombre
@@ -127,8 +127,8 @@ const DataPanel = ({ entity }: { entity: string }) => {
 
     if (column.data_type === "boolean") {
       return (
-        <span className={`flex justify-center`}>
-          {value ? "Si" : "No"}
+        <span className={`flex justify-center `}>
+          {value ? "▣" : "◻"}
         </span>
       );
     }
@@ -208,7 +208,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
               <thead className="thead sticky top-0 bg-fondoContenido dark:bg-fondoObscuroTransparente">
                 <tr className="">
                   {schema.columns.map((column: any) => (
-                    <th key={column.column_name} className=" ">
+                    <th key={column.column_name} className={column.data_type === "boolean" ? "w-6" : ""}>
                       <div className="flex items-center space-x-2">
                         <span>
                           {column.column_desc
