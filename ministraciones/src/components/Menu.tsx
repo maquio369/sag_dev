@@ -67,7 +67,7 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
               <Link
                 className={
                   i.titulo.length > 0
-                    ? "text-menuTextoSeparador hover:text-textoEncabezadoTrans font-light pt-3 flex items-center gap-2 focus:outline-none"
+                    ? "text-menuTextoSeparador hover:text-textoEncabezadoTrans font-light pt-2 flex items-center gap-2 focus:outline-none"
                     : "pt-2 text-menuTextoSeparador"
                 }
                 onClick={
@@ -123,7 +123,7 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
         href="/login"
         title={!expanded ? "Salir" : ""}
         key="9999"
-        className="flex items-center justify-start gap-2 text-menuTexto py-0.5 rounded-md hover:bg-menuFondoOpcion hover:text-menuTextoHover mt-4"
+        className="flex items-center justify-start gap-2 text-menuTexto py-2 rounded-md hover:bg-menuFondoOpcion hover:text-menuTextoHover mt-0.5"
       >
         <i className="fa-solid fa-arrow-right-from-bracket text-menuIcon hover:text-menuIconHover ml-2 text-lg" />
         {expanded && <span>Salir</span>}
