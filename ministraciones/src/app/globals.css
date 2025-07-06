@@ -12,7 +12,7 @@
 }
 
 hr {
-  @apply text-fondoTransparenteObscuroBoton dark:text-textoSeparadorDark mb-2 mt-1;
+  @apply text-fondoTransparenteObscuroBoton dark:text-textoSeparadorDark mb-0.5 mt-1;
 }
 .separador{
   @apply text-textoSeparadorDark pt-1.5 border-b-1;
@@ -160,7 +160,7 @@ th{
   @apply font-medium py-2;
 }
 table{
-  @apply w-full dark:border-textoSeparadorDark  border-fondoTransparenteObscuro rounded-sm overflow-hidden shadow border-0 border-r-0;
+  @apply w-full dark:border-textoSeparadorDark  border-fondoTransparenteObscuro rounded-xs overflow-hidden shadow border-0;
 }
 /*
 .modal::backdrop {

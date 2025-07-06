@@ -205,7 +205,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
           <div className="overflow-x-auto table_-wrp block_ max-h-[calc(100vh-160px)]">
             <table className="min-w-full">
               
-              <thead className="thead sticky top-0 bg-fondoContenido dark:bg-fondoObscuroTransparente">
+              <thead className="thead sticky top-0 bg-bordeBlancoTransparente dark:bg-fondoObscuroTransparente">
                 <tr className="">
                   {schema.columns.map((column: any) => (
                     <th key={column.column_name} className={column.data_type === "boolean" ? "w-6" : ""}>

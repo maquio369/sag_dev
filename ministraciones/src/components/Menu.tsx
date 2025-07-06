@@ -119,6 +119,13 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
           </div>
         ))}
       <div className="separador"></div>
+      <Link href="/usuarios" className="flex items-center justify-start gap-2  py-2 rounded-md text-white hover:bg-menuFondoOpcion hover:text-menuTextoHover"
+      onClick={() => {
+                    setCookie("lnk_opt", '/usuarios');
+                  }}
+      >
+        <i className="fa-solid text-menuIcon hover:text-menuIconHover ml-2 text-lg">✦</i> {expanded && <span>Usuarios UI</span>}
+	    </Link>
       <Link
         href="/login"
         title={!expanded ? "Salir" : ""}
