@@ -160,10 +160,13 @@ thead {
   @apply border-y-fondoTablaHeader border-b-1 text-left text-xs font-normal tracking-normal;
 }
 th {
-  @apply font-medium py-2;
+  @apply font-medium py-2 pr-1;
+}
+td {
+  @apply pr-2;
 }
 table {
-  @apply w-full dark:border-textoSeparadorDark  border-fondoTransparenteObscuro rounded-xs overflow-hidden shadow border-0;
+  @apply w-full  dark:border-textoSeparadorDark  border-fondoTransparenteObscuro rounded-xs overflow-hidden shadow border-0;
 }
 .centrado {
   text-align: center;
