@@ -14,7 +14,7 @@
 hr {
   @apply text-fondoTransparenteObscuroBoton dark:text-textoSeparadorDark mb-0.5 mt-1;
 }
-.separador{
+.separador {
   @apply text-textoSeparadorDark pt-1.5 border-b-1;
 }
 
@@ -93,7 +93,7 @@ input[type="button"] {
 }
 
 .lblError {
-  @apply text-TextoLblError dark:text-TextoLblErrorDark font-light text-base ;/*max-w-[640]*/
+  @apply text-TextoLblError dark:text-TextoLblErrorDark font-light text-base; /*max-w-[640]*/
 }
 
 .tooltip {
@@ -134,33 +134,40 @@ input[type="button"] {
   @apply pl-0.5 text-base font-light text-textoControl dark:text-bordeBlancoTransparente;
 }
 
-.iconoVentanaForm{
+.iconoVentanaForm {
   @apply text-bordeControl dark:text-bordeControl mr-1.5;
 }
+.iconoMenu {
+  @apply text-menuIcon hover:text-menuIconHover ml-2 text-lg;
+}
 
-.grid4cols{
+.grid4cols {
   @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4;
 }
 
-.grid3cols{
+.grid3cols {
   @apply grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-4;
 }
 
-.grid2cols{
+.grid2cols {
   @apply grid grid-cols-1 sm:grid-cols-1 xl:grid-cols-2 gap-x-4;
 }
 
-.trZebra{
+.trZebra {
   @apply h-9 border-b-1 border-y-fondoTransparenteObscuroBoton dark:border-y-textoSeparadorDark odd:bg-fondoTablaFilaZebra dark:bg-fondoObscuroVentana dark:odd:bg-textoControl text-sm text-textoTabla dark:text-textoTablaDark hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion;
 }
-thead{
+thead {
   @apply border-y-fondoTablaHeader border-b-1 text-left text-xs font-normal tracking-normal;
 }
-th{
+th {
   @apply font-medium py-2;
 }
-table{
+table {
   @apply w-full dark:border-textoSeparadorDark  border-fondoTransparenteObscuro rounded-xs overflow-hidden shadow border-0;
+}
+.centrado {
+  text-align: center;
+  @apply flex justify-center;
 }
 /*
 .modal::backdrop {
@@ -269,7 +276,7 @@ button {
   --color-fondoTablaFilaHover: #20a8a72a; /*#20a8a71a f6fef9 20A8a712*/
   --color-fondoTablaHeader: #6b7583; /*gris=e5e7ebFF bordeControl=7c9eaf*/
   --color-TextoTablaHeader: #ffffffe5;
-  --color-fondoTablaFilaZebra: #eEf0f2;/*#eff1f2 #ededed #00000005*/
+  --color-fondoTablaFilaZebra: #eef0f2; /*#eff1f2 #ededed #00000005*/
   --color-TextoLblError: #ff4564;
   --color-TextoLblErrorDark: #fc93a5;
 }

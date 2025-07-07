@@ -108,11 +108,14 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
                     //document.cookie = "lnk_opt=" + item.link;
                   }}
                 >
-                  <i
-                    className={item.icono.concat(
-                      " text-menuIcon hover:text-menuIconHover ml-2 text-lg"
-                    )}
-                  />
+                  {item.icono.includes("fa-") ? (
+                    <i
+                      className={`${item.icono} iconoMenu`}
+                    />
+                  ) : (
+                    <span className={`iconoMenu`}>{item.icono}</span>
+                  )}
+
                   {expanded && <span>{item.opcion}</span>}
                 </Link>
               ))}

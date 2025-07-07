@@ -107,7 +107,11 @@ const DataPanel = ({ entity }: { entity: string }) => {
 
   const renderCellValue = (value: any, column: any, record: any) => {
     if (value === null || value === undefined) {
-      return <span className="text-textoSeparadorDark dark:text-textoEtiqueta">ⓝ</span>;
+      return (
+        <span className="text-textoSeparadorDark dark:text-textoEtiqueta">
+          ⓝ
+        </span>
+      );
     }
 
     // NUEVO: Si es una foreign key y tenemos el mapping, mostrar el nombre
@@ -117,9 +121,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
 
       return (
         <div className="flex flex-col">
-          <span className="">
-            {displayValue || "Sin nombre"}
-          </span>
+          <span className="">{displayValue || "Sin nombre"}</span>
           <span className="">ID: {value}</span>
         </div>
       );
@@ -127,9 +129,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
 
     if (column.data_type === "boolean") {
       return (
-        <span className={`flex justify-center `}>
-          {value ? "▣" : "◻"}
-        </span>
+        <span className={`flex justify-center`}>{value ? "▣" : "◻"}</span>
       );
     }
 
@@ -137,15 +137,16 @@ const DataPanel = ({ entity }: { entity: string }) => {
       return <span className="text-fondoTablaHeader px-1">{value}</span>;
     }
 
-    if (
-      value.toString().includes("fa-solid") ||
-      value.toString().includes("fa-regular")
-    ) {
-      return (
-        <span className="flex justify-center">
-          <i className={`${value}`}>&nbsp;</i>
-        </span>
-      );
+    if (column.column_name.includes("icon")) {
+      if (value.toString().includes(" fa-")) {
+        return (
+          <span className="flex justify-center">
+            <i className={`${value}`}></i>
+          </span>
+        );
+      } else {
+        return <span className={`flex justify-center `}>{value}</span>;
+      }
     }
 
     // Formatear fechas
@@ -204,25 +205,26 @@ const DataPanel = ({ entity }: { entity: string }) => {
         ) : (
           <div className="overflow-x-auto table_-wrp block_ max-h-[calc(100vh-160px)]">
             <table className="min-w-full">
-              
               <thead className="thead sticky top-0 bg-bordeBlancoTransparente dark:bg-fondoObscuroTransparente">
                 <tr className="">
                   {schema.columns.map((column: any) => (
-                    <th key={column.column_name} className={column.data_type === "boolean" ? "w-6" : ""}>
-                      <div className="flex items-center space-x-2">
-                        <span>
+                    <th
+                      key={column.column_name}
+                      className={`${column.data_type === "boolean" || column.column_name.includes('icon')? "justify-items-center" : ""}`}
+                    >
+                      <div className="">
+                        <span className ="">
                           {column.column_desc
                             ? column.column_desc
                             : column.column_name}
                         </span>
-                        <div className="flex space-x-1"></div>
                       </div>
                     </th>
                   ))}
                   <th className="">Acciones</th>
                 </tr>
               </thead>
-              
+
               <tbody className="">
                 {records.map((record, index) => (
                   <tr key={index} className="trZebra">
