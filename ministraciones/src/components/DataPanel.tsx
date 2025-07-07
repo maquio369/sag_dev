@@ -114,15 +114,12 @@ const DataPanel = ({ entity }: { entity: string }) => {
       );
     }
 
-    // NUEVO: Si es una foreign key y tenemos el mapping, mostrar el nombre
-    if (column.is_foreign_key && foreignKeyMappings[column.column_name]) {
-      const displayField = foreignKeyMappings[column.column_name];
-      const displayValue = record[displayField + "_text"];
-
+    // NUEVO: Si es una foreign key mostrar texto en vez de valor
+    if (column.is_foreign_key ) {      
+      const displayValue = record[`${column.column_name}_display`];
       return (
         <div className="flex flex-col">
-          <span className="">{displayValue || "Sin nombre"}</span>
-          <span className="">ID: {value}</span>
+          <span className="">{displayValue || value}</span>          
         </div>
       );
     }
