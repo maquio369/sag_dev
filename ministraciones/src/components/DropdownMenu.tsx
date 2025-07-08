@@ -1,14 +1,14 @@
 // src/components/DropdownMenu.tsx
 "use client";
 import { useState, useRef, useEffect } from "react";
-import FormModal from "@/components/FormModal";
+//import FormModal from "@/components/FormModal";
 
 type DropdownMenuProps = {
-  userId: number;
-  userData: any;
+  recordId: number;
+  recordData: any;
 };
 
-const DropdownMenu = ({ userId, userData }: DropdownMenuProps) => {
+const DropdownMenu = ({ recordId, recordData }: DropdownMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -32,11 +32,11 @@ const DropdownMenu = ({ userId, userData }: DropdownMenuProps) => {
   // Calcular posición
   const getMenuPosition = () => {
     if (!buttonRef.current) return {};
-    
+
     const rect = buttonRef.current.getBoundingClientRect();
     const spaceRight = window.innerWidth - rect.right;
     const spaceBottom = window.innerHeight - rect.bottom;
-    
+
     if (spaceRight > 200 || spaceRight > spaceBottom) {
       return { left: rect.left, top: rect.bottom + 8 };
     } else {
@@ -56,30 +56,29 @@ const DropdownMenu = ({ userId, userData }: DropdownMenuProps) => {
       </button>
 
       {isOpen && (
-        <div 
-          className="fixed z-50 mt-1 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-fondoObscuroVentana"
+        <div
+          className="fixed z-50 mt-1 w-48 rounded-md bg-white shadow-lg ring-1 ring-bordeControl   focus:outline-none dark:bg-fondoObscuroVentana"
           style={getMenuPosition()}
         >
-          <div className="py-1">
-            <FormModal
-              table="humanos"
-              type="upd"
-              data={userData}
-              id={userId}
-              //buttonLabel="Editar"
-              //buttonIcon="fa-pen"
-              //onClose={() => setIsOpen(false)}
-            />
-            <FormModal
-              table="humanos"
-              type="del"
-              data={userData}
-              id={userId}
-              /*buttonLabel="Eliminar"
-              buttonIcon="fa-trash-can"
-              onClose={() => setIsOpen(false)}*/
-            />
-          </div>
+          <ul className="py-1">
+            <li
+              key={1}
+              className={`relative flex items-center gap-2 px-4 py-2 text-sm hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion cursor-pointer`}
+              onClick={() => setIsOpen(false)}
+            >
+              <i className="fa-regular fa-pen-to-square text-bordeControl mr-1.5 "></i>
+              Modificar
+            </li>
+            <li
+              key={2}
+              className={`relative flex items-center gap-2 px-4 py-2 text-sm hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion cursor-pointer`}
+              onClick={() => setIsOpen(false)}
+            >
+              <i className="fa-regular fa-trash-can text-bordeControl mr-1.5"></i>
+              Eliminar
+            </li>
+          </ul>
+
         </div>
       )}
     </div>

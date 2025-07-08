@@ -5,15 +5,18 @@ import ContactosForm, {
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { aOracion } from "@/utils/util";
-import ContextualMenu from "@/components/ContextualMenu"
+import ContextualMenu from "@/components/ContextualMenu";
 
 import { apiService } from "../services/api";
 import DropdownMenu from "./DropdownMenu";
+import Dropdown from "./Dropdown";
 //import { apiConfig, apiService } from "../utils/api";
 
 const DataPanel = ({ entity }: { entity: string }) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [userData, setUserData] = useState<modelContactos | null>(null);
+
+  const mnuOptions = ["Modificar", "Eliminar", "Agregar"];
 
   const contactosHandleOpenModal = () => {
     setModalOpen(true);
@@ -206,6 +209,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
             <table className="min-w-full">
               <thead className="thead sticky top-0 bg-bordeBlancoTransparente dark:bg-fondoObscuroTransparente">
                 <tr className="">
+                  <th className="w-1"></th>
                   {schema.columns.map((column: any) => (
                     <th
                       key={column.column_name}
@@ -220,7 +224,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
                       </div>
                     </th>
                   ))}
-                  <th className="">Acciones</th>
+
                   <th className="">ctx</th>
                 </tr>
               </thead>
@@ -228,6 +232,9 @@ const DataPanel = ({ entity }: { entity: string }) => {
               <tbody className="">
                 {records.map((record, index) => (
                   <tr key={index} className="trZebra">
+                    <td className="w-fit relative">
+                      <DropdownMenu recordId={record[0]} recordData={record} />
+                    </td>
                     {schema.columns.map((column: any) => (
                       <td key={column.column_name} className="">
                         <div className="max-w-xs overflow-hidden">
@@ -239,22 +246,45 @@ const DataPanel = ({ entity }: { entity: string }) => {
                         </div>
                       </td>
                     ))}
+
                     <td className="w-fit relative">
-                      <DropdownMenu userId={record[0]} userData={record} />
-                      </td>
-                      <td className="w-fit relative">
+                      <Dropdown
+                        buttonLabel=""
+                        items={[
+                          {
+                            title: "Edit Profile",
+                            url: "/edit",
+                            icon: <i className="fa-solid fa-pen-to-square" />,
+                          },
+                          {
+                            title: "Delete Activity",
+                            url: "/delete",
+                            icon: <i className="fa-solid fa-trash-can" />,
+                          },
+                          {
+                            title: "Logout",
+                            icon: (
+                              <i className="fa-solid fa-right-from-bracket" />
+                            ),
+                            action: () => alert("Logged out!"),
+                          },
+                        ]}
+                      />
+
                       <ContextualMenu
-                        onEdit={() => {                          // Lógica para modificar el elemento
+                        onEdit={() => {
+                          // Lógica para modificar el elemento
                           console.log("Modificar elemento");
                           //openEditModal(record);
                           toast.info("Modificar");
                         }}
-                        onDelete={() => {                          // Lógica para eliminar el elemento
+                        onDelete={() => {
+                          // Lógica para eliminar el elemento
                           console.log("Eliminar elemento");
                           //openDeleteModal(record)
                           toast.error("Eliminar");
                         }}
-                      />  
+                      />
                       {/* Botones de acción en menú contextual 
                       
                       <ContextualMenu
@@ -288,7 +318,6 @@ const DataPanel = ({ entity }: { entity: string }) => {
                       </button>
                     </div>
                     */}
-                      
                     </td>
                   </tr>
                 ))}
