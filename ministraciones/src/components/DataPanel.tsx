@@ -5,8 +5,10 @@ import ContactosForm, {
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { aOracion } from "@/utils/util";
+import ContextualMenu from "@/components/ContextualMenu"
 
 import { apiService } from "../services/api";
+import DropdownMenu from "./DropdownMenu";
 //import { apiConfig, apiService } from "../utils/api";
 
 const DataPanel = ({ entity }: { entity: string }) => {
@@ -115,11 +117,11 @@ const DataPanel = ({ entity }: { entity: string }) => {
     }
 
     // NUEVO: Si es una foreign key mostrar texto en vez de valor
-    if (column.is_foreign_key ) {      
+    if (column.is_foreign_key) {
       const displayValue = record[`${column.column_name}_display`];
       return (
         <div className="flex flex-col">
-          <span className="">{displayValue || value}</span>          
+          <span className="">{displayValue || value}</span>
         </div>
       );
     }
@@ -207,10 +209,10 @@ const DataPanel = ({ entity }: { entity: string }) => {
                   {schema.columns.map((column: any) => (
                     <th
                       key={column.column_name}
-                      className={`${column.data_type === "boolean" || column.column_name.includes('icon')? "justify-items-center" : ""}`}
+                      className={`${column.data_type === "boolean" || column.column_name.includes("icon") ? "justify-items-center" : ""}`}
                     >
                       <div className="">
-                        <span className ="">
+                        <span className="">
                           {column.column_desc
                             ? column.column_desc
                             : column.column_name}
@@ -219,6 +221,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
                     </th>
                   ))}
                   <th className="">Acciones</th>
+                  <th className="">ctx</th>
                 </tr>
               </thead>
 
@@ -236,8 +239,37 @@ const DataPanel = ({ entity }: { entity: string }) => {
                         </div>
                       </td>
                     ))}
-                    <td className="">
-                      {/* Botones de acción comentados */}
+                    <td className="w-fit relative">
+                      <DropdownMenu userId={record[0]} userData={record} />
+                      </td>
+                      <td className="w-fit relative">
+                      <ContextualMenu
+                        onEdit={() => {                          // Lógica para modificar el elemento
+                          console.log("Modificar elemento");
+                          //openEditModal(record);
+                          toast.info("Modificar");
+                        }}
+                        onDelete={() => {                          // Lógica para eliminar el elemento
+                          console.log("Eliminar elemento");
+                          //openDeleteModal(record)
+                          toast.error("Eliminar");
+                        }}
+                      />  
+                      {/* Botones de acción en menú contextual 
+                      
+                      <ContextualMenu
+                        onEdit={() => {                          // Lógica para modificar el elemento
+                          console.log("Modificar elemento");
+                          //openEditModal(record);
+                          toast.info("Modificar");
+                        }}
+                        onDelete={() => {                          // Lógica para eliminar el elemento
+                          console.log("Eliminar elemento");
+                          //openDeleteModal(record)
+                          toast.error("Eliminar");
+                        }}
+                      />
+                      */}
                       {/*
                     <div className="flex items-center space-x-2">
                       <button 
@@ -256,6 +288,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
                       </button>
                     </div>
                     */}
+                      
                     </td>
                   </tr>
                 ))}
