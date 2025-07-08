@@ -224,8 +224,6 @@ const DataPanel = ({ entity }: { entity: string }) => {
                       </div>
                     </th>
                   ))}
-
-                  <th className="">ctx</th>
                 </tr>
               </thead>
 
@@ -246,7 +244,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
                         </div>
                       </td>
                     ))}
-
+{/*
                     <td className="w-fit relative">
                       <Dropdown
                         buttonLabel=""
@@ -284,7 +282,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
                           //openDeleteModal(record)
                           toast.error("Eliminar");
                         }}
-                      />
+                      /> */}
                       {/* Botones de acción en menú contextual 
                       
                       <ContextualMenu
@@ -317,8 +315,8 @@ const DataPanel = ({ entity }: { entity: string }) => {
                         <span className="w-4 h-4 block">🗑️</span>
                       </button>
                     </div>
-                    */}
-                    </td>
+                    
+                    </td>*/}
                   </tr>
                 ))}
               </tbody>
@@ -345,6 +343,15 @@ const DataPanel = ({ entity }: { entity: string }) => {
                 <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
                 <span>{tables.length} tablas detectadas</span>
               */}
+              <button
+                className="btn3"
+                title="Agregar registro"
+                onClick={contactosHandleOpenModal}
+              >
+                <i className="fa-solid fa-plus"></i>
+                <span className="lblBtn">Agregar</span>
+              </button>
+
               </div>
             </div>
             <div className="flex items-center gap-4 text-base">
@@ -355,28 +362,22 @@ const DataPanel = ({ entity }: { entity: string }) => {
                 type="ins"
               />
 
-              <button
-                className="btn3 "
-                title="Agregar registro"
-                onClick={contactosHandleOpenModal}
-              >
-                <i className="fa-solid fa-plus"></i>
-                <span className="lblBtn">Agregar</span>
-              </button>
-
+   
+{/*
               <button className="btn3 " title="Buscar">
                 <i className="fa-solid fa-magnifying-glass"></i>
                 <span className="lblBtn">Buscar</span>
               </button>
-              {/*<button className="btn3 " title="Filtrar">
+              <button className="btn3 " title="Filtrar">
                 <i className="fa-solid fa-filter"></i>
                 <span className="lblBtn">Filtrar</span>
               </button>
-              */}
+              
               <button className="btn3 " title="Exportar">
                 <i className="fa-solid fa-file-export"></i>
                 <span className="lblBtn">Exportar</span>
               </button>
+*/}
               {/*
               <button className="btn3 " title="Imprimir">
                 <i className="fa-solid fa-print"></i>
@@ -384,7 +385,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
               </button>
               */}
 
-              <button className="btn3 w-[2em]" title="Menú contextual">
+              <button className="btn3 w-[1.6em] justify-center"   title="Menú contextual">
                 <i className="fa-solid fa-ellipsis-vertical"></i>
               </button>
             </div>

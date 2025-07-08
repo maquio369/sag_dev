@@ -38,7 +38,7 @@ const DropdownMenu = ({ recordId, recordData }: DropdownMenuProps) => {
     const spaceBottom = window.innerHeight - rect.bottom;
 
     if (spaceRight > 200 || spaceRight > spaceBottom) {
-      return { left: rect.left, top: rect.bottom + 8 };
+      return { left: rect.left+36, top: rect.bottom -32 };
     } else {
       return { right: window.innerWidth - rect.right, top: rect.bottom + 8 };
     }
@@ -57,13 +57,13 @@ const DropdownMenu = ({ recordId, recordData }: DropdownMenuProps) => {
 
       {isOpen && (
         <div
-          className="fixed z-50 mt-1 w-48 rounded-md bg-white shadow-lg ring-1 ring-bordeControl   focus:outline-none dark:bg-fondoObscuroVentana"
+          className="fixed z-50 mt-1 w-48 rounded-md bg-fondoBlancoTransparente shadow-lg ring-1 ring-bordeControl   focus:outline-none dark:bg-fondoObscuroVentana"
           style={getMenuPosition()}
         >
-          <ul className="py-1">
+          <ul className="py-0.5">
             <li
               key={1}
-              className={`relative flex items-center gap-2 px-4 py-2 text-sm hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion cursor-pointer`}
+              className={`relative flex items-center gap-2 px-3 py-1 text-sm hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion cursor-pointer`}
               onClick={() => setIsOpen(false)}
             >
               <i className="fa-regular fa-pen-to-square text-bordeControl mr-1.5 "></i>
@@ -71,7 +71,7 @@ const DropdownMenu = ({ recordId, recordData }: DropdownMenuProps) => {
             </li>
             <li
               key={2}
-              className={`relative flex items-center gap-2 px-4 py-2 text-sm hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion cursor-pointer`}
+              className={`relative flex items-center gap-2 px-3 py-1 text-sm hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion cursor-pointer`}
               onClick={() => setIsOpen(false)}
             >
               <i className="fa-regular fa-trash-can text-bordeControl mr-1.5"></i>
