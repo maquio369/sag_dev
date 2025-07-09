@@ -4,7 +4,7 @@ import ContactosForm, {
 } from "@/app/(dashboard)/contactos/ContactosForm";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { aOracion } from "@/utils/util";
+import { aOracion, getCookie } from "@/utils/util";
 import ContextualMenu from "@/components/ContextualMenu";
 
 import { apiService } from "../services/api";
@@ -13,6 +13,10 @@ import Dropdown from "./Dropdown";
 //import { apiConfig, apiService } from "../utils/api";
 
 const DataPanel = ({ entity }: { entity: string }) => {
+  const esta_borrado = process.env.NEXT_PUBLIC_DELETED_COLUMN_NAME;
+  const nrol =
+    typeof window !== "undefined" ? getCookie("nr", document.cookie) : "0";
+
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [userData, setUserData] = useState<modelContactos | null>(null);
 
@@ -209,11 +213,11 @@ const DataPanel = ({ entity }: { entity: string }) => {
             <table className="min-w-full">
               <thead className="thead sticky top-0 bg-bordeBlancoTransparente dark:bg-fondoObscuroTransparente">
                 <tr className="">
-                  <th className="w-1"></th>
+                  <th className="w-1 pl-3">☷</th>
                   {schema.columns.map((column: any) => (
                     <th
                       key={column.column_name}
-                      className={`${column.data_type === "boolean" || column.column_name.includes("icon") ? "justify-items-center" : ""}`}
+                      className={`${column.data_type === "boolean" || column.column_name.includes("icon") ? "justify-items-center" : ""} ${column.column_name.includes(esta_borrado) && nrol !== "1" ? "hidden" : ""}`}
                     >
                       <div className="">
                         <span className="">
@@ -234,7 +238,10 @@ const DataPanel = ({ entity }: { entity: string }) => {
                       <DropdownMenu recordId={record[0]} recordData={record} />
                     </td>
                     {schema.columns.map((column: any) => (
-                      <td key={column.column_name} className="">
+                      <td
+                        key={column.column_name}
+                        className={`${column.column_name.includes(esta_borrado) && nrol !== "1" ? "hidden" : ""}`}
+                      >
                         <div className="max-w-xs overflow-hidden">
                           {renderCellValue(
                             record[column.column_name],
@@ -244,7 +251,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
                         </div>
                       </td>
                     ))}
-{/*
+                    {/*
                     <td className="w-fit relative">
                       <Dropdown
                         buttonLabel=""
@@ -283,7 +290,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
                           toast.error("Eliminar");
                         }}
                       /> */}
-                      {/* Botones de acción en menú contextual 
+                    {/* Botones de acción en menú contextual 
                       
                       <ContextualMenu
                         onEdit={() => {                          // Lógica para modificar el elemento
@@ -298,7 +305,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
                         }}
                       />
                       */}
-                      {/*
+                    {/*
                     <div className="flex items-center space-x-2">
                       <button 
                         onClick={() => openEditModal(record)}
@@ -343,15 +350,14 @@ const DataPanel = ({ entity }: { entity: string }) => {
                 <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
                 <span>{tables.length} tablas detectadas</span>
               */}
-              <button
-                className="btn3"
-                title="Agregar registro"
-                onClick={contactosHandleOpenModal}
-              >
-                <i className="fa-solid fa-plus"></i>
-                <span className="lblBtn">Agregar</span>
-              </button>
-
+                <button
+                  className="btn3"
+                  title="Agregar registro"
+                  onClick={contactosHandleOpenModal}
+                >
+                  <i className="fa-solid fa-plus"></i>
+                  <span className="lblBtn">Agregar</span>
+                </button>
               </div>
             </div>
             <div className="flex items-center gap-4 text-base">
@@ -362,8 +368,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
                 type="ins"
               />
 
-   
-{/*
+              {/*
               <button className="btn3 " title="Buscar">
                 <i className="fa-solid fa-magnifying-glass"></i>
                 <span className="lblBtn">Buscar</span>
@@ -385,7 +390,10 @@ const DataPanel = ({ entity }: { entity: string }) => {
               </button>
               */}
 
-              <button className="btn3 w-[1.6em] justify-center"   title="Menú contextual">
+              <button
+                className="btn3 w-[1.6em] justify-center"
+                title="Menú contextual"
+              >
                 <i className="fa-solid fa-ellipsis-vertical"></i>
               </button>
             </div>
