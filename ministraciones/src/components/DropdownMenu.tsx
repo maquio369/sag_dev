@@ -57,24 +57,32 @@ const DropdownMenu = ({ recordId, recordData }: DropdownMenuProps) => {
 
       {isOpen && (
         <div
-          className="fixed z-50 mt-1 w-48 rounded-md bg-fondoBlancoTransparente shadow-lg ring-1 ring-bordeControl   focus:outline-none dark:bg-fondoObscuroVentana"
+          className="fixed z-50 mt-1 w-fit rounded-md bg-fondoBlancoTransparente shadow-lg ring-1 ring-bordeControl   focus:outline-none dark:bg-fondoObscuroVentana"
           style={getMenuPosition()}
         >
           <ul className="py-0.5">
+            <li
+              key={0}
+              className={`relative flex items-center gap-2 px-3 py-1 text-sm hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion cursor-pointer`}
+              onClick={() => setIsOpen(false)}
+            >
+              <i className="fa-regular fa-eye text-bordeControl mr-1.5 "></i>
+              Ver datos
+            </li>
             <li
               key={1}
               className={`relative flex items-center gap-2 px-3 py-1 text-sm hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion cursor-pointer`}
               onClick={() => setIsOpen(false)}
             >
               <i className="fa-regular fa-pen-to-square text-bordeControl mr-1.5 "></i>
-              Modificar
+              Modificar registro
             </li>
             <li
               key={2}
-              className={`relative flex items-center gap-2 px-3 py-1 text-sm hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion cursor-pointer`}
+              className={`relative flex items-center gap-2 px-3 py-1 text-sm hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion cursor-pointer hover:text-TextoLblError`}
               onClick={() => setIsOpen(false)}
             >
-              <i className="fa-regular fa-trash-can text-bordeControl mr-1.5"></i>
+              <i className="fa-regular fa-trash-can hover:text-bordeControl mr-1.5 text-TextoLblError"></i>
               Eliminar
             </li>
           </ul>

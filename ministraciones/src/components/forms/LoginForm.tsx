@@ -27,6 +27,7 @@ const LoginForm = () => {
     setCookie("nu", null);
     setCookie("nr", null);
     setCookie("lnk_opt", null);
+    setCookie("nn", null);
     setCookie("u", null);
     try {
       const msg = sessionStorage.getItem("msg");

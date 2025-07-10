@@ -28,7 +28,7 @@ export function setCookie(cname: string, cvalue: string | null) {
 export function ofuscad(cad: string, encode: boolean): string {
   let encoded = "";
   if (encode) {
-    encoded = Buffer.from(cad).toString("base64").split("").reverse().join("");
+    encoded = Buffer.from(cad.toString()).toString("base64").split("").reverse().join("");
   } else {
     encoded = Buffer.from(cad.split("").reverse().join(""), "base64").toString(
       "utf-8"

@@ -11,7 +11,7 @@ interface Props {
 interface MenuItem {
   id_opcion: number;
   titulo: string;
-  items: { icono: string; opcion: string; link: string }[];
+  items: { icono: string; opcion: string; link: string; nivel:string }[];
 }
 
 const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
@@ -105,7 +105,8 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
                   className="flex items-center justify-start gap-2 text-menuTexto py-2 rounded-md hover:bg-menuFondoOpcion hover:text-menuTextoHover"
                   onClick={() => {
                     setCookie("lnk_opt", item.link);
-                    //document.cookie = "lnk_opt=" + item.link;
+                    
+                    setCookie("nn",ofuscad(item.nivel,true));//item.nivel
                   }}
                 >
                   {item.icono.includes("fa-") ? (
