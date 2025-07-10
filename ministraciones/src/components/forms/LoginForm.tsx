@@ -45,7 +45,7 @@ const LoginForm = () => {
     //<form action={(e) => {  handleSubmit(); }}>
 
     <form
-      className="flex flex-col space-y-6"
+      className="flex flex-col space-y-1"
       action={async (formData) => {
         const jsonData = await handleSubmit(formData);
         if (jsonData) {

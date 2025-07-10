@@ -16,7 +16,7 @@ const LoginPage = () => {
               alt=""
               width={322}
               height={91}
-              className="absolute top-[90px] animate-ping "
+              className="absolute top-[85px] animate-ping "
               style={{
                 animationIterationCount: 1,
                 animationFillMode: "forwards",
@@ -28,11 +28,11 @@ const LoginPage = () => {
               alt=""
               width={322}
               height={91}
-              className="absolute top-[90px] "
+              className="absolute top-[85px] "
             />
             </div>
             <div
-              className="flex flex-col bg-[url(/general/rombos-patron-gob.png)] bg-[auto_88px] z-0 bg-fondoControl mt-2 p-10 rounded-lg shadow-lg space-y-6 text-textoControl dark:text-menuTexto dark:bg-fondoBlancoTransparenteDark"
+              className="flex flex-col bg-[url(/general/rombos-patron-gob.png)] bg-[auto_88px] z-0 bg-fondoControl mt-1 py-4 px-10 rounded-lg shadow-lg space-y-6 text-textoControl dark:text-menuTexto dark:bg-fondoBlancoTransparenteDark"
             >
               <div className="text-lg text-center ">
                 Bienvenido al sistema de 
