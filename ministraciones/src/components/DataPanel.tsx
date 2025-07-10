@@ -4,7 +4,7 @@ import ContactosForm, {
 } from "@/app/(dashboard)/contactos/ContactosForm";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { aOracion, getCookie } from "@/utils/util";
+import { aOracion, getCookie, ofuscad } from "@/utils/util";
 import ContextualMenu from "@/components/ContextualMenu";
 
 import { apiService } from "../services/api";
@@ -16,6 +16,8 @@ const DataPanel = ({ entity }: { entity: string }) => {
   const esta_borrado = process.env.NEXT_PUBLIC_DELETED_COLUMN_NAME;
   const nrol =
     typeof window !== "undefined" ? getCookie("nr", document.cookie) : "0";
+  const nn =
+    typeof window !== "undefined" ? ofuscad(getCookie("nn", document.cookie),false) : "0";
 
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [userData, setUserData] = useState<modelContactos | null>(null);
