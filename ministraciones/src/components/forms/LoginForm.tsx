@@ -23,11 +23,8 @@ const LoginForm = () => {
   useEffect(() => {
     setCookie("access_token", null);
     setCookie("mnus", null);
-    setCookie("ns", null);
-    setCookie("nu", null);
-    setCookie("nr", null);
-    setCookie("lnk_opt", null);
-    setCookie("nn", null);
+    setCookie("nums", null);
+    setCookie("opt", null);
     setCookie("u", null);
     try {
       const msg = sessionStorage.getItem("msg");
@@ -53,23 +50,27 @@ const LoginForm = () => {
             setError(jsonData.message as string);
           } else {
             //Sí se obtuvo un token válido obtener opociones
-setCookie("access_token", jsonData.token); //path=/; max-age=3600; secure; SameSite=Strict`;
-            setCookie("ns", jsonData.ns);
-            setCookie("nu", jsonData.nu);
-            setCookie("nr", jsonData.nr);
+            setCookie("access_token", jsonData.token); //path=/; max-age=3600; secure; SameSite=Strict`;
+            setCookie(
+              "nums",
+              ofuscad(
+                `{"ns":"${jsonData.ns}","nu":"${jsonData.nu}","nr":"${jsonData.nr}"}`,
+                true
+              )
+            );
             //Get menu options
             const jsonOptions = await getMenuItems(jsonData.ns, jsonData.nr);
-            if (jsonOptions) {              
-              setCookie("mnus",await ofuscadAwait(JSON.stringify(jsonOptions), true, true));
-              //document.cookie = `mnus=${await ofuscadAwait(JSON.stringify(jsonOptions), true, true)};`;
+            if (jsonOptions) {
+              setCookie(
+                "mnus",
+                await ofuscadAwait(JSON.stringify(jsonOptions), true, true)
+              );
             }
             //Get usr data
             const jsonUsr = await get("api/usuarios/getUser/" + jsonData.nu);
             if (jsonUsr) {
               setCookie("u", ofuscad(JSON.stringify(jsonUsr), true));
-              //document.cookie = `u=${ofuscad(JSON.stringify(jsonUsr), true)}; `;
             }
-
             window.location.href = "/home";
           }
         }

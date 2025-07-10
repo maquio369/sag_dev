@@ -12,12 +12,10 @@ import DropdownMenu from "./DropdownMenu";
 import Dropdown from "./Dropdown";
 //import { apiConfig, apiService } from "../utils/api";
 
-const DataPanel = ({ entity }: { entity: string }) => {
+const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
   const esta_borrado = process.env.NEXT_PUBLIC_DELETED_COLUMN_NAME;
-  const nrol =
-    typeof window !== "undefined" ? getCookie("nr", document.cookie) : "0";
-  const nn =
-    typeof window !== "undefined" ? ofuscad(getCookie("nn", document.cookie),false) : "0";
+  const nums =
+    typeof window !== "undefined" ? getCookie("nums", document.cookie) : "{}";
 
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [userData, setUserData] = useState<modelContactos | null>(null);
@@ -203,10 +201,10 @@ const DataPanel = ({ entity }: { entity: string }) => {
                 </span>
               </div>
               <p className="text-sm text-fondoBlancoTransparenteDark font-medium dark:text-textoEtiqueta tracking-wider ">
-                No hay registros en esta tabla
+                No se encontraron registros
               </p>
               <p className="text-fondoTablaHeader mt-1 text-sm font-light">
-                para añadir un registro usa: +Agregar
+                en {aOracion(entity)}
               </p>
             </div>
           </div>
@@ -219,7 +217,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
                   {schema.columns.map((column: any) => (
                     <th
                       key={column.column_name}
-                      className={`${column.data_type === "boolean" || column.column_name.includes("icon") ? "justify-items-center" : ""} ${column.column_name.includes(esta_borrado) && nrol !== "1" ? "hidden" : ""}`}
+                      className={`${column.data_type === "boolean" || column.column_name.includes("icon") ? "justify-items-center" : ""} ${column.column_name.includes(esta_borrado) && nivel !== "4" ? "hidden" : ""}`}
                     >
                       <div className="">
                         <span className="">
@@ -242,7 +240,7 @@ const DataPanel = ({ entity }: { entity: string }) => {
                     {schema.columns.map((column: any) => (
                       <td
                         key={column.column_name}
-                        className={`${column.column_name.includes(esta_borrado) && nrol !== "1" ? "hidden" : ""}`}
+                        className={`${column.column_name.includes(esta_borrado) && nivel !== "4" ? "hidden" : ""}`}
                       >
                         <div className="max-w-xs overflow-hidden">
                           {renderCellValue(

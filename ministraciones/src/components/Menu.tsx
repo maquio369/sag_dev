@@ -11,7 +11,7 @@ interface Props {
 interface MenuItem {
   id_opcion: number;
   titulo: string;
-  items: { icono: string; opcion: string; link: string; nivel:string }[];
+  items: { icono: string; opcion: string; link: string; nivel: string }[];
 }
 
 const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
@@ -21,11 +21,9 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-         const mnus = JSON.parse(await ofuscadAwait(
-          getCookie("mnus", document.cookie),
-          false,
-          true
-        ));
+        const mnus = JSON.parse(
+          await ofuscadAwait(getCookie("mnus", document.cookie), false, true)
+        );
 
         //if has rol without options: mnus is null [{"menuitems":null}]
         setMenusItems(mnus[0].menuitems);
@@ -104,15 +102,17 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
                   key={item.opcion}
                   className="flex items-center justify-start gap-2 text-menuTexto py-2 rounded-md hover:bg-menuFondoOpcion hover:text-menuTextoHover"
                   onClick={() => {
-                    setCookie("lnk_opt", item.link);
-                    
-                    setCookie("nn",ofuscad(item.nivel,true));//item.nivel
+                    setCookie(
+                      "opt",
+                      ofuscad(
+                        `{"lnk_opt":"${item.link}","nn":"${item.nivel}"}`,
+                        true
+                      )
+                    );
                   }}
                 >
                   {item.icono.includes("fa-") ? (
-                    <i
-                      className={`${item.icono} iconoMenu`}
-                    />
+                    <i className={`${item.icono} iconoMenu`} />
                   ) : (
                     <span className={`iconoMenu`}>{item.icono}</span>
                   )}
@@ -123,13 +123,18 @@ const Menu = ({ expanded = false, submenu_expanded = true }: Props) => {
           </div>
         ))}
       <div className="separador"></div>
-      <Link href="/usuarios" className="flex items-center justify-start gap-2  py-2 rounded-md text-white hover:bg-menuFondoOpcion hover:text-menuTextoHover"
-      onClick={() => {
-                    setCookie("lnk_opt", '/usuarios');
-                  }}
+      <Link
+        href="/usuarios"
+        className="flex items-center justify-start gap-2  py-2 rounded-md text-white hover:bg-menuFondoOpcion hover:text-menuTextoHover"
+        onClick={() => {
+          //setCookie("lnk_opt", '/usuarios');
+        }}
       >
-        <i className="fa-solid text-menuIcon hover:text-menuIconHover ml-2 text-lg">✦</i> {expanded && <span>Usuarios UI</span>}
-	    </Link>
+        <i className="fa-solid text-menuIcon hover:text-menuIconHover ml-2 text-lg">
+          ✦
+        </i>{" "}
+        {expanded && <span>Usuarios UI</span>}
+      </Link>
       <Link
         href="/login"
         title={!expanded ? "Salir" : ""}
