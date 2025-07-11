@@ -35,7 +35,7 @@ const FormModal = ({
       {open && (
         <div className="pantallaObscura" onFocus={(e) => avoidTabIndexFocusOut2(e)}>
           <div className="fondoVentanaForm w-[98%] md:w-[80%]">
-            <div className="encabezadoVentannaForm">
+            <div className="encabezadoVentanaForm">
               <span className="pl-2 text-base font-light text-textoControl dark:text-bordeBlancoTransparente ">
                 {type === "ins" ? (
                   <>

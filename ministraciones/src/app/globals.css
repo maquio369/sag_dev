@@ -61,13 +61,16 @@ input[type="button"] {
 }
 
 .btnTop {
-  @apply rounded-full text-textoBoton1 ring-bordeControl hover:bg-fondoTransparenteObscuroBoton outline-0 bg-transparent shadow-none hover:scale-105 px-2.5 py-1 ml-0.5
-  z-1 cursor-pointer focus:ring-1 focus:outline-none border-0 disabled:cursor-default;
+  @apply rounded-full text-textoBoton1 ring-bordeControl hover:bg-fondoTransparenteObscuroBoton bg-transparent shadow-none hover:scale-105 px-2.5 py-1 ml-0.5
+  z-1 cursor-pointer border-0 disabled:cursor-default
+  focus:outline-bordeExteriorBotonSeleccionado focus:outline-none outline-0
+   focus:ring-1 focus:ring-bordeBlancoTransparente;
+  /* focus:outline-none focus:ring-1  outline-0*/
 }
 
 .btnIcon {
   @apply disabled:text-fondoTransparenteObscuroNotificacion focus:ring-offset-1 bg-transparent text-textoBoton2 dark:text-textoLink hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover ring-bordeExteriorBotonSeleccionado
-  shadow-transparent rounded-full px-2 py-0.5 mb-1 cursor-pointer disabled:cursor-default;
+  shadow-transparent rounded-full px-2 py-0.5 mb-1 cursor-pointer disabled:cursor-default focus:outline-bordeExteriorBotonSeleccionado;
 }
 
 .btnDanger {
@@ -114,8 +117,8 @@ input[type="button"] {
 }
 
 .fondoVentanaForm {
-  @apply bg-fondoControl dark:bg-fondoObscuroVentana border border-textoSeparadorDark rounded shadow-xl py-2 px-3;
-  /* w-[98%] md:w-[50%]*/
+  @apply bg-fondoControl dark:bg-fondoObscuroVentana border border-textoSeparadorDark rounded shadow-xl pb-2 px-0;
+  /* w-[98%] md:w-[50%]     bg-fondoControl*/
 }
 .fondoVentanaForm-width {
   @apply w-[98%] md:w-[80%];
@@ -125,12 +128,13 @@ input[type="button"] {
   @apply left-6/12 top-6/12 translate-x-[-50%] translate-y-[-50%];
 }
 
-.encabezadoVentannaForm {
-  @apply flex justify-between items-center mb-5 border-b-1 border-fondoTransparenteObscuroBoton dark:border-textoSeparadorDark;
+.encabezadoVentanaForm {
+  @apply  pt-1.5 mb-1.5 border-b-1 border-fondoTransparenteObscuroBoton dark:border-textoSeparadorDark bg-fondoControlBlancoTransparente dark:bg-fondoObscuroTransparente z-1 sticky top-0;
+  /* bg-fondoControlBlancoTransparente */
 }
 
 .tituloVentanaForm {
-  @apply pl-0.5 text-base font-light text-textoControl dark:text-bordeBlancoTransparente;
+  @apply flex justify-between items-center pl-3 pr-2.5 text-base font-light text-textoControl dark:text-bordeBlancoTransparente;
 }
 
 .iconoVentanaForm {

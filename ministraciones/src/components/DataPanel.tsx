@@ -8,7 +8,7 @@ import { aOracion, getCookie, ofuscad } from "@/utils/util";
 import ContextualMenu from "@/components/ContextualMenu";
 
 import { apiService } from "../services/api";
-import DropdownMenu from "./DropdownMenu";
+import DropdownMenuCRUD from "./DropdownMenuCRUD";
 import Dropdown from "./Dropdown";
 //import { apiConfig, apiService } from "../utils/api";
 
@@ -235,7 +235,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                 {records.map((record, index) => (
                   <tr key={index} className="trZebra">
                     <td className="w-fit relative">
-                      <DropdownMenu recordId={record[0]} recordData={record} />
+                      <DropdownMenuCRUD recordId={record[0]} recordData={record} access_level={nivel}/>
                     </td>
                     {schema.columns.map((column: any) => (
                       <td

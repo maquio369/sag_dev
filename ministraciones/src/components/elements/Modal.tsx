@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import {CRUD_Props} from "@/components/forms/interfaces";
+import { CRUD_Props } from "@/components/forms/interfaces";
 
 interface Props {
   isOpen: boolean;
@@ -74,22 +74,41 @@ const Modal = ({ isOpen, onClose, type, className, children }: CRUD_Props) => {
       className={"fondoVentanaForm " + "  " + className}
     >
       {
-        <div className="encabezadoVentannaForm">
-          <span className="pl-2 text-base font-light text-textoControl dark:text-bordeBlancoTransparente ">
-            {renderSwitch(type)}
-          </span>
-          <button
-            id="exitButton"
-            className="btnIcon"
-            aria-label="Cerrar"
-            onClick={handleCloseModal}
-            //onClick={() => setOpen(false)}
-          >
-            <i className="fa-solid fa-xmark"></i>
-          </button>
+        <div className="encabezadoVentanaForm">
+          <div className="tituloVentanaForm">
+            <span>
+              {renderSwitch(type)}
+            </span>
+            <span>
+              {
+              <button
+                id="saveButton"
+                className="btnIcon"
+                title="Guardar"
+                aria-label="Guardar"
+                onClick={() => alert("Registro guardado satisfactoriamente")}
+                //onClick={() => setOpen(false)}
+              >
+                <i className="fa-solid fa-save"></i> Guardar
+              </button>
+              }
+              <button
+                id="exitButton"
+                className="btnIcon"
+                title="Cerrar"
+                aria-label="Cerrar"
+                onClick={handleCloseModal}
+                //onClick={() => setOpen(false)}
+              >
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </span>
+          </div>
         </div>
       }
-      {children}
+      <div className="px-3">
+        {children}
+      </div>
     </dialog>
   );
 };
