@@ -3,13 +3,14 @@ import ContactosForm, {
   modelContactos,
 } from "@/app/(dashboard)/contactos/ContactosForm";
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastOptions } from "react-toastify";
 import { aOracion, getCookie, ofuscad } from "@/utils/util";
-import ContextualMenu from "@/components/ContextualMenu";
 
 import { apiService } from "../services/api";
 import DropdownMenuCRUD from "./DropdownMenuCRUD";
-import Dropdown from "./Dropdown";
+import Modal from "./elements/Modal";
+import RecordForm from "./RecordForm";
+
 //import { apiConfig, apiService } from "../utils/api";
 
 const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
@@ -18,6 +19,10 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
     typeof window !== "undefined" ? getCookie("nums", document.cookie) : "{}";
 
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const toastOptions = {
+    theme:
+      typeof window !== "undefined" ? localStorage.getItem("theme") : "light",
+  } as ToastOptions;
   const [userData, setUserData] = useState<modelContactos | null>(null);
 
   const mnuOptions = ["Modificar", "Eliminar", "Agregar"];
@@ -36,11 +41,11 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
     console.log("Form submitted:", { data });
     // No need to preventDefault or reset form - React handles it
     if (data.nombres === "") {
-      toast.warn("El nombre es obligatorio", { theme: "dark" });
+      toast.warn("El nombre es obligatorio", toastOptions);
       //return { success: false, message: "¡El nombre es obligatorio!" };
     } else {
       await new Promise((resolve) => setTimeout(resolve, 777));
-      toast.success("¡Registro guardado con éxito!", { theme: "light" });
+      toast.success("¡Registro guardado con éxito!", toastOptions);
     }
 
     handleCloseUserModal();
@@ -235,7 +240,11 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                 {records.map((record, index) => (
                   <tr key={index} className="trZebra">
                     <td className="w-fit relative">
-                      <DropdownMenuCRUD recordId={record[0]} recordData={record} access_level={nivel}/>
+                      <DropdownMenuCRUD
+                        recordId={record[0]}
+                        recordData={record}
+                        access_level={String(nivel)}
+                      />
                     </td>
                     {schema.columns.map((column: any) => (
                       <td
@@ -334,6 +343,28 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
     );
   };
 
+  // CRUD Operations
+  const handleCreateRecord = async (data: any) => {
+    try {
+      setCrudLoading(true);
+      await apiService.createRecord(selectedTable, data);
+
+      await selectTable(selectedTable);
+      setShowCreateModal(false);
+      toast.success("Registro creado exitosamente", { theme: "light" });
+      //showNotification('Registro creado exitosamente', 'success');
+    } catch (err: any) {
+      toast.error(
+        "Error al crear registro: " +
+          (err.response?.data?.message || err.message),
+        { theme: "dark" }
+      );
+      //showNotification('Error al crear registro: ' + (err.response?.data?.message || err.message), 'error');
+    } finally {
+      setCrudLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col overflow-auto pb-3">
       <div className="flex flex-wrap w-full gap-4 px-4">
@@ -353,7 +384,9 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                 <button
                   className="btn3"
                   title="Agregar registro"
-                  onClick={contactosHandleOpenModal}
+                  hidden={nivel === "1"}
+                  //onClick={contactosHandleOpenModal}
+                  onClick={() => setShowCreateModal(true)}
                 >
                   <i className="fa-solid fa-plus"></i>
                   <span className="lblBtn">Agregar</span>
@@ -403,6 +436,25 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
 
           <DataTableView schema={schema} />
         </div>
+
+        {/* Modales existentes */}
+        {/* Modal Crear */}
+        <Modal
+          isOpen={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          type="ins"
+        >
+          {schema && (
+            <RecordForm
+              tableName={selectedTable}
+              schema={schema}
+              onSave={handleCreateRecord}
+              onCancel={() => setShowCreateModal(false)}
+              isLoading={crudLoading}
+              level={nivel}
+            />
+          )}
+        </Modal>
       </div>
     </div>
   );
