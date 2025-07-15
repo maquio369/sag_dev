@@ -35,7 +35,7 @@ const RecordForm = ({
         initialData[column.column_name] = record[column.column_name] ?? '';
       } else {
         // Modo creación: valores por defecto
-        if (column.is_primary_key && column.column_default?.includes('nextval')) {
+        if (column.is_primary_key && column.is_identity) {
           // Primary key auto-increment: no incluir
           return;
         }
@@ -112,8 +112,9 @@ const RecordForm = ({
       const value = formData[column.column_name];
       
       // Skip auto-increment primary keys
-      if (column.is_primary_key && column.column_default?.includes('nextval')) {
-        return;
+      if (column.is_primary_key && column.is_identity) {
+          // Primary key auto-increment: no incluir
+          return;
       }
 
       // Required field validation
@@ -152,9 +153,10 @@ const RecordForm = ({
       const value = formData[column.column_name];
       
       // Skip auto-increment primary keys in create mode
-      if (!isEdit && column.is_primary_key && column.column_default?.includes('nextval')) {
-        return;
-      }
+      if (!isEdit && column.is_primary_key && column.is_identity) {
+          // Primary key auto-increment: no incluir
+          return;
+        }
 
       // Skip primary key in edit mode
       if (isEdit && column.is_primary_key) {
@@ -265,8 +267,9 @@ const RecordForm = ({
     const displayName =column.column_desc?column.column_desc: getColumnDisplayName(column.column_name);
     
     // Skip auto-increment primary keys
-    if (column.is_primary_key && column.column_default?.includes('nextval')) {
-      return null;
+    if (column.is_primary_key && column.is_identity) {
+          // Primary key auto-increment: no incluir
+          return null;
     }
 
     // Skip primary key in edit mode (mostrar como disabled)
@@ -309,9 +312,10 @@ const RecordForm = ({
       return (
         <div className="space-y-2" hidden={column.column_name===esta_borrado && level !== "4"}>
           <label className="block text-sm font-medium text-gray-700">
-            <div className="flex items-center space-x-2">
+            {column.column_desc}
+            <div className="flex items-center space-x-2 mt-2 ml-0">
               <input type="checkbox" id={column.column_name} name={column.column_name} ></input>
-              <label htmlFor={column.column_name}>{column.column_desc}</label>              
+              <label htmlFor={column.column_name}>{/*column.column_desc*/}</label>              
             </div>
           </label>
           
@@ -428,8 +432,9 @@ const RecordForm = ({
   // 🎯 FILTRAR COLUMNAS VISIBLES (excluir auto-increment PKs)
   const visibleColumns = schema.columns.filter(column => {
     // En modo creación, excluir auto-increment primary keys
-    if (!isEdit && column.is_primary_key && column.column_default?.includes('nextval')) {
-      return false;
+    if (!isEdit && column.is_primary_key && column.is_identity) {
+        // Primary key auto-increment: no incluir
+        return false;
     }
     return true;
   });

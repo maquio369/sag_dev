@@ -443,6 +443,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
           isOpen={showCreateModal}
           onClose={() => setShowCreateModal(false)}
           type="ins"
+          className="fondoVentanaForm-width fondoVentanaForm-center min-h-3/12"
         >
           {schema && (
             <RecordForm
