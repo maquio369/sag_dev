@@ -222,7 +222,7 @@ const RecordForm = ({
           <div className="flex items-center space-x-2">
             <span className="text-blue-600">🔗</span>
             <span>{displayName}</span>
-            {isRequired && <span className="text-red-500">*</span>}
+            {isRequired && <span className="text-green-500">*</span>}
           </div>
         </label>
         
@@ -269,11 +269,12 @@ const RecordForm = ({
     // Skip auto-increment primary keys
     if (column.is_primary_key && column.is_identity) {
           // Primary key auto-increment: no incluir
+          
           return null;
     }
 
     // Skip primary key in edit mode (mostrar como disabled)
-    if (isEdit && column.is_primary_key) {
+    if (isEdit && column.is_primary_key || column.is_identity) {
       return (
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-700">
@@ -337,7 +338,7 @@ const RecordForm = ({
             <div className="flex items-center space-x-2">
               <span className="text-indigo-600">📅</span>
               <span>{displayName}</span>
-              {isRequired && <span className="text-red-500">*</span>}
+              {isRequired && <span className="text-cyan-500">*</span>}
             </div>
           </label>
           <input
@@ -367,7 +368,7 @@ const RecordForm = ({
             <div className="flex items-center space-x-2">
               <span className="text-gray-600">📝</span>
               <span>{displayName}</span>
-              {isRequired && <span className="text-red-500">*</span>}
+              {isRequired && <span className="text-blue-500">*</span>}
             </div>
           </label>
           <textarea
@@ -400,14 +401,20 @@ const RecordForm = ({
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-700">
           <div className="flex items-center space-x-2">
+            
             <span className="text-gray-600">
-              {inputType === 'email' ? '📧' : 
+              {column.is_primary_key?'🔑':column.is_primary_key}
+              {column.is_identity?'🗝':column.is_identity}
+              {column.isForeignKey?'🗝️':column.isForeignKey}
+              {console.log(column.column_desc, 'pk',column.is_primary_key,'id',column.is_identity,'FK',column.isForeignKey)}
+              {/*inputType === 'email' ? '✉️' : 
                inputType === 'tel' ? '📞' : 
                inputType === 'password' ? '🔒' : 
-               inputType === 'number' ? '🔢' : '📄'}
+               inputType === 'number' ? '🔢' : '📄'*/}
             </span>
+             
             <span>{displayName}</span>
-            {isRequired && <span className="text-red-500">*</span>}
+            {isRequired && <span className="text-orange-500">*</span>}
           </div>
         </label>
         <input
