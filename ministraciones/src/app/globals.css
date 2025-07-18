@@ -29,7 +29,7 @@ hr {
   @apply bg-fondoBlancoTransparente rounded-full;
 }
 
-input {
+textarea,input {
   @apply placeholder:text-sm placeholder:italic placeholder:font-light rounded invalid:border-bordeControlInvalido valid:bg-fondoControlValido placeholder:pl-0.5 text-textoControl
    border-bordeControl ring-bordeExteriorBotonSeleccionado bg-fondoControl  focus:border-bordeControlHover  
     dark:bg-fondoTransparenteObscuroBoton dark:valid:bg-fondoTransparenteObscuroBoton dark:text-menuTexto 
@@ -155,7 +155,9 @@ input[type="button"] {
 .grid2cols {
   @apply grid grid-cols-1 sm:grid-cols-1 xl:grid-cols-2 gap-x-4;
 }
-
+.grid1col {
+  @apply grid grid-cols-1 gap-x-4;
+}
 .trZebra {
   @apply h-9 border-b-1 border-y-fondoTransparenteObscuroBoton dark:border-y-textoSeparadorDark odd:bg-fondoTablaFilaZebra dark:bg-fondoObscuroVentana dark:odd:bg-textoControl text-sm text-textoTabla dark:text-textoTablaDark hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion;
 }

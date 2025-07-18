@@ -1,17 +1,17 @@
 // src/components/RecordForm.jsx - Con layout 2x2 para los campos
-import { useState, useEffect } from 'react';
-import { apiService } from '../services/api';
-import { aOracion } from '@/utils/util';
-import Spinner from './elements/Spinner';
+import { useState, useEffect } from "react";
+import { apiService } from "../services/api";
+import { aOracion } from "@/utils/util";
+import Spinner from "./elements/Spinner";
 
-const RecordForm = ({ 
-  tableName, 
-  schema, 
-  record = null, 
-  onSave, 
-  onCancel, 
-  isLoading = false, 
-  level
+const RecordForm = ({
+  tableName,
+  schema,
+  record = null,
+  onSave,
+  onCancel,
+  isLoading = false,
+  level,
 }) => {
   const [formData, setFormData] = useState({});
   const [foreignKeyOptions, setForeignKeyOptions] = useState({});
@@ -26,36 +26,36 @@ const RecordForm = ({
     if (schema && schema.foreignKeys && schema.foreignKeys.length > 0) {
       loadForeignKeyOptions();
     }
-  }, [schema, record, tableName,level]);
+  }, [schema, record, tableName, level]);
 
   const initializeForm = () => {
     const initialData = {};
-    
-    schema.columns.forEach(column => {
+
+    schema.columns.forEach((column) => {
       if (isEdit && record) {
         // Modo edición: usar datos del registro
-        initialData[column.column_name] = record[column.column_name] ?? '';
+        initialData[column.column_name] = record[column.column_name] ?? "";
       } else {
         // Modo creación: valores por defecto
         if (column.is_primary_key && column.is_identity) {
           // Primary key auto-increment: no incluir
           return;
         }
-        
+
         if (column.column_default) {
-          if (column.data_type === 'boolean') {
-            initialData[column.column_name] = column.column_default === 'true';
+          if (column.data_type === "boolean") {
+            initialData[column.column_name] = column.column_default === "true";
           } else {
             initialData[column.column_name] = column.column_default;
           }
-        } else if (column.data_type === 'boolean') {
+        } else if (column.data_type === "boolean") {
           initialData[column.column_name] = false;
         } else {
-          initialData[column.column_name] = '';
+          initialData[column.column_name] = "";
         }
       }
     });
-    
+
     setFormData(initialData);
   };
 
@@ -71,11 +71,17 @@ const RecordForm = ({
       // Cargar opciones para cada foreign key
       const promises = schema.foreignKeys.map(async (fk) => {
         try {
-          const response = await apiService.getForeignKeyOptions(tableName, fk.column_name);
+          const response = await apiService.getForeignKeyOptions(
+            tableName,
+            fk.column_name
+          );
           options[fk.column_name] = response.data.data.options;
           //console.log(`Opciones cargadas para ${fk.column_name}:`, response.data.data.options);
         } catch (error) {
-          console.error(`Error cargando opciones para ${fk.column_name}:`, error);
+          console.error(
+            `Error cargando opciones para ${fk.column_name}:`,
+            error
+          );
           // Si falla, crear opciones vacías
           options[fk.column_name] = [];
         }
@@ -83,9 +89,8 @@ const RecordForm = ({
 
       await Promise.all(promises);
       setForeignKeyOptions(options);
-      
     } catch (error) {
-      console.error('Error general cargando opciones FK:', error);
+      console.error("Error general cargando opciones FK:", error);
       // showNotification('Error al cargar opciones de relaciones', 'error');
     } finally {
       setLoadingOptions(false);
@@ -93,16 +98,16 @@ const RecordForm = ({
   };
 
   const handleInputChange = (columnName, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [columnName]: value
+      [columnName]: value,
     }));
 
     // Limpiar error del campo al cambiar el valor
     if (errors[columnName]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [columnName]: null
+        [columnName]: null,
       }));
     }
   };
@@ -110,28 +115,28 @@ const RecordForm = ({
   const validateForm = () => {
     const newErrors = {};
 
-    schema.columns.forEach(column => {
+    schema.columns.forEach((column) => {
       const value = formData[column.column_name];
-      
+
       // Skip auto-increment primary keys
       if (column.is_primary_key && column.is_identity) {
-          // Primary key auto-increment: no incluir
-          return;
+        // Primary key auto-increment: no incluir
+        return;
       }
 
       // Required field validation
-      if (column.is_nullable === 'NO' && !column.column_default) {
-        if (value === null || value === undefined || value === '') {
+      if (column.is_nullable === "NO" && !column.column_default) {
+        if (value === null || value === undefined || value === "") {
           newErrors[column.column_name] = `${column.column_name} es requerido`;
         }
       }
 
       // Type validation
-      if (value !== null && value !== undefined && value !== '') {
-        if (column.data_type === 'integer') {
+      if (value !== null && value !== undefined && value !== "") {
+        if (column.data_type === "integer") {
           const numValue = Number(value);
           if (!Number.isInteger(numValue)) {
-            newErrors[column.column_name] = 'Debe ser un número entero';
+            newErrors[column.column_name] = "Debe ser un número entero";
           }
         }
       }
@@ -143,22 +148,22 @@ const RecordForm = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
 
     // Preparar datos para envío
     const dataToSend = {};
-    
-    schema.columns.forEach(column => {
+
+    schema.columns.forEach((column) => {
       const value = formData[column.column_name];
-      
+
       // Skip auto-increment primary keys in create mode
       if (!isEdit && column.is_primary_key && column.is_identity) {
-          // Primary key auto-increment: no incluir
-          return;
-        }
+        // Primary key auto-increment: no incluir
+        return;
+      }
 
       // Skip primary key in edit mode
       if (isEdit && column.is_primary_key) {
@@ -166,15 +171,15 @@ const RecordForm = ({
       }
 
       // Only include non-empty values
-      if (value !== null && value !== undefined && value !== '') {
-        if (column.data_type === 'integer') {
+      if (value !== null && value !== undefined && value !== "") {
+        if (column.data_type === "integer") {
           dataToSend[column.column_name] = parseInt(value);
-        } else if (column.data_type === 'boolean') {
+        } else if (column.data_type === "boolean") {
           dataToSend[column.column_name] = Boolean(value);
         } else {
           dataToSend[column.column_name] = value;
         }
-      } else if (column.data_type === 'boolean') {
+      } else if (column.data_type === "boolean") {
         dataToSend[column.column_name] = Boolean(value);
       }
     });
@@ -184,26 +189,34 @@ const RecordForm = ({
 
   // 🎯 FUNCIÓN PARA OBTENER NOMBRE AMIGABLE DE COLUMNAS
   const getColumnDisplayName = (columnName, columnDesc) => {
-    return columnDesc? columnDesc:aOracion(columnName);    
+    return columnDesc ? columnDesc : aOracion(columnName);
   };
 
   // 🎯 FUNCIÓN PARA RENDERIZAR CAMPOS DE FOREIGN KEY
-  const renderForeignKeyField = (column, value, error, isRequired, displayName) => {
+  const renderForeignKeyField = (
+    column,
+    value,
+    error,
+    isRequired,
+    displayName
+  ) => {
     // Si están cargando las opciones, mostrar loading
-  if (loadingOptions) {
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <div className="flex items-center space-x-3">
-            <div className="animateSpin"></div>
-            <span className="text-gray-700">Cargando opciones de relaciones...</span>
+    if (loadingOptions) {
+      return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="flex items-center space-x-3">
+              <div className="animateSpin"></div>
+              <span className="text-gray-700">
+                Cargando opciones de relaciones...
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
 
-  return (
+    return (
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-700">
           <div className="flex items-center space-x-2">
@@ -212,26 +225,38 @@ const RecordForm = ({
             {isRequired && <span className="text-TextoLblErrorDark">*</span>}
           </div>
         </label>
-        
+
         <select
           value={value}
-          onChange={(e) => handleInputChange(column.column_name, e.target.value ? parseInt(e.target.value) : '')}
+          onChange={(e) =>
+            handleInputChange(
+              column.column_name,
+              e.target.value ? parseInt(e.target.value) : ""
+            )
+          }
           className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-            error ? 'border-TextoLblError bg-red-50' : 'border-gray-300'
+            error ? "border-TextoLblError bg-red-50" : "border-gray-300"
           }`}
           required={isRequired}
           disabled={loadingOptions}
         >
-          <option value="" className="text-textoSeparadorDark dark:text-textoEtiqueta">
-            {loadingOptions ? 'Cargando opciones...' : `≡`/* -- Seleccione ${displayName} -- */}
+          <option
+            value=""
+            className="text-textoSeparadorDark dark:text-textoEtiqueta"
+          >
+            {
+              loadingOptions
+                ? "Cargando opciones..."
+                : `≡` /* -- Seleccione ${displayName} -- */
+            }
           </option>
-          {foreignKeyOptions[column.column_name]?.map(option => (
+          {foreignKeyOptions[column.column_name]?.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
           ))}
         </select>
-        
+
         {error && (
           <p className="text-sm text-TextoLblError flex items-center space-x-1">
             <span>⚠️</span>
@@ -244,19 +269,23 @@ const RecordForm = ({
 
   // 🎯 FUNCIÓN PRINCIPAL ACTUALIZADA PARA RENDERIZAR CAMPOS
   const renderField = (column) => {
-    const value = formData[column.column_name] ?? '';
+    const value = formData[column.column_name] ?? "";
     const error = errors[column.column_name];
-    const isRequired = column.is_nullable === 'NO' && !column.column_default;
-    const displayName =getColumnDisplayName(column.column_name, column.column_desc);
-    
+    const isRequired = column.is_nullable === "NO" && !column.column_default;
+    const displayName = getColumnDisplayName(
+      column.column_name,
+      column.column_desc
+    );
+
     // Skip auto-increment primary keys
     if (column.is_primary_key && column.is_identity) {
-          // Primary key auto-increment: no incluir          
-          return null;
+      // Primary key auto-increment: no incluir
+      return null;
     }
 
     // Skip primary key in edit mode (mostrar como disabled)
-    if ((isEdit && column.is_primary_key) ) {//|| column.is_identity
+    if (isEdit && column.is_primary_key) {
+      //|| column.is_identity
       return (
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-700">
@@ -267,41 +296,57 @@ const RecordForm = ({
           </label>
           <input
             type="text"
+            title="🔐 El id no es modificable"
             value={value}
             disabled
             className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
           />
-          <p className="text-xs text-gray-500">
-            🔐 La clave primaria no se puede modificar
-          </p>
         </div>
       );
     }
 
     // 🚀 NUEVA LÓGICA: Verificar si es foreign key
-    const isForeignKey = schema.foreignKeys?.some(fk => fk.column_name === column.column_name);
-    
+    const isForeignKey = schema.foreignKeys?.some(
+      (fk) => fk.column_name === column.column_name
+    );
     if (isForeignKey) {
-      return renderForeignKeyField(column, value, error, isRequired, displayName);
+      return renderForeignKeyField(
+        column,
+        value,
+        error,
+        isRequired,
+        displayName
+      );
     }
 
     // Resto de campos normales...
-    const baseInputClasses = `w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-      error ? 'border-red-500 bg-red-50' : 'border-gray-300'
-    }`;
+    const baseInputClasses =
+      "w-full"; /*`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+      error ? "border-red-500 bg-red-50" : "border-gray-300"
+    }`;*/
 
     // Boolean field
-    if (column.data_type === 'boolean') {
+    if (column.data_type === "boolean") {
       return (
-        <div className="space-y-2" hidden={column.column_name===esta_borrado && level !== "4"}>
+        <div
+          className="space-y-2"
+          hidden={column.column_name === esta_borrado && level !== "4"}
+        >
           <label className="block text-sm font-medium text-gray-700">
             {column.column_desc}
             <div className="flex items-center space-x-2 mt-2 ml-0">
-              <input type="checkbox" id={column.column_name} name={column.column_name} ></input>
-              <label htmlFor={column.column_name}>{/*column.column_desc*/}</label>              
+              <input
+                type="checkbox"
+                id={column.column_name}
+                name={column.column_name}
+                className="focus:ring-2 focus:ring-offset-2 focus:ring-bordeControlHover ring-rounded-md"
+              ></input>
+              <label htmlFor={column.column_name}>
+                {/*column.column_desc*/}
+              </label>
             </div>
           </label>
-          
+
           {error && (
             <p className="text-sm text-TextoLblError flex items-center space-x-1">
               <span>⚠️</span>
@@ -313,20 +358,22 @@ const RecordForm = ({
     }
 
     // Date/DateTime fields
-    if (column.data_type === 'date' || column.data_type === 'timestamp') {
+    if (column.data_type === "date" || column.data_type === "timestamp") {
       return (
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-700">
             <div className="flex items-center space-x-2">
               <span className="text-indigo-600">📅</span>
               <span>{displayName}</span>
-              {isRequired && <span className="text-cyan-500">*</span>}
+              {isRequired && <span className="text-TextoLblErrorDark">*</span>}
             </div>
           </label>
           <input
-            type={column.data_type === 'date' ? 'date' : 'datetime-local'}
+            type={column.data_type === "date" ? "date" : "datetime-local"}
             value={value}
-            onChange={(e) => handleInputChange(column.column_name, e.target.value)}
+            onChange={(e) =>
+              handleInputChange(column.column_name, e.target.value)
+            }
             className={baseInputClasses}
             required={isRequired}
           />
@@ -341,24 +388,32 @@ const RecordForm = ({
     }
 
     // Text area for long text fields
-    if (column.character_maximum_length > 200 || 
-        column.column_name.toLowerCase().includes('descripcion') ||
-        column.column_name.toLowerCase().includes('comentario')) {
+    if (
+      column.character_maximum_length > 200 ||
+      column.column_name.toLowerCase().includes("descripcion") ||
+      column.column_name.toLowerCase().includes("comentario") ||
+      column.column_name.toLowerCase().includes("nota") ||
+      column.column_name.toLowerCase().includes("observacion") ||
+      column.column_name.toLowerCase().includes("objetivo")
+    ) {
       return (
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-700">
             <div className="flex items-center space-x-2">
-              <span className="text-gray-600">📝</span>
               <span>{displayName}</span>
-              {isRequired && <span className="text-blue-500">*</span>}
+              {isRequired && <span className="text-TextoLblErrorDark">*</span>}
             </div>
           </label>
           <textarea
             value={value}
-            onChange={(e) => handleInputChange(column.column_name, e.target.value)}
-            rows={4}
-            className={baseInputClasses}
-            placeholder={`Ingrese ${displayName.toLowerCase()}...`}
+            onChange={(e) =>
+              handleInputChange(column.column_name, e.target.value)
+            }
+            /*rows={4}*/
+            className={baseInputClasses + " h-17"}
+            placeholder={
+              isRequired ? `Ingrese ${displayName.toLowerCase()}...` : ""
+            }
             required={isRequired}
           />
           {error && (
@@ -372,41 +427,40 @@ const RecordForm = ({
     }
 
     // Regular input field
-    const inputType = column.data_type === 'integer' ? 'number' : 
-                     column.column_name.toLowerCase().includes('correo') || 
-                     column.column_name.toLowerCase().includes('email') ? 'email' :
-                     column.column_name.toLowerCase().includes('telefono') ? 'tel' :
-                     column.column_name.toLowerCase().includes('clave') || 
-                     column.column_name.toLowerCase().includes('password') ? 'password' : 'text';
+    const inputType =
+      column.data_type === "integer"
+        ? "number"
+        : column.column_name.toLowerCase().includes("correo") ||
+            column.column_name.toLowerCase().includes("email")
+          ? "email"
+          : column.column_name.toLowerCase().includes("telefono")
+            ? "tel"
+            : column.column_name.toLowerCase().includes("password") ||
+                column.column_name.toLowerCase().includes("contraseña") ||
+                column.column_name.toLowerCase().includes("clave")
+              ? "password"
+              : "text";
 
     return (
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-700">
           <div className="flex items-center space-x-2">
-            
-            <span className="text-gray-600">
-              {column.is_primary_key?'🔑':column.is_primary_key}
-              {column.is_identity?'🗝':column.is_identity}
-              {column.isForeignKey?'🗝️':column.isForeignKey}
-              {console.log(column.column_desc, 'pk',column.is_primary_key,'id',column.is_identity,'FK',column.isForeignKey)}
-              {/*inputType === 'email' ? '✉️' : 
-               inputType === 'tel' ? '📞' : 
-               inputType === 'password' ? '🔒' : 
-               inputType === 'number' ? '🔢' : '📄'*/}
-            </span>
-             
             <span>{displayName}</span>
-            {isRequired && <span className="text-orange-500">*</span>}
+            {isRequired && <span className="text-TextoLblErrorDark">*</span>}
           </div>
         </label>
         <input
           type={inputType}
           value={value}
-          onChange={(e) => handleInputChange(column.column_name, e.target.value)}
+          onChange={(e) =>
+            handleInputChange(column.column_name, e.target.value)
+          }
           className={baseInputClasses}
-          placeholder={`Ingrese ${displayName.toLowerCase()}...`}
+          placeholder={
+            isRequired ? `Ingrese ${displayName.toLowerCase()}...` : ""
+          }
           required={isRequired}
-          min={inputType === 'number' ? 0 : undefined}
+          min={inputType === "number" ? 0 : undefined}
         />
         {error && (
           <p className="text-sm text-TextoLblError flex items-center space-x-1">
@@ -419,11 +473,11 @@ const RecordForm = ({
   };
 
   // 🎯 FILTRAR COLUMNAS VISIBLES (excluir auto-increment PKs)
-  const visibleColumns = schema.columns.filter(column => {
+  const visibleColumns = schema.columns.filter((column) => {
     // En modo creación, excluir auto-increment primary keys
     if (!isEdit && column.is_primary_key && column.is_identity) {
-        // Primary key auto-increment: no incluir
-        return false;
+      // Primary key auto-increment: no incluir
+      return false;
     }
     return true;
   });
@@ -432,22 +486,18 @@ const RecordForm = ({
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* 🎯 GRILLA 2x2 PARA LOS CAMPOS */}
       <div className="max-h-[60vh] overflow-y-auto pr-2">
-        {visibleColumns.length <= 4 ? (
-          // Si hay 4 o menos campos, usar grilla 2x2
-          <div className="grid grid-cols-2 gap-6">
-            {visibleColumns.map(column => (
-              <div key={column.column_name}>
-                {renderField(column)}
-              </div>
+        {visibleColumns.length <= 6 ? (
+          // Si hay 4 o menos campos, usar grilla 2x2 "grid grid-cols-2 gap-6"
+          <div className="grid1col">
+            {visibleColumns.map((column) => (
+              <div key={column.column_name}>{renderField(column)}</div>
             ))}
           </div>
         ) : (
-          // Si hay más de 4 campos, usar grilla 2x2 pero con scroll
-          <div className="grid grid-cols-2 gap-6">
-            {visibleColumns.map(column => (
-              <div key={column.column_name}>
-                {renderField(column)}
-              </div>
+          // Si hay más de 4 campos, usar grilla 2x2 pero con scroll grid grid-cols-2 gap-6
+          <div className="grid3cols">
+            {visibleColumns.map((column) => (
+              <div key={column.column_name}>{renderField(column)}</div>
             ))}
           </div>
         )}
@@ -461,10 +511,7 @@ const RecordForm = ({
           disabled={isLoading}
           className="px-6 py-2 border-2 border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium"
         >
-          {isLoading && (
-            
-            <Spinner className="h-4 w-4"/>
-          )}
+          {isLoading && <Spinner className="h-4 w-4" />}
           Cancelar
         </button>
         <button
@@ -472,12 +519,9 @@ const RecordForm = ({
           disabled={isLoading || loadingOptions}
           className="px-6 py-2 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-lg hover:from-teal-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 shadow-lg transform hover:scale-105 transition-all duration-200 font-medium"
         >
-          {isLoading && (
-            <Spinner className="h-4 w-4"/>
-            
-          )}
-          <span>{isEdit ? '✏️' : '✨'}</span>
-          <span>{isEdit ? 'Actualizar' : 'Crear'} registro</span>
+          {isLoading && <Spinner className="h-4 w-4" />}
+          <span>{isEdit ? "✏️" : "✨"}</span>
+          <span>{isEdit ? "Actualizar" : "Crear"} registro</span>
         </button>
       </div>
     </form>

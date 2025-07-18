@@ -56,7 +56,8 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
   const [tables, setTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState(entity);
   const [records, setRecords] = useState([]);
-  const [schema, setSchema] = useState(null);
+  type TableSchema = { columns: any[]; [key: string]: any };
+  const [schema, setSchema] = useState<TableSchema | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [pagination, setPagination] = useState({});
@@ -435,11 +436,13 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
 
         {/* Modales existentes */}
         {/* Modal Crear */}
+        
         <Modal
           isOpen={showCreateModal}
           onClose={() => setShowCreateModal(false)}
-          type="ins"
-          className="fondoVentanaForm-width fondoVentanaForm-center min-h-3/12"
+          type={"Nuevo registro" + " de " + selectedTable}
+          
+          className={schema && schema.columns.length <= 6 ? "w-[88%] md:w-[68%] lg:w-[48%]  fondoVentanaForm fondoVentanaForm-center min-h-3/12" : "fondoVentanaForm-width fondoVentanaForm-center min-h-3/12"}
         >
           {schema && (
             <RecordForm
