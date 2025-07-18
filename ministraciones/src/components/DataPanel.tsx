@@ -10,6 +10,7 @@ import { apiService } from "../services/api";
 import DropdownMenuCRUD from "./DropdownMenuCRUD";
 import Modal from "./elements/Modal";
 import RecordForm from "./RecordForm";
+import Spinner from "./elements/Spinner";
 
 //import { apiConfig, apiService } from "../utils/api";
 
@@ -191,12 +192,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
       <div className="flex-1 overflow-auto">
         {/* Tabla de datos */}
         {loading ? (
-          <div className="flex items-center justify-center h-96">
-            <div className="relative">
-              <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200"></div>
-              <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent absolute top-0 left-0"></div>
-            </div>
-          </div>
+          <Spinner className="h-16 w-16 mt-18 border-4"/>          
         ) : records.length === 0 ? (
           <div className="flex items-center justify-center h-52">
             <div className="text-center">

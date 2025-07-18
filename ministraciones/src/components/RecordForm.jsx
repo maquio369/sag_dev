@@ -1,6 +1,8 @@
 // src/components/RecordForm.jsx - Con layout 2x2 para los campos
 import { useState, useEffect } from 'react';
 import { apiService } from '../services/api';
+import { aOracion } from '@/utils/util';
+import Spinner from './elements/Spinner';
 
 const RecordForm = ({ 
   tableName, 
@@ -71,7 +73,7 @@ const RecordForm = ({
         try {
           const response = await apiService.getForeignKeyOptions(tableName, fk.column_name);
           options[fk.column_name] = response.data.data.options;
-          console.log(`Opciones cargadas para ${fk.column_name}:`, response.data.data.options);
+          //console.log(`Opciones cargadas para ${fk.column_name}:`, response.data.data.options);
         } catch (error) {
           console.error(`Error cargando opciones para ${fk.column_name}:`, error);
           // Si falla, crear opciones vacías
@@ -181,23 +183,8 @@ const RecordForm = ({
   };
 
   // 🎯 FUNCIÓN PARA OBTENER NOMBRE AMIGABLE DE COLUMNAS
-  const getColumnDisplayName = (columnName) => {
-    const translations = {
-      'nombres': 'Nombre',
-      'apellidos': 'Apellidos',
-      'correo': 'Correo Electrónico',
-      'usuario': 'Usuario',
-      'id_rol': 'Rol',
-      'rol': 'Rol',
-      'esta_borrado': 'Estado',
-      'descripcion': 'Descripción',
-      'clave': 'Contraseña',
-      'documentos': 'Documentos',
-      'telefono': 'Teléfono',
-      'fecha_creacion': 'Fecha de Creación',
-      'fecha_actualizacion': 'Última Actualización'
-    };
-    return translations[columnName] || columnName.charAt(0).toUpperCase() + columnName.slice(1);
+  const getColumnDisplayName = (columnName, columnDesc) => {
+    return columnDesc? columnDesc:aOracion(columnName);    
   };
 
   // 🎯 FUNCIÓN PARA RENDERIZAR CAMPOS DE FOREIGN KEY
@@ -208,7 +195,7 @@ const RecordForm = ({
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <div className="flex items-center space-x-3">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            <div className="animateSpin"></div>
             <span className="text-gray-700">Cargando opciones de relaciones...</span>
           </div>
         </div>
@@ -220,9 +207,9 @@ const RecordForm = ({
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-700">
           <div className="flex items-center space-x-2">
-            <span className="text-blue-600">🔗</span>
+            {/*<span className="text-blue-600">🔗</span>*/}
             <span>{displayName}</span>
-            {isRequired && <span className="text-green-500">*</span>}
+            {isRequired && <span className="text-TextoLblErrorDark">*</span>}
           </div>
         </label>
         
@@ -230,13 +217,13 @@ const RecordForm = ({
           value={value}
           onChange={(e) => handleInputChange(column.column_name, e.target.value ? parseInt(e.target.value) : '')}
           className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-            error ? 'border-red-500 bg-red-50' : 'border-gray-300'
+            error ? 'border-TextoLblError bg-red-50' : 'border-gray-300'
           }`}
           required={isRequired}
           disabled={loadingOptions}
         >
-          <option value="">
-            {loadingOptions ? 'Cargando opciones...' : `-- Seleccione ${displayName} --`}
+          <option value="" className="text-textoSeparadorDark dark:text-textoEtiqueta">
+            {loadingOptions ? 'Cargando opciones...' : `≡`/* -- Seleccione ${displayName} -- */}
           </option>
           {foreignKeyOptions[column.column_name]?.map(option => (
             <option key={option.value} value={option.value}>
@@ -246,15 +233,11 @@ const RecordForm = ({
         </select>
         
         {error && (
-          <p className="text-sm text-red-600 flex items-center space-x-1">
+          <p className="text-sm text-TextoLblError flex items-center space-x-1">
             <span>⚠️</span>
             <span>{error}</span>
           </p>
         )}
-        
-        <p className="text-xs text-gray-500">
-          Seleccione {displayName.toLowerCase()} de la lista
-        </p>
       </div>
     );
   };
@@ -264,23 +247,22 @@ const RecordForm = ({
     const value = formData[column.column_name] ?? '';
     const error = errors[column.column_name];
     const isRequired = column.is_nullable === 'NO' && !column.column_default;
-    const displayName =column.column_desc?column.column_desc: getColumnDisplayName(column.column_name);
+    const displayName =getColumnDisplayName(column.column_name, column.column_desc);
     
     // Skip auto-increment primary keys
     if (column.is_primary_key && column.is_identity) {
-          // Primary key auto-increment: no incluir
-          
+          // Primary key auto-increment: no incluir          
           return null;
     }
 
     // Skip primary key in edit mode (mostrar como disabled)
-    if (isEdit && column.is_primary_key || column.is_identity) {
+    if ((isEdit && column.is_primary_key) ) {//|| column.is_identity
       return (
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-700">
             <div className="flex items-center space-x-2">
-              <span className="text-yellow-600">🔑</span>
-              <span>{displayName} (ID)</span>
+              <span className="text-textoGolden2">🔑</span>
+              <span>{displayName}</span>
             </div>
           </label>
           <input
@@ -290,7 +272,7 @@ const RecordForm = ({
             className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
           />
           <p className="text-xs text-gray-500">
-            La clave primaria no se puede modificar
+            🔐 La clave primaria no se puede modificar
           </p>
         </div>
       );
@@ -321,7 +303,7 @@ const RecordForm = ({
           </label>
           
           {error && (
-            <p className="text-sm text-red-600 flex items-center space-x-1">
+            <p className="text-sm text-TextoLblError flex items-center space-x-1">
               <span>⚠️</span>
               <span>{error}</span>
             </p>
@@ -349,7 +331,7 @@ const RecordForm = ({
             required={isRequired}
           />
           {error && (
-            <p className="text-sm text-red-600 flex items-center space-x-1">
+            <p className="text-sm text-TextoLblError flex items-center space-x-1">
               <span>⚠️</span>
               <span>{error}</span>
             </p>
@@ -380,7 +362,7 @@ const RecordForm = ({
             required={isRequired}
           />
           {error && (
-            <p className="text-sm text-red-600 flex items-center space-x-1">
+            <p className="text-sm text-TextoLblError flex items-center space-x-1">
               <span>⚠️</span>
               <span>{error}</span>
             </p>
@@ -427,7 +409,7 @@ const RecordForm = ({
           min={inputType === 'number' ? 0 : undefined}
         />
         {error && (
-          <p className="text-sm text-red-600 flex items-center space-x-1">
+          <p className="text-sm text-TextoLblError flex items-center space-x-1">
             <span>⚠️</span>
             <span>{error}</span>
           </p>
@@ -479,6 +461,10 @@ const RecordForm = ({
           disabled={isLoading}
           className="px-6 py-2 border-2 border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium"
         >
+          {isLoading && (
+            
+            <Spinner className="h-4 w-4"/>
+          )}
           Cancelar
         </button>
         <button
@@ -487,7 +473,8 @@ const RecordForm = ({
           className="px-6 py-2 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-lg hover:from-teal-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 shadow-lg transform hover:scale-105 transition-all duration-200 font-medium"
         >
           {isLoading && (
-            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+            <Spinner className="h-4 w-4"/>
+            
           )}
           <span>{isEdit ? '✏️' : '✨'}</span>
           <span>{isEdit ? 'Actualizar' : 'Crear'} registro</span>
