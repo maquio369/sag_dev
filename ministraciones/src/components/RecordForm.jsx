@@ -217,10 +217,9 @@ const RecordForm = ({
     }
 
     return (
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          <div className="flex items-center space-x-2">
-            {/*<span className="text-blue-600">🔗</span>*/}
+      <div className="mb-2">
+        <label className="block text-sm text-gray-700">
+          <div className="flex items-center space-x-1">
             <span>{displayName}</span>
             {isRequired && <span className="text-TextoLblErrorDark">*</span>}
           </div>
@@ -234,9 +233,12 @@ const RecordForm = ({
               e.target.value ? parseInt(e.target.value) : ""
             )
           }
-          className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-            error ? "border-TextoLblError bg-red-50" : "border-gray-300"
-          }`}
+          className={`w-full pl-0.5 py-2 border rounded-lg border-textoSeparadorDark focus:border-bordeExteriorBotonSeleccionado hover:border-1
+            focus:outline-none hover:ring-1 hover:ring-bordeControlHover transition-colors ${
+              error
+                ? "border-TextoLblError bg-red-50"
+                : "border-bordeExteriorBotonSeleccionado"
+            }`}
           required={isRequired}
           disabled={loadingOptions}
         >
@@ -244,11 +246,11 @@ const RecordForm = ({
             value=""
             className="text-textoSeparadorDark dark:text-textoEtiqueta"
           >
-            {
-              loadingOptions
-                ? "Cargando opciones..."
-                : `≡` /* -- Seleccione ${displayName} -- */
-            }
+            {loadingOptions
+              ? "Cargando opciones..."
+              : isRequired
+                ? `(Seleccione ${displayName.toLowerCase()})`
+                : "≡"}
           </option>
           {foreignKeyOptions[column.column_name]?.map((option) => (
             <option key={option.value} value={option.value}>
@@ -287,7 +289,7 @@ const RecordForm = ({
     if (isEdit && column.is_primary_key) {
       //|| column.is_identity
       return (
-        <div className="space-y-2">
+        <div className="mb-2">
           <label className="block text-sm font-medium text-gray-700">
             <div className="flex items-center space-x-2">
               <span className="text-textoGolden2">🔑</span>
@@ -329,12 +331,12 @@ const RecordForm = ({
     if (column.data_type === "boolean") {
       return (
         <div
-          className="space-y-2"
+          className="mb-2"
           hidden={column.column_name === esta_borrado && level !== "4"}
         >
           <label className="block text-sm font-medium text-gray-700">
             {column.column_desc}
-            <div className="flex items-center space-x-2 mt-2 ml-0">
+            <div className="flex items-center space-x-2 mt-1 ml-0">
               <input
                 type="checkbox"
                 id={column.column_name}
@@ -360,7 +362,7 @@ const RecordForm = ({
     // Date/DateTime fields
     if (column.data_type === "date" || column.data_type === "timestamp") {
       return (
-        <div className="space-y-2">
+        <div className="mb-2">
           <label className="block text-sm font-medium text-gray-700">
             <div className="flex items-center space-x-2">
               <span className="text-indigo-600">📅</span>
@@ -397,7 +399,7 @@ const RecordForm = ({
       column.column_name.toLowerCase().includes("objetivo")
     ) {
       return (
-        <div className="space-y-2">
+        <div className="mb-2">
           <label className="block text-sm font-medium text-gray-700">
             <div className="flex items-center space-x-2">
               <span>{displayName}</span>
@@ -442,7 +444,7 @@ const RecordForm = ({
               : "text";
 
     return (
-      <div className="space-y-2">
+      <div className="mb-2">
         <label className="block text-sm font-medium text-gray-700">
           <div className="flex items-center space-x-2">
             <span>{displayName}</span>
@@ -483,18 +485,26 @@ const RecordForm = ({
   });
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* 🎯 GRILLA 2x2 PARA LOS CAMPOS */}
+    <form onSubmit={handleSubmit} className="space-y-6">      
       <div className="max-h-[60vh] overflow-y-auto pr-2">
-        {visibleColumns.length <= 6 ? (
-          // Si hay 4 o menos campos, usar grilla 2x2 "grid grid-cols-2 gap-6"
+        {visibleColumns.length <=
+        Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_SM) ? (
+          // Si hay pocos campos, usar una sola columna
           <div className="grid1col">
             {visibleColumns.map((column) => (
               <div key={column.column_name}>{renderField(column)}</div>
             ))}
           </div>
+        ) : visibleColumns.length <=
+          Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_MD) ? (
+          // Si hay más de 6 campos, mostrarlos en 2 columnas
+          <div className="grid2cols">
+            {visibleColumns.map((column) => (
+              <div key={column.column_name}>{renderField(column)}</div>
+            ))}
+          </div>
         ) : (
-          // Si hay más de 4 campos, usar grilla 2x2 pero con scroll grid grid-cols-2 gap-6
+          // Si hay muchos campos, mostrarlos en 3 columnas
           <div className="grid3cols">
             {visibleColumns.map((column) => (
               <div key={column.column_name}>{renderField(column)}</div>
