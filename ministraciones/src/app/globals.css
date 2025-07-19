@@ -117,8 +117,8 @@ input[type="button"] {
 }
 
 .fondoVentanaForm {
-  @apply bg-fondoControl dark:bg-fondoObscuroVentana border border-textoSeparadorDark rounded shadow-xl pb-2 px-0;
-  /* w-[98%] md:w-[50%]     bg-fondoControl*/
+  @apply bg-fondoControl dark:bg-fondoObscuroVentana border border-textoSeparadorDark rounded shadow-xl pb-2 px-0
+    backdrop:backdrop-blur-[1px];  
 }
 .fondoVentanaForm-width {
   @apply w-[98%] md:w-[91%];
