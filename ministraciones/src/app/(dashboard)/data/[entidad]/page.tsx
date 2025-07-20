@@ -11,11 +11,11 @@ interface Props {
 
 const Data = async ({ params }: Props) => {
   const mnusCookie = (await cookies()).get("mnus");
-  let selectedOption = JSON.parse(
-    ofuscad(String((await cookies()).get("opt")?.value), false)
-  );
-
   if (mnusCookie) {
+    let selectedOption = JSON.parse(
+      ofuscad(String((await cookies()).get("opt")?.value), false)
+    );
+
     const { entidad } = await params;
     let entityVal = selectedOption.lnk_opt;
     //console.log("entity: ", entity);

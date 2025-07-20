@@ -29,11 +29,20 @@ hr {
   @apply bg-fondoBlancoTransparente rounded-full;
 }
 
-textarea,input {
+textarea,
+input {
   @apply placeholder:text-sm placeholder:italic placeholder:font-light rounded invalid:border-bordeControlInvalido valid:bg-fondoControlValido placeholder:pl-0.5 text-textoControl
    border-bordeControl ring-bordeExteriorBotonSeleccionado bg-fondoControl  focus:border-bordeControlHover  
     dark:bg-fondoTransparenteObscuroBoton dark:valid:bg-fondoTransparenteObscuroBoton dark:text-menuTexto 
    px-3 py-2 border hover:ring-1 focus:drop-shadow-xs focus:outline-none;
+}
+
+input {
+  line-height: 1;
+}
+
+textarea {
+  line-height: 1.25;
 }
 
 .input-border-zero {
@@ -47,35 +56,41 @@ input[type="button"] {
 
 .btn1 {
   @apply disabled:text-menuTextoSeparador disabled:bg-fondoTablaHeader focus:ring-offset-1 bg-fondoBoton1 text-textoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover  ring-bordeExteriorBotonSeleccionado
-  justify-center py-1.5 cursor-pointer px-3 rounded-lg focus:ring-1 border-0 focus:outline-none shadow transition-colors disabled:cursor-default;
+  justify-center py-1.5 cursor-pointer px-3 rounded-lg focus:ring-1 border-0 focus:outline-none shadow disabled:cursor-not-allowed
+  transition-all duration-200;
 }
 
 .btn2 {
   @apply disabled:text-menuTextoSeparador disabled:bg-fondoTablaHeader focus:ring-offset-1 bg-fondoBoton2 hover:bg-fondoBoton1Hover text-textoBoton2 hover:text-textoBoton2Hover ring-bordeExteriorBotonSeleccionado
-  justify-center py-1.5 cursor-pointer px-3 rounded-lg focus:ring-1 border-0 focus:outline-none shadow transition-colors disabled:cursor-default;
+  justify-center py-1.5 cursor-pointer px-3 rounded-lg focus:ring-1 border-0 focus:outline-none shadow disabled:cursor-not-allowed
+  transition-all duration-200;
 }
 
 .btn3 {
   @apply disabled:text-fondoTransparenteObscuroNotificacion focus:ring-offset-1 bg-transparent text-textoBoton2 dark:text-textoLink hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover ring-bordeExteriorBotonSeleccionado
-  shadow-transparent py-1 cursor-pointer px-2 rounded-xl flex items-center focus:ring-1 border-0 focus:outline-none  disabled:cursor-default;
+  shadow-transparent py-1 cursor-pointer px-2 rounded-xl flex items-center focus:ring-1 border-0 focus:outline-none  disabled:cursor-not-allowed
+  transition-all duration-200;
 }
 
 .btnTop {
   @apply rounded-full text-textoBoton1 ring-bordeControl hover:bg-fondoTransparenteObscuroBoton bg-transparent shadow-none hover:scale-105 px-2.5 py-1 ml-0.5
-  z-1 cursor-pointer border-0 disabled:cursor-default
+  z-1 cursor-pointer border-0 disabled:cursor-not-allowed 
   focus:outline-bordeExteriorBotonSeleccionado focus:outline-none outline-0
-   focus:ring-1 focus:ring-bordeBlancoTransparente;
+   focus:ring-1 focus:ring-bordeBlancoTransparente
+   transition-all duration-200;
   /* focus:outline-none focus:ring-1  outline-0*/
 }
 
 .btnIcon {
   @apply disabled:text-fondoTransparenteObscuroNotificacion focus:ring-offset-1 bg-transparent text-textoBoton2 dark:text-textoLink hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover ring-bordeExteriorBotonSeleccionado
-  shadow-transparent rounded-full px-2 py-0.5 mb-1 cursor-pointer disabled:cursor-default focus:outline-bordeExteriorBotonSeleccionado;
+  shadow-transparent rounded-full px-2 py-0.5 mb-1 cursor-pointer disabled:cursor-not-allowed focus:outline-bordeExteriorBotonSeleccionado
+  transition-all duration-200;
 }
 
 .btnDanger {
   @apply focus:ring-offset-1 bg-TextoLblError hover:bg-bordeControlInvalido text-textoBoton1 hover:text-textoBoton1Hover  ring-bordeExteriorBotonSeleccionado
-  justify-center cursor-pointer disabled:cursor-default;
+  justify-center cursor-pointer disabled:cursor-not-allowed 
+  transition-all duration-200;
 }
 
 .ahref {
@@ -118,7 +133,7 @@ input[type="button"] {
 
 .fondoVentanaForm {
   @apply bg-fondoControl dark:bg-fondoObscuroVentana border border-textoSeparadorDark rounded shadow-xl pb-2 px-0
-    backdrop:backdrop-blur-[1px];  
+    backdrop:backdrop-blur-[1px];
 }
 .fondoVentanaForm-width {
   @apply w-[98%] md:w-[91%];
@@ -178,34 +193,11 @@ table {
   @apply flex justify-center;
 }
 
-.animateSpin{
+.animateSpin {
   @apply animate-spin rounded-full h-4 w-4 border-2 shadow-lg border-fondoBoton2Hover dark:border-textoGolden1 border-t-transparent;
 }
 
 /*
-.modal::backdrop {
-  background: hsl(0 0% 0% / 50%);
-  backdrop-filter: blur(1px);
-  @apply fixed inset-0 z-50 flex items-center justify-center;
-}
-*/
-/*
-.modal {
-  max-width: 20rem;
-  padding: 2rem;
-  border: 0;
-  border-radius: 0.5rem;
-  position: relative;
-  box-shadow: hsl(0 0% 0% / 10%) 0 0 0.5rem 0.25rem;
-}
-
-.modal-close-btn {
-  font-size: 0.75em;
-  position: absolute;
-  top: 0.25em;
-  right: 0.25em;
-}
-
 .form-row {
   margin-top: 1rem;
 }

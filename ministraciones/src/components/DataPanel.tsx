@@ -440,6 +440,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
         <Modal
           isOpen={showCreateModal}
           onClose={() => setShowCreateModal(false)}
+          onSubmit={handleCreateRecord}
           type={"Nuevo registro" + " de " + selectedTable}
           
           className={schema && schema.columns.length <= Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_SM) ? "w-[88%] md:w-[68%] lg:w-[48%]  fondoVentanaForm fondoVentanaForm-center min-h-3/12" 

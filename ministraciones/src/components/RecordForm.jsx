@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { apiService } from "../services/api";
 import { aOracion } from "@/utils/util";
 import Spinner from "./elements/Spinner";
+import SubmitBtn from "./elements/SubmitBtn";
 
 const RecordForm = ({
   tableName,
@@ -336,7 +337,7 @@ const RecordForm = ({
         >
           <label className="block text-sm font-medium text-gray-700">
             {column.column_desc}
-            <div className="flex items-center space-x-2 mt-1 ml-0">
+            <div className="flex items-center space-x-2 mt-1 ml-1">
               <input
                 type="checkbox"
                 id={column.column_name}
@@ -485,7 +486,7 @@ const RecordForm = ({
   });
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">      
+    <form onSubmit={handleSubmit} className="space-y-1">
       <div className="max-h-[60vh] overflow-y-auto pr-2">
         {visibleColumns.length <=
         Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_SM) ? (
@@ -512,27 +513,9 @@ const RecordForm = ({
           </div>
         )}
       </div>
-
-      {/* 🎯 BOTONES DE ACCIÓN MEJORADOS */}
-      <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
-        <button
-          type="button"
-          onClick={onCancel}
-          disabled={isLoading}
-          className="px-6 py-2 border-2 border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium"
-        >
-          {isLoading && <Spinner className="h-4 w-4" />}
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          disabled={isLoading || loadingOptions}
-          className="px-6 py-2 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-lg hover:from-teal-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 shadow-lg transform hover:scale-105 transition-all duration-200 font-medium"
-        >
-          {isLoading && <Spinner className="h-4 w-4" />}
-          <span>{isEdit ? "✏️" : "✨"}</span>
-          <span>{isEdit ? "Actualizar" : "Crear"} registro</span>
-        </button>
+      
+      <div className="border-t border-fondoTransparenteObscuroBoton dark:border-textoSeparadorDark pt-1.5">
+        <SubmitBtn.Save className="" isPending={isLoading} />
       </div>
     </form>
   );

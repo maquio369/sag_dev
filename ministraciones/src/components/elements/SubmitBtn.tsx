@@ -12,7 +12,7 @@ import { useFormStatus } from "react-dom";
  */
 const SubmitBtn = function ({
   text = "Guardar",
-  icon = "fa-floppy-disk",
+  icon = "fa-solid fa-floppy-disk",
   className,
   isPending,
 }: {
@@ -26,12 +26,14 @@ const SubmitBtn = function ({
 
   return (
     <button className={"btn1 " + className} disabled={isPending}>
-      <i
-        className={
-          "mr-1.5 fa-solid " + icon + (isPending ? " fa-beat-fade" : "")
-        }
-      />
-      {text}
+      <span className="mx-1.5">
+        <i
+          className={
+            "mr-1.5 " + icon + (isPending ? " fa-beat-fade" : "")
+          }
+        />
+        {text}
+      </span>
     </button>
   );
 };
@@ -47,7 +49,7 @@ SubmitBtn.Enter = function ({
     <SubmitBtn
       text="Entrar"
       icon="fa-solid fa-arrow-right-to-bracket"
-      className={"mt-2 " + className}
+      className={"" + className}
       isPending={isPending}
     />
   );
@@ -63,8 +65,8 @@ SubmitBtn.Save = function ({
   return (
     <SubmitBtn
       text="Guardar"
-      icon="fa-floppy-disk"
-      className={"mt-2 " + className}
+      icon="fa-solid fa-floppy-disk"
+      className={"" + className}
       isPending={isPending}
     />
   );
@@ -80,8 +82,8 @@ SubmitBtn.Delete = function ({
   return (
     <SubmitBtn
       text="Eliminar"
-      icon="fa-trash-can"
-      className={"mt-2 " + className}
+      icon="fa-solid fa-trash-can"
+      className={"" + className}
       isPending={isPending}
     />
   );
@@ -97,8 +99,8 @@ SubmitBtn.Send = function ({
   return (
     <SubmitBtn
       text="Enviar"
-      icon="fa-paper-plane"
-      className={"mt-2 " + className}
+      icon="fa-solid fa-paper-plane"
+      className={"" + className}
       isPending={isPending}
     />
   );
@@ -114,8 +116,8 @@ SubmitBtn.Accept = function ({
   return (
     <SubmitBtn
       text="Aceptar"
-      icon="fa-check"
-      className={"mt-2 " + className}
+      icon="fa-solid fa-check"
+      className={"" + className}
       isPending={isPending}
     />
   );

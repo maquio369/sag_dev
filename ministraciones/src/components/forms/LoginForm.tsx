@@ -117,10 +117,8 @@ const LoginForm = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
+      <SubmitBtn.Enter className="w-full mt-3" />
 
-      <div className="items-center gap-2 ">
-        <SubmitBtn.Enter className="w-full" />
-      </div>
       {error && (
         <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-200 rounded-md text-sm">
           <div className="flex items-center">

@@ -1,18 +1,25 @@
 import { useEffect, useRef } from "react";
 import { CRUD_Props } from "@/components/forms/interfaces";
-
+/*
 interface Props {
   isOpen: boolean;
   onClose?: () => void;
   type?: "ins" | "upd" | "del" | string;
   className?: string;
   children: React.ReactNode;
-}
-const Modal = ({ isOpen, onClose, type, className, children }: CRUD_Props) => {
+}*/
+  
+const Modal = ({ isOpen, onClose, onSubmit, type, className, children }: CRUD_Props) => {  
   const modalRef = useRef<HTMLDialogElement>(null);
   const handleCloseModal = () => {
     if (onClose) {
       onClose();
+    }
+  };
+
+  const handleSubmitModal = () => {
+    if (onSubmit) {
+      onSubmit( null);
     }
   };
 
@@ -34,7 +41,7 @@ const Modal = ({ isOpen, onClose, type, className, children }: CRUD_Props) => {
     }
   }, [isOpen]);
 
-  function renderSwitch(type?: string) {
+  function renderWindowTitle(type?: string) {
     switch (type) {
       case "ins":
         return (
@@ -59,14 +66,43 @@ const Modal = ({ isOpen, onClose, type, className, children }: CRUD_Props) => {
         );
       default:
         return (
-          <>
+          <div className="flex items-center">
             <span className="text-sm text-bordeControl mr-1 ">■ </span>
             {type}
-          </>
+          </div>
         );
     }
   }
-
+function renderSubmitText(type?: string) {
+    switch (type) {
+      case "ins":
+        return (
+          <>
+            <i className="fa-solid fa-save"></i> Guardar
+          </>
+        );
+      case "upd":
+        return (
+          <>
+            <i className="fa-solid fa-save"></i> Guardar
+          </>
+        );
+      case "del":
+        return (
+          <>
+            <i className="fa-regular fa-trash-can"></i>
+            Eliminar
+          </>
+        );
+      default:
+        return (
+          <div>
+            <i className="fa-solid fa-check mr-1"></i>
+            Aceptar
+          </div>
+        );
+    }
+  }
   return (
     <dialog
       ref={modalRef}
@@ -76,22 +112,21 @@ const Modal = ({ isOpen, onClose, type, className, children }: CRUD_Props) => {
       {
         <div className="encabezadoVentanaForm">
           <div className="tituloVentanaForm">
+            {renderWindowTitle(type)}
             <span>
-              {renderSwitch(type)}
-            </span>
-            <span>
-              {
-              <button
-                id="saveButton"
-                className="btnIcon"
-                title="Guardar"
-                aria-label="Guardar"
-                onClick={() => alert("Registro guardado satisfactoriamente")}
-                //onClick={() => setOpen(false)}
-              >
-                <i className="fa-solid fa-save"></i> Guardar
-              </button>
-              }
+              {/*
+                <button
+                  id="submitButton"
+                  className="btnIcon"
+                  title="Guardar"
+                  aria-label="Guardar"
+                  type="submit"
+                  //onClick={() => alert("Registro guardado satisfactoriamente")}
+                  onClick={handleSubmitModal}
+                >
+                  {renderSubmitText(type)}
+                </button>
+              */}
               <button
                 id="exitButton"
                 className="btnIcon"
@@ -106,9 +141,7 @@ const Modal = ({ isOpen, onClose, type, className, children }: CRUD_Props) => {
           </div>
         </div>
       }
-      <div className="px-3">
-        {children}
-      </div>
+      <div className="px-3">{children}</div>
     </dialog>
   );
 };
