@@ -127,6 +127,7 @@ function renderSubmitText(type?: string) {
                   {renderSubmitText(type)}
                 </button>
               */}
+               
               <button
                 id="exitButton"
                 className="btnIcon"
@@ -134,9 +135,11 @@ function renderSubmitText(type?: string) {
                 aria-label="Cerrar"
                 onClick={handleCloseModal}
                 //onClick={() => setOpen(false)}
+                onFocus={(e) => firstCtrlFocus(e)}
               >
                 <i className="fa-solid fa-xmark"></i>
               </button>
+                
             </span>
           </div>
         </div>
@@ -146,4 +149,11 @@ function renderSubmitText(type?: string) {
   );
 };
 
+/* HTMLInputElement HTMLDivElement HTMLButtonElement */
+const firstCtrlFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
+  const firstCtrl = document.getElementById("firstCtrl");
+  if (firstCtrl) {
+    firstCtrl.focus();
+  }
+};
 export default Modal;

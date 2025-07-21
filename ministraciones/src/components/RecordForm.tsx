@@ -1,9 +1,38 @@
 // src/components/RecordForm.jsx - Con layout 2x2 para los campos
-import { useState, useEffect } from "react";
+import react,{ useState, useEffect, useRef } from "react";
 import { apiService } from "../services/api";
 import { aOracion } from "@/utils/util";
-import Spinner from "./elements/Spinner";
 import SubmitBtn from "./elements/SubmitBtn";
+
+type SchemaColumn = {
+  column_name: string;
+  column_desc?: string;
+  data_type: string;
+  is_primary_key?: boolean;
+  is_identity?: boolean;
+  is_nullable?: string;
+  column_default?: any;
+  character_maximum_length?: number;
+};
+
+type ForeignKey = {
+  column_name: string;
+};
+
+type Schema = {
+  columns: SchemaColumn[];
+  foreignKeys?: ForeignKey[];
+};
+
+type RecordFormProps = {
+  tableName: string;
+  schema: Schema;
+  record?: Record<string, any> | null;
+  onSave: (data: Record<string, any>) => void;
+  onCancel: () => void;
+  isLoading?: boolean;
+  level?: string;
+};
 
 const RecordForm = ({
   tableName,
@@ -13,12 +42,14 @@ const RecordForm = ({
   onCancel,
   isLoading = false,
   level,
-}) => {
-  const [formData, setFormData] = useState({});
-  const [foreignKeyOptions, setForeignKeyOptions] = useState({});
-  const [errors, setErrors] = useState({});
+}: RecordFormProps) => {
+  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [foreignKeyOptions, setForeignKeyOptions] = useState<{ [key: string]: any[] }>({});
+  const [errors, setErrors] = useState<Record<string, string | null>>({});
   const [loadingOptions, setLoadingOptions] = useState(false);
+
   const esta_borrado = process.env.NEXT_PUBLIC_DELETED_COLUMN_NAME;
+  let hasFocus = true;
 
   const isEdit = !!record;
 
@@ -30,7 +61,7 @@ const RecordForm = ({
   }, [schema, record, tableName, level]);
 
   const initializeForm = () => {
-    const initialData = {};
+    const initialData: Record<string, any> = {};
 
     schema.columns.forEach((column) => {
       if (isEdit && record) {
@@ -66,7 +97,7 @@ const RecordForm = ({
     }
 
     setLoadingOptions(true);
-    const options = {};
+    const options: { [key: string]: any } = {};
 
     try {
       // Cargar opciones para cada foreign key
@@ -98,7 +129,7 @@ const RecordForm = ({
     }
   };
 
-  const handleInputChange = (columnName, value) => {
+  const handleInputChange = (columnName:string, value:any) => {
     setFormData((prev) => ({
       ...prev,
       [columnName]: value,
@@ -114,7 +145,7 @@ const RecordForm = ({
   };
 
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors: Record<string, string> = {};
 
     schema.columns.forEach((column) => {
       const value = formData[column.column_name];
@@ -147,7 +178,7 @@ const RecordForm = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
 
     if (!validateForm()) {
@@ -155,7 +186,7 @@ const RecordForm = ({
     }
 
     // Preparar datos para envío
-    const dataToSend = {};
+    const dataToSend: Record<string, any> = {};
 
     schema.columns.forEach((column) => {
       const value = formData[column.column_name];
@@ -189,17 +220,17 @@ const RecordForm = ({
   };
 
   // 🎯 FUNCIÓN PARA OBTENER NOMBRE AMIGABLE DE COLUMNAS
-  const getColumnDisplayName = (columnName, columnDesc) => {
+  const getColumnDisplayName = (columnName:string, columnDesc: string) => {
     return columnDesc ? columnDesc : aOracion(columnName);
   };
 
   // 🎯 FUNCIÓN PARA RENDERIZAR CAMPOS DE FOREIGN KEY
   const renderForeignKeyField = (
-    column,
-    value,
-    error,
-    isRequired,
-    displayName
+    column: SchemaColumn,
+    value: any,
+    error: string | null,
+    isRequired: boolean,
+    displayName: string
   ) => {
     // Si están cargando las opciones, mostrar loading
     if (loadingOptions) {
@@ -228,6 +259,7 @@ const RecordForm = ({
 
         <select
           value={value}
+          id={hasFocus?"firstCtrl":column.column_name}
           onChange={(e) =>
             handleInputChange(
               column.column_name,
@@ -271,7 +303,16 @@ const RecordForm = ({
   };
 
   // 🎯 FUNCIÓN PRINCIPAL ACTUALIZADA PARA RENDERIZAR CAMPOS
-  const renderField = (column) => {
+  const renderField = (column: any, hasFocus:boolean) => {
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+        console.log("------------------------>",inputRef.current.name)
+      }
+    }, []); // Empty dependency array ensures it runs only on mount
+
     const value = formData[column.column_name] ?? "";
     const error = errors[column.column_name];
     const isRequired = column.is_nullable === "NO" && !column.column_default;
@@ -454,16 +495,21 @@ const RecordForm = ({
         </label>
         <input
           type={inputType}
+          id={hasFocus?"firstCtrl":column.column_name}
+          name={column.column_name}
           value={value}
           onChange={(e) =>
             handleInputChange(column.column_name, e.target.value)
           }
           className={baseInputClasses}
           placeholder={
-            isRequired ? `Ingrese ${displayName.toLowerCase()}...` : ""
+            isRequired
+              ? `Ingrese ${displayName.toLowerCase()}...`
+              : ""
           }
           required={isRequired}
           min={inputType === "number" ? 0 : undefined}
+          autoFocus={hasFocus}
         />
         {error && (
           <p className="text-sm text-TextoLblError flex items-center space-x-1">
@@ -476,7 +522,7 @@ const RecordForm = ({
   };
 
   // 🎯 FILTRAR COLUMNAS VISIBLES (excluir auto-increment PKs)
-  const visibleColumns = schema.columns.filter((column) => {
+  const visibleColumns = schema.columns.filter((column: any) => {
     // En modo creación, excluir auto-increment primary keys
     if (!isEdit && column.is_primary_key && column.is_identity) {
       // Primary key auto-increment: no incluir
@@ -487,33 +533,29 @@ const RecordForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-1">
-      <div className="max-h-[60vh] overflow-y-auto pr-2">
-        {visibleColumns.length <=
-        Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_SM) ? (
-          // Si hay pocos campos, usar una sola columna
-          <div className="grid1col">
-            {visibleColumns.map((column) => (
-              <div key={column.column_name}>{renderField(column)}</div>
-            ))}
-          </div>
-        ) : visibleColumns.length <=
-          Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_MD) ? (
-          // Si hay más de 6 campos, mostrarlos en 2 columnas
-          <div className="grid2cols">
-            {visibleColumns.map((column) => (
-              <div key={column.column_name}>{renderField(column)}</div>
-            ))}
-          </div>
-        ) : (
-          // Si hay muchos campos, mostrarlos en 3 columnas
-          <div className="grid3cols">
-            {visibleColumns.map((column) => (
-              <div key={column.column_name}>{renderField(column)}</div>
-            ))}
-          </div>
-        )}
+      <div className="pr-2 max-h-[70vh] overflow-y-auto ">
+        <div
+          className={
+            visibleColumns.length <=
+            Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_SM)
+              ? "grid1col"
+              : visibleColumns.length <=
+                  Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_MD)
+                ? "grid2cols"
+                : "grid3col"
+          }
+        >
+          {visibleColumns.map((column: any) => (
+            <div key={column.column_name}>
+              <div key={column.column_name}>
+                {renderField(column, hasFocus)}
+              </div>
+              {(hasFocus = false)}
+            </div>
+          ))}
+        </div>
       </div>
-      
+
       <div className="border-t border-fondoTransparenteObscuroBoton dark:border-textoSeparadorDark pt-1.5">
         <SubmitBtn.Save className="" isPending={isLoading} />
       </div>
