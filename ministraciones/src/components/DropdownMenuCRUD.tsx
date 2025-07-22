@@ -20,6 +20,12 @@ const DropdownMenuCRUD = ({
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDialogElement>) => {
+    if (event.key === "Escape") {
+      setIsOpen(false);
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -65,42 +71,41 @@ const DropdownMenuCRUD = ({
 
       {isOpen && (
         <div
-          className="fixed z-50 mt-1 w-fit rounded-md bg-fondoBlancoTransparente shadow-lg ring-1 ring-bordeControl   focus:outline-none dark:bg-fondoObscuroVentana"
+          className="fixed z-50 mt-1 w-fit rounded-md bg-fondoControlBlancoTransparente shadow-lg ring-1 ring-bordeControl   focus:outline-none dark:bg-fondoObscuroVentana"
           style={getMenuPosition()}
+          onKeyDown={() => handleKeyDown}
         >
           <ul className="py-0.5">
             {access_level === "1" ? (
-              <li
+              <button
                 key={0}
-                className={`relative flex items-center gap-2 px-3 py-1 text-sm hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion cursor-pointer`}
-                onClick={() => setIsOpen(false)}
+                className={`btn4 w-full relative hover:bg-fondoTablaFilaHover focus:bg-fondoTablaFilaHover`}
+                onClick={() => onEdit(recordData)}
               >
                 <i className="fa-regular fa-eye text-bordeControl mr-1.5 "></i>
                 Ver datos
-              </li>
+              </button>
             ) : (
               <>{/*access_level 2 & 3 */}
-                <li
+                <button 
                   key={1}
-                  className={`relative flex items-center gap-2 px-3 py-1 text-sm hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion cursor-pointer`}
-                  //onClick={() => setIsOpen(false)}
+                  className={`btn4 w-full relative hover:bg-fondoTablaFilaHover focus:bg-fondoTablaFilaHover`}
                   onClick={() => onEdit(recordData)}
                 >
                   <i className="fa-regular fa-pen-to-square text-bordeControl mr-1.5 "></i>
                   Modificar registro
-                </li>
+                </button>
 
                 {access_level === "3" || access_level === "4"? (
                   <>
-                    <li
+                    <button
                       key={2}
-                      className={`relative flex items-center gap-2 px-3 py-1 text-sm hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion cursor-pointer hover:text-TextoLblError`}
+                      className={`btn4 w-full relative hover:bg-fondoTablaFilaHover focus:bg-fondoTablaFilaHover`}
                       onClick={() => onDelete()}
-                      //onClick={() => setIsOpen(false)}
                     >
                       <i className="fa-regular fa-trash-can hover:text-bordeControl mr-1.5 text-TextoLblError"></i>
                       Eliminar
-                    </li>
+                    </button>
                   </>
                 ) : (
                   ""

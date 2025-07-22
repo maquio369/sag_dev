@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_COLUMNS_LENGTH_SM:"6",
     NEXT_PUBLIC_COLUMNS_LENGTH_MD:"10",
 
-    //NEXT_PUBLIC_FK_COLUMN_POSTFIX:"_text",
+    NEXT_PUBLIC_FK_COLUMN_POSTFIX:"_display",
     //NEXT_PUBLIC_ID_PREFIX:"id_"
    },
   /* config options here */

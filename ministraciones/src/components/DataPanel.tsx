@@ -16,6 +16,8 @@ import Spinner from "./elements/Spinner";
 
 const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
   const esta_borrado = process.env.NEXT_PUBLIC_DELETED_COLUMN_NAME;
+  const fk_postfix = process.env.NEXT_PUBLIC_FK_COLUMN_POSTFIX;
+
   const nums =
     typeof window !== "undefined" ? getCookie("nums", document.cookie) : "{}";
 
@@ -132,7 +134,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
 
     // NUEVO: Si es una foreign key mostrar texto en vez de valor
     if (column.is_foreign_key) {
-      const displayValue = record[`${column.column_name}_display`];
+      const displayValue = record[`${column.column_name + fk_postfix}`];
       return (
         <div className="flex flex-col">
           <span className="">{displayValue || value}</span>
@@ -267,44 +269,6 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                         </div>
                       </td>
                     ))}
-
-                    {/* Botones de acción en menú contextual 
-                      
-                      <ContextualMenu
-                        onEdit={() => {                          // Lógica para modificar el elemento
-                          console.log("Modificar elemento");
-                          //openEditModal(record);
-                          toast.info("Modificar");
-                        }}
-                        onDelete={() => {                          // Lógica para eliminar el elemento
-                          console.log("Eliminar elemento");
-                          //openDeleteModal(record)
-                          toast.error("Eliminar");
-                        }}
-                      />
-                      */}
-                    <td>
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() => openEditModal(record)}
-                          className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200 transform hover:scale-110"
-                          title="Editar registro"
-                        >
-                          <span className="w-4 h-4 block">✏️</span>
-                        </button>
-                      </div>
-                    </td>
-                    {/*
-                      <button 
-                        onClick={() => openDeleteModal(record)}
-                        className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200 transform hover:scale-110"
-                        title="Eliminar registro"
-                      >
-                        <span className="w-4 h-4 block">🗑️</span>
-                      </button>
-                    </div>
-                    
-                    </td>*/}
                   </tr>
                 ))}
               </tbody>
@@ -323,13 +287,13 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
 
       await selectTable(selectedTable);
       setShowCreateModal(false);
-      toast.success("Registro creado exitosamente", { theme: "light" });
+      toast.success("Registro creado exitosamente", toastOptions);
       //showNotification('Registro creado exitosamente', 'success');
     } catch (err: any) {
       toast.error(
         "Error al crear registro: " +
           (err.response?.data?.message || err.message),
-        { theme: "dark" }
+        toastOptions
       );
       //showNotification('Error al crear registro: ' + (err.response?.data?.message || err.message), 'error');
     } finally {
@@ -341,16 +305,17 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
     try {
       setCrudLoading(true);
       if (!schema) {
-        toast.error("No se puede editar el registro: esquema no disponible", {
-          theme: "dark",
-        });
+        toast.error(
+          "No se puede editar el registro: esquema no disponible",
+          toastOptions
+        );
         return;
       }
       const primaryKey = schema.primaryKey;
       if (!selectedRecord) {
         toast.error(
           "No se puede editar el registro: registro no seleccionado",
-          { theme: "dark" }
+          toastOptions
         );
         setCrudLoading(false);
         return;
@@ -362,12 +327,13 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
       await selectTable(selectedTable);
       setShowEditModal(false);
       setSelectedRecord(null);
-      toast.success("Registro actualizado exitosamente");
+      toast.success("Registro actualizado exitosamente", toastOptions);
       //showNotification('Registro actualizado exitosamente', 'success');
     } catch (err: any) {
       toast.error(
         "Error al actualizar registro: " +
-          (err.response?.data?.message || err.message)
+          (err.response?.data?.message || err.message),
+        toastOptions
       );
       //showNotification('Error al actualizar registro: ' + (err.response?.data?.message || err.message), 'error');
     } finally {
@@ -380,13 +346,14 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
     setShowEditModal(true);
   };
 
-  const handleDeleteRecord = async () => {
+  const handleDeleteRecord = async (record: any) => {
     try {
       setCrudLoading(true);
       if (!schema) {
-        toast.error("No se puede eliminar el registro: esquema no disponible", {
-          theme: "dark",
-        });
+        toast.error(
+          "No se puede eliminar el registro: esquema no disponible",
+          toastOptions
+        );
         setCrudLoading(false);
         return;
       }
@@ -394,9 +361,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
       if (!selectedRecord) {
         toast.error(
           "No se puede eliminar el registro: registro no seleccionado",
-          {
-            theme: "dark",
-          }
+          toastOptions
         );
         setCrudLoading(false);
         return;
@@ -409,11 +374,12 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
       setShowDeleteModal(false);
       setSelectedRecord(null);
 
-      toast.success("Registro eliminado exitosamente");
+      toast.success("Registro eliminado exitosamente", toastOptions);
     } catch (err: any) {
       toast.error(
         "Error al eliminar registro: " +
-          (err.response?.data?.message || err.message)
+          (err.response?.data?.message || err.message),
+        toastOptions
       );
     } finally {
       setCrudLoading(false);
@@ -422,6 +388,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
 
   const openDeleteModal = (record: any) => {
     setSelectedRecord(record);
+    console.log(record);
     setShowDeleteModal(true);
   };
 
@@ -570,14 +537,14 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
             <div>
               <div className="mb-6">
                 <div className="flex items-start mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-red-100 to-rose-200 rounded-xl flex items-center justify-center mr-4">
-                    <span className="text-2xl">⚠️</span>
+                  <div className="w-15 h-15 bg-TextoLblErrorSoft dark:bg-fondoTransparenteObscuroNotificacion rounded-xl flex items-center justify-center mr-4">
+                    <span className="text-3xl text-textoGolden2">⚠️</span>
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-gray-900 mb-2">
-                      ¿Estás seguro de eliminar el registro?
+                    <h4 className="text-xl font-bold  mb-2">
+                      ¿Estás seguro que desea eliminar este registro?
                     </h4>
-                    <p className="text-gray-600">
+                    <p className="text-fondoBlancoTransparenteDark font-medium dark:text-textoBlancoDark">
                       Id:{" "}
                       {String(
                         selectedRecord && Object.values(selectedRecord)[0]
@@ -586,6 +553,11 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                       {String(
                         selectedRecord && Object.values(selectedRecord)[1]
                       )}
+                      {/*                      
+                       String(
+                        selectedRecord && Object.keys(selectedRecord)[1]+process.env.NEXT_PUBLIC_FK_COLUMN_POSTFIX
+                      )*/
+                      }
                       )
                     </p>
                   </div>
@@ -596,7 +568,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                 <button
                   onClick={handleDeleteRecord}
                   disabled={crudLoading}
-                  className="btn4 bg-TextoLblError hover:bg-bordeControlInvalido text-textoBoton1 hover:text-textoBoton1Hover"
+                  className="btn4 bg-TextoLblError hover:bg-bordeControlInvalido focus:bg-bordeControlInvalido text-textoBoton1 hover:text-textoBoton1Hover"
                 >
                   {crudLoading && (
                     <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>

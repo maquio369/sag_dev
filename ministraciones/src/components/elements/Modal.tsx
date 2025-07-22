@@ -144,7 +144,7 @@ function renderSubmitText(type?: string) {
           </div>
         </div>
       }
-      <div className="px-3">{children}</div>
+      <div className="px-3 text-textoControl dark:text-textoEncabezadoDark">{children}</div>
     </dialog>
   );
 };
