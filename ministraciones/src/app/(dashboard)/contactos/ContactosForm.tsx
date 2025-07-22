@@ -83,7 +83,8 @@ const ContactosForm = ({ isOpen, onClose, onSubmit, type }: CrudProps) => {
       <Modal
         isOpen={isOpen}
         onClose={handleClose}
-        type={type}
+        iconType={type}
+        title=''
         className="fondoVentanaForm-width fondoVentanaForm-center min-h-3/12"
         //onSubmit={handleSubmit} action={formAction}
       >

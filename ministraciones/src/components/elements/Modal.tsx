@@ -8,8 +8,16 @@ interface Props {
   className?: string;
   children: React.ReactNode;
 }*/
-  
-const Modal = ({ isOpen, onClose, onSubmit, type, className, children }: CRUD_Props) => {  
+
+const Modal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  iconType,
+  title,
+  className,
+  children,
+}: CRUD_Props) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const handleCloseModal = () => {
     if (onClose) {
@@ -19,7 +27,7 @@ const Modal = ({ isOpen, onClose, onSubmit, type, className, children }: CRUD_Pr
 
   const handleSubmitModal = () => {
     if (onSubmit) {
-      onSubmit( null);
+      onSubmit(null);
     }
   };
 
@@ -41,39 +49,30 @@ const Modal = ({ isOpen, onClose, onSubmit, type, className, children }: CRUD_Pr
     }
   }, [isOpen]);
 
-  function renderWindowTitle(type?: string) {
-    switch (type) {
+  function renderWindowTitle(iconType?: string) {
+    let faIcon = "";
+    switch (iconType) {
       case "ins":
-        return (
-          <>
-            <i className="fa-regular fa-note-sticky text-bordeControl mr-1.5 "></i>
-            Nuevo registro
-          </>
-        );
+        faIcon = "fa-regular fa-note-sticky";break;
       case "upd":
-        return (
-          <>
-            <i className="fa-regular fa-pen-to-square text-bordeControl mr-1.5 "></i>
-            Modificar registro
-          </>
-        );
+        faIcon = "fa-regular fa-pen-to-square";break;
       case "del":
-        return (
-          <>
-            <i className="fa-regular fa-trash-can text-bordeControl mr-1.5 "></i>
-            Eliminar registro
-          </>
-        );
+        faIcon = "fa-regular fa-trash-can";break;
       default:
-        return (
-          <div className="flex items-center">
-            <span className="text-sm text-bordeControl mr-1 ">■ </span>
-            {type}
-          </div>
-        );
+        faIcon = "■";
     }
+    
+    return (
+      <div className="flex items-center">
+       { faIcon.toString().includes(" fa-") ? (
+        <i className={`${faIcon} text-bordeControl mr-1.5 `}></i>):(
+        <span className="text-sm text-bordeControl mr-1 ">■ </span>)}
+        {title}
+      </div>
+    );
   }
-function renderSubmitText(type?: string) {
+
+  function renderSubmitText(type?: string) {
     switch (type) {
       case "ins":
         return (
@@ -112,7 +111,7 @@ function renderSubmitText(type?: string) {
       {
         <div className="encabezadoVentanaForm">
           <div className="tituloVentanaForm">
-            {renderWindowTitle(type)}
+            {renderWindowTitle(iconType)}
             <span>
               {/*
                 <button
@@ -127,7 +126,7 @@ function renderSubmitText(type?: string) {
                   {renderSubmitText(type)}
                 </button>
               */}
-               
+
               <button
                 id="exitButton"
                 className="btnIcon"
@@ -139,12 +138,13 @@ function renderSubmitText(type?: string) {
               >
                 <i className="fa-solid fa-xmark"></i>
               </button>
-                
             </span>
           </div>
         </div>
       }
-      <div className="px-3 text-textoControl dark:text-textoEncabezadoDark">{children}</div>
+      <div className="px-3 text-textoControl dark:text-textoEncabezadoDark">
+        {children}
+      </div>
     </dialog>
   );
 };

@@ -1,7 +1,4 @@
 "use client";
-import ContactosForm, {
-  modelContactos,
-} from "@/app/(dashboard)/contactos/ContactosForm";
 import { useState, useEffect } from "react";
 import { toast, ToastOptions } from "react-toastify";
 import { aOracion, getCookie, ofuscad } from "@/utils/util";
@@ -11,8 +8,6 @@ import DropdownMenuCRUD from "./DropdownMenuCRUD";
 import Modal from "./elements/Modal";
 import RecordForm from "./RecordForm";
 import Spinner from "./elements/Spinner";
-
-//import { apiConfig, apiService } from "../utils/api";
 
 const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
   const esta_borrado = process.env.NEXT_PUBLIC_DELETED_COLUMN_NAME;
@@ -26,9 +21,6 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
     theme:
       typeof window !== "undefined" ? localStorage.getItem("theme") : "light",
   } as ToastOptions;
-  const [userData, setUserData] = useState<modelContactos | null>(null);
-
-  const mnuOptions = ["Modificar", "Eliminar", "Agregar"];
 
   const contactosHandleOpenModal = () => {
     setModalOpen(true);
@@ -38,21 +30,6 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
     setModalOpen(false);
   };
 
-  const handleFormSubmit = async (data: modelContactos): Promise<void> => {
-    setUserData(data);
-
-    console.log("Form submitted:", { data });
-    // No need to preventDefault or reset form - React handles it
-    if (data.nombres === "") {
-      toast.warn("El nombre es obligatorio", toastOptions);
-      //return { success: false, message: "¡El nombre es obligatorio!" };
-    } else {
-      await new Promise((resolve) => setTimeout(resolve, 777));
-      toast.success("¡Registro guardado con éxito!", toastOptions);
-    }
-
-    handleCloseUserModal();
-  };
   //const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   // Cargar tablas al montar el componente
   const [tables, setTables] = useState([]);
@@ -73,6 +50,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [crudLoading, setCrudLoading] = useState(false);
+  const [text2display, setText2display] = useState("");
 
   useEffect(() => {
     selectTable(entity);
@@ -388,7 +366,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
 
   const openDeleteModal = (record: any) => {
     setSelectedRecord(record);
-    console.log(record);
+    //console.log(record);
     setShowDeleteModal(true);
   };
 
@@ -420,14 +398,8 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                 </button>
               </div>
             </div>
-            <div className="flex items-center gap-4 text-base">
-              <ContactosForm
-                isOpen={isModalOpen}
-                onSubmit={handleFormSubmit}
-                onClose={handleCloseUserModal}
-                type="ins"
-              />
 
+            <div className="flex items-center gap-4 text-base">
               {/*
               <button className="btn3 " title="Buscar">
                 <i className="fa-solid fa-magnifying-glass"></i>
@@ -470,7 +442,8 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
           isOpen={showCreateModal}
           onClose={() => setShowCreateModal(false)}
           onSubmit={handleCreateRecord}
-          type={"Nuevo registro" + " de " + selectedTable}
+          iconType="ins"
+          title={"Nuevo registro" + " de " + selectedTable}
           className={
             schema &&
             schema.columns.length <=
@@ -499,7 +472,8 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
         <Modal
           isOpen={showEditModal}
           onClose={() => setShowEditModal(false)}
-          type={`Modificar registro de ${selectedTable}`}
+          iconType="upd"
+          title={`Modificar registro de ${selectedTable}`}
           onSubmit={handleEditRecord}
           className={
             schema &&
@@ -530,7 +504,8 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
         <Modal
           isOpen={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}
-          type="Confirmar eliminación"
+          iconType="del"
+          title={`Confirmar eliminación en ${selectedTable}`}
           className="w-[88%] md:w-[68%] lg:w-[48%]  fondoVentanaForm fondoVentanaForm-center min-h-3/12"
         >
           {selectedRecord && (
@@ -545,20 +520,37 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                       ¿Estás seguro que desea eliminar este registro?
                     </h4>
                     <p className="text-fondoBlancoTransparenteDark font-medium dark:text-textoBlancoDark">
-                      Id:{" "}
-                      {String(
-                        selectedRecord && Object.values(selectedRecord)[0]
-                      )}{" "}
-                      (
-                      {String(
-                        selectedRecord && Object.values(selectedRecord)[1]
-                      )}
-                      {/*                      
-                       String(
-                        selectedRecord && Object.keys(selectedRecord)[1]+process.env.NEXT_PUBLIC_FK_COLUMN_POSTFIX
-                      )*/
-                      }
-                      )
+                      {(() => {
+                        // Ensure selectedRecord is an object
+                        if (
+                          typeof selectedRecord === "object" &&
+                          selectedRecord !== null
+                        ) {
+                          const keys = Object.keys(selectedRecord);
+                          const fkPostfix =
+                            process.env.NEXT_PUBLIC_FK_COLUMN_POSTFIX || "";
+                          const val0 =
+                            selectedRecord[keys[0] + fkPostfix] ??
+                            selectedRecord[keys[0]];
+                          const val1 =
+                            keys.length > 1
+                              ? (selectedRecord[keys[1] + fkPostfix] ??
+                                selectedRecord[keys[1]])
+                              : "";
+                          const val2 =
+                            keys.length > 2
+                              ? (selectedRecord[keys[2] + fkPostfix] ??
+                                selectedRecord[keys[2]])
+                              : "";
+                          return (
+                            <>
+                              {val0} ({val1}
+                              {val2 && `, ${val2}`})
+                            </>
+                          );
+                        }
+                        return null;
+                      })()}
                     </p>
                   </div>
                 </div>
