@@ -6,12 +6,16 @@ type DropdownMenuProps = {
   recordId: number;
   recordData: any;
   access_level: string;
+  onEdit: (data: Record<string, any>) => void;
+  onDelete: () => void;
 };
 
 const DropdownMenuCRUD = ({
   recordId,
   recordData,
   access_level,
+  onEdit,
+  onDelete,
 }: DropdownMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -79,7 +83,8 @@ const DropdownMenuCRUD = ({
                 <li
                   key={1}
                   className={`relative flex items-center gap-2 px-3 py-1 text-sm hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion cursor-pointer`}
-                  onClick={() => setIsOpen(false)}
+                  //onClick={() => setIsOpen(false)}
+                  onClick={() => onEdit(recordData)}
                 >
                   <i className="fa-regular fa-pen-to-square text-bordeControl mr-1.5 "></i>
                   Modificar registro
@@ -90,7 +95,8 @@ const DropdownMenuCRUD = ({
                     <li
                       key={2}
                       className={`relative flex items-center gap-2 px-3 py-1 text-sm hover:bg-fondoTablaFilaHover dark:hover:bg-menuFondoOpcion cursor-pointer hover:text-TextoLblError`}
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => onDelete()}
+                      //onClick={() => setIsOpen(false)}
                     >
                       <i className="fa-regular fa-trash-can hover:text-bordeControl mr-1.5 text-TextoLblError"></i>
                       Eliminar

@@ -93,6 +93,12 @@ input[type="button"] {
   transition-all duration-200;
 }
 
+.btn4 {
+  @apply disabled:text-menuTextoSeparador disabled:bg-fondoTablaHeader focus:ring-offset-1   ring-bordeExteriorBotonSeleccionado
+  justify-center py-1.5 cursor-pointer px-3 rounded-lg focus:ring-1 border-0 focus:outline-none shadow disabled:cursor-not-allowed
+  transition-all duration-200;
+}
+
 .ahref {
   @apply focus:outline-1 focus:outline-bordeExteriorBotonSeleccionado text-textoLink hover:text-textoLinkHover hover:underline;
 }
