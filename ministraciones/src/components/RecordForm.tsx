@@ -1,5 +1,5 @@
 // src/components/RecordForm.jsx - Con layout 2x2 para los campos
-import react,{ useState, useEffect, useRef } from "react";
+import react, { useState, useEffect, useRef } from "react";
 import { apiService } from "../services/api";
 import { aOracion } from "@/utils/util";
 import SubmitBtn from "./elements/SubmitBtn";
@@ -44,7 +44,9 @@ const RecordForm = ({
   level,
 }: RecordFormProps) => {
   const [formData, setFormData] = useState<Record<string, any>>({});
-  const [foreignKeyOptions, setForeignKeyOptions] = useState<{ [key: string]: any[] }>({});
+  const [foreignKeyOptions, setForeignKeyOptions] = useState<{
+    [key: string]: any[];
+  }>({});
   const [errors, setErrors] = useState<Record<string, string | null>>({});
   const [loadingOptions, setLoadingOptions] = useState(false);
 
@@ -129,7 +131,7 @@ const RecordForm = ({
     }
   };
 
-  const handleInputChange = (columnName:string, value:any) => {
+  const handleInputChange = (columnName: string, value: any) => {
     setFormData((prev) => ({
       ...prev,
       [columnName]: value,
@@ -178,7 +180,7 @@ const RecordForm = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     if (!validateForm()) {
@@ -220,7 +222,7 @@ const RecordForm = ({
   };
 
   // 🎯 FUNCIÓN PARA OBTENER NOMBRE AMIGABLE DE COLUMNAS
-  const getColumnDisplayName = (columnName:string, columnDesc: string) => {
+  const getColumnDisplayName = (columnName: string, columnDesc: string) => {
     return columnDesc ? columnDesc : aOracion(columnName);
   };
 
@@ -250,16 +252,18 @@ const RecordForm = ({
 
     return (
       <div className="mb-2">
-        <label className="block text-sm text-gray-700">
-          <div className="flex items-center space-x-1">
+        <label className="lbl" htmlFor={column.column_name}>
+          <div className="flex items-center space-x-0">
+            <span className="pr-0.5">{column.is_primary_key ? "🔑 " : ""}</span>{" "}
             <span>{displayName}</span>
             {isRequired && <span className="text-TextoLblErrorDark">*</span>}
           </div>
         </label>
 
-        <select
+        <select          
+          id={column.column_name}
+          name={hasFocus && column.is_primary_key===false ? "firstCtrl" : column.column_name}
           value={value}
-          id={hasFocus?"firstCtrl":column.column_name}
           onChange={(e) =>
             handleInputChange(
               column.column_name,
@@ -273,7 +277,7 @@ const RecordForm = ({
                 : "border-bordeExteriorBotonSeleccionado"
             }`}
           required={isRequired}
-          disabled={loadingOptions}
+          disabled={loadingOptions || column.is_primary_key}
         >
           <option
             value=""
@@ -303,44 +307,48 @@ const RecordForm = ({
   };
 
   // 🎯 FUNCIÓN PRINCIPAL ACTUALIZADA PARA RENDERIZAR CAMPOS
-  const renderField = (column: any, hasFocus:boolean) => {
+  const renderField = (column: any, hasFocus: boolean) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
       if (inputRef.current) {
         inputRef.current.focus();
-        console.log("------------------------>",inputRef.current.name)
+        console.log("------------------------>", inputRef.current.name);
       }
     }, []); // Empty dependency array ensures it runs only on mount
 
     const value = formData[column.column_name] ?? "";
     const error = errors[column.column_name];
     const isRequired = column.is_nullable === "NO" && !column.column_default;
-    const displayName = getColumnDisplayName(
+    const columnDisplayName = getColumnDisplayName(
       column.column_name,
       column.column_desc
     );
 
     // Skip auto-increment primary keys
-    if (column.is_primary_key && column.is_identity) {
+    if (!isEdit && column.is_primary_key && column.is_identity) {
       // Primary key auto-increment: no incluir
       return null;
     }
 
-    // Skip primary key in edit mode (mostrar como disabled)
-    if (isEdit && column.is_primary_key) {
+    // primary key ReadOnly in edit mode (mostrar como disabled)
+    if (isEdit && column.is_primary_key && !column.is_foreign_key) {
       //|| column.is_identity
       return (
         <div className="mb-2">
-          <label className="block text-sm font-medium text-gray-700">
-            <div className="flex items-center space-x-2">
-              <span className="text-textoGolden2">🔑</span>
-              <span>{displayName}</span>
+          <label className="lbl" htmlFor={column.column_name}>
+            <div className="">
+              <span className="pr-0.5">
+                {column.is_foreign_key ? "🔐" : "🔑"}
+              </span>
+              <span>{columnDisplayName}</span>
             </div>
           </label>
+
           <input
             type="text"
-            title="🔐 El id no es modificable"
+            id={column.column_name}
+            name={column.column_name}
             value={value}
             disabled
             className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
@@ -359,7 +367,7 @@ const RecordForm = ({
         value,
         error,
         isRequired,
-        displayName
+        columnDisplayName
       );
     }
 
@@ -376,18 +384,15 @@ const RecordForm = ({
           className="mb-2"
           hidden={column.column_name === esta_borrado && level !== "4"}
         >
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="lbl" htmlFor={column.column_name}>
             {column.column_desc}
             <div className="flex items-center space-x-2 mt-1 ml-1">
               <input
                 type="checkbox"
                 id={column.column_name}
-                name={column.column_name}
+                name={hasFocus ? "firstCtrl" : column.column_name}
                 className="focus:ring-2 focus:ring-offset-2 focus:ring-bordeControlHover ring-rounded-md"
               ></input>
-              <label htmlFor={column.column_name}>
-                {/*column.column_desc*/}
-              </label>
             </div>
           </label>
 
@@ -405,14 +410,16 @@ const RecordForm = ({
     if (column.data_type === "date" || column.data_type === "timestamp") {
       return (
         <div className="mb-2">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="lbl" htmlFor={column.column_name}>
             <div className="flex items-center space-x-2">
               <span className="text-indigo-600">📅</span>
-              <span>{displayName}</span>
+              <span>{columnDisplayName}</span>
               {isRequired && <span className="text-TextoLblErrorDark">*</span>}
             </div>
           </label>
           <input
+            id={column.column_name}
+            name={hasFocus ? "firstCtrl" : column.column_name}
             type={column.data_type === "date" ? "date" : "datetime-local"}
             value={value}
             onChange={(e) =>
@@ -442,13 +449,15 @@ const RecordForm = ({
     ) {
       return (
         <div className="mb-2">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="lbl" htmlFor={column.column_name}>
             <div className="flex items-center space-x-2">
-              <span>{displayName}</span>
+              <span>{columnDisplayName}</span>
               {isRequired && <span className="text-TextoLblErrorDark">*</span>}
             </div>
           </label>
           <textarea
+            id={column.column_name}
+            name={hasFocus ? "firstCtrl" : column.column_name}
             value={value}
             onChange={(e) =>
               handleInputChange(column.column_name, e.target.value)
@@ -456,7 +465,7 @@ const RecordForm = ({
             /*rows={4}*/
             className={baseInputClasses + " h-17"}
             placeholder={
-              isRequired ? `Ingrese ${displayName.toLowerCase()}...` : ""
+              isRequired ? `Ingrese ${columnDisplayName.toLowerCase()}...` : ""
             }
             required={isRequired}
           />
@@ -487,25 +496,23 @@ const RecordForm = ({
 
     return (
       <div className="mb-2">
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="lbl" htmlFor={column.column_name}>
           <div className="flex items-center space-x-2">
-            <span>{displayName}</span>
+            <span>{columnDisplayName}</span>
             {isRequired && <span className="text-TextoLblErrorDark">*</span>}
           </div>
         </label>
         <input
           type={inputType}
-          id={hasFocus?"firstCtrl":column.column_name}
-          name={column.column_name}
+          id={column.column_name}
+          name={hasFocus ? "firstCtrl" : column.column_name}
           value={value}
           onChange={(e) =>
             handleInputChange(column.column_name, e.target.value)
           }
           className={baseInputClasses}
           placeholder={
-            isRequired
-              ? `Ingrese ${displayName.toLowerCase()}...`
-              : ""
+            isRequired ? `Ingrese ${columnDisplayName.toLowerCase()}...` : ""
           }
           required={isRequired}
           min={inputType === "number" ? 0 : undefined}

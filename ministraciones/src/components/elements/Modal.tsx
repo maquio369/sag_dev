@@ -61,7 +61,7 @@ const Modal = ({
       default:
         faIcon = "■";
     }
-    
+
     return (
       <div className="flex items-center">
        { faIcon.toString().includes(" fa-") ? (
@@ -151,9 +151,9 @@ const Modal = ({
 
 /* HTMLInputElement HTMLDivElement HTMLButtonElement */
 const firstCtrlFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
-  const firstCtrl = document.getElementById("firstCtrl");
-  if (firstCtrl) {
-    firstCtrl.focus();
+  const firstCtrl = document.getElementsByName("firstCtrl");
+  if (firstCtrl[0]) {
+    firstCtrl[0].focus();
   }
 };
 export default Modal;
