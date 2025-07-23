@@ -153,7 +153,7 @@ const Modal = ({
 const firstCtrlFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
   const firstCtrl = document.getElementsByName("firstCtrl");
   if (firstCtrl[0]) {
-    firstCtrl[0].focus();
+    firstCtrl[0].focus(); 
   }
 };
 export default Modal;

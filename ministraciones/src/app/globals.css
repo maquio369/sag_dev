@@ -139,7 +139,7 @@ input[type="button"] {
 
 .fondoVentanaForm {
   @apply bg-fondoControl dark:bg-fondoObscuroVentana border border-textoSeparadorDark rounded shadow-xl pb-2 px-0
-    backdrop:backdrop-blur-[1px];
+    backdrop:backdrop-blur-[0.5px] backdrop:backdrop-grayscale-75;
 }
 .fondoVentanaForm-width {
   @apply w-[98%] md:w-[91%];
@@ -204,11 +204,10 @@ table {
   @apply animate-spin rounded-full h-4 w-4 border-2 shadow-lg border-fondoBoton2Hover dark:border-textoGolden1 border-t-transparent;
 }
 
-
 .form-row {
   margin-top: 1rem;
 }
-  /*
+/*
 select,
 input[type="text"],
 input[type="email"],

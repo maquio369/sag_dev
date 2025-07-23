@@ -260,9 +260,13 @@ const RecordForm = ({
           </div>
         </label>
 
-        <select          
+        <select
           id={column.column_name}
-          name={hasFocus && column.is_primary_key===false ? "firstCtrl" : column.column_name}
+          name={
+            hasFocus && column.is_primary_key === false
+              ? "firstCtrl"
+              : column.column_name
+          }
           value={value}
           onChange={(e) =>
             handleInputChange(
@@ -270,14 +274,12 @@ const RecordForm = ({
               e.target.value ? parseInt(e.target.value) : ""
             )
           }
-          className={`w-full pl-0.5 py-2 border rounded-lg border-textoSeparadorDark focus:border-bordeExteriorBotonSeleccionado hover:border-1
+          className={`dark:text-textoEncabezadoDark w-full pl-0.5 py-2 border rounded-lg border-textoSeparadorDark focus:border-bordeExteriorBotonSeleccionado hover:border-1
             focus:outline-none hover:ring-1 hover:ring-bordeControlHover transition-colors ${
-              error
-                ? "border-TextoLblError bg-red-50"
-                : "border-bordeExteriorBotonSeleccionado"
+              error ? "border-TextoLblError" : "border-textoSeparadorDark"
             }`}
           required={isRequired}
-          disabled={loadingOptions || column.is_primary_key}
+          disabled={loadingOptions || column.is_primary_key && isEdit}
         >
           <option
             value=""
@@ -552,12 +554,14 @@ const RecordForm = ({
                 : "grid3col"
           }
         >
-          {visibleColumns.map((column: any) => (
+          {hasFocus = true}
+          {
+            visibleColumns.map((column: any) => (
             <div key={column.column_name}>
               <div key={column.column_name}>
                 {renderField(column, hasFocus)}
               </div>
-              {(hasFocus = false)}
+              {(hasFocus  = column.is_primary_key)}
             </div>
           ))}
         </div>

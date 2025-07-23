@@ -506,7 +506,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
           onClose={() => setShowDeleteModal(false)}
           iconType="del"
           title={`Confirmar eliminación en ${selectedTable}`}
-          className="w-[88%] md:w-[68%] lg:w-[48%]  fondoVentanaForm fondoVentanaForm-center min-h-3/12"
+          className="w-150  fondoVentanaForm fondoVentanaForm-center min-h-2/12"
         >
           {selectedRecord && (
             <div>
