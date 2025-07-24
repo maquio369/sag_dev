@@ -265,8 +265,8 @@ const RecordForm = ({
         <select
           id={column.column_name}
           name={
-            hasFocus && column.is_primary_key === false
-              ? "firstCtrl"+titleName.replace("","") 
+            !isEdit || (hasFocus && column.is_primary_key === false)
+              ? "firstCtrl" + titleName.replace("", "")
               : column.column_name
           }
           value={value}
@@ -276,12 +276,9 @@ const RecordForm = ({
               e.target.value ? parseInt(e.target.value) : ""
             )
           }
-          className={`dark:text-textoEncabezadoDark w-full pl-0.5 py-2 border rounded-lg border-textoSeparadorDark focus:border-bordeExteriorBotonSeleccionado hover:border-1
-            focus:outline-none hover:ring-1 hover:ring-bordeControlHover transition-colors ${
-              error ? "border-TextoLblError" : "border-textoSeparadorDark"
-            }`}
+          className="select1"
           required={isRequired}
-          disabled={loadingOptions || column.is_primary_key && isEdit}
+          disabled={loadingOptions || (column.is_primary_key && isEdit)}
         >
           <option
             value=""
@@ -394,7 +391,11 @@ const RecordForm = ({
               <input
                 type="checkbox"
                 id={column.column_name}
-                name={hasFocus ? "firstCtrl"+titleName.replace("","") : column.column_name}
+                name={
+                  hasFocus
+                    ? "firstCtrl" + titleName.replace("", "")
+                    : column.column_name
+                }
                 className="focus:ring-2 focus:ring-offset-2 focus:ring-bordeControlHover ring-rounded-md"
               ></input>
             </div>
@@ -423,7 +424,11 @@ const RecordForm = ({
           </label>
           <input
             id={column.column_name}
-            name={hasFocus ? "firstCtrl"+titleName.replace("","") : column.column_name}
+            name={
+              hasFocus
+                ? "firstCtrl" + titleName.replace("", "")
+                : column.column_name
+            }
             type={column.data_type === "date" ? "date" : "datetime-local"}
             value={value}
             onChange={(e) =>
@@ -461,7 +466,11 @@ const RecordForm = ({
           </label>
           <textarea
             id={column.column_name}
-            name={hasFocus ? "firstCtrl"+titleName.replace("","") : column.column_name}
+            name={
+              hasFocus
+                ? "firstCtrl" + titleName.replace("", "")
+                : column.column_name
+            }
             value={value}
             onChange={(e) =>
               handleInputChange(column.column_name, e.target.value)
@@ -509,7 +518,11 @@ const RecordForm = ({
         <input
           type={inputType}
           id={column.column_name}
-          name={hasFocus ? "firstCtrl"+titleName.replace("","") : column.column_name}
+          name={
+            hasFocus
+              ? "firstCtrl" + titleName.replace("", "")
+              : column.column_name
+          }
           value={value}
           onChange={(e) =>
             handleInputChange(column.column_name, e.target.value)
@@ -556,14 +569,13 @@ const RecordForm = ({
                 : "grid3col"
           }
         >
-          {hasFocus = true}
-          {
-            visibleColumns.map((column: any) => (
+          {(hasFocus = true)}
+          {visibleColumns.map((column: any) => (
             <div key={column.column_name}>
               <div key={column.column_name}>
                 {renderField(column, hasFocus)}
               </div>
-              {(hasFocus  = column.is_primary_key)}
+              {(hasFocus = column.is_primary_key)}
             </div>
           ))}
         </div>

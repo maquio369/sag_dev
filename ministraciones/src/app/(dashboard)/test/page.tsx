@@ -121,7 +121,7 @@ const TestPage = () => {
                   <label className="lbl">Municipio</label>
 
                   <div className="relative">
-                    <select className="w-full bg-transparent placeholder:text-bordeControl text-textoControl text-sm border border-amber-300-slate-200 rounded pl-3 pr-8 py-2 transition duration-300 ease focus:outline-none focus:border-bordeControl hover:border-bordeControlHover shadow-sm focus:shadow-md appearance-none cursor-pointer">
+                    <select className="select1">
                       <option className="" value="19">
                         Comitán
                       </option>

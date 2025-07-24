@@ -54,6 +54,10 @@ input[type="button"] {
   disabled:cursor-default;
 }
 
+.select1 {
+  @apply text-textoControl dark:text-textoEncabezadoDark w-full pl-0.5 py-2 border rounded-lg border-textoSeparadorDark focus:border-bordeExteriorBotonSeleccionado hover:border-1 focus:outline-none hover:ring-1 hover:ring-bordeControlHover focus:border-2 cursor-pointer;
+}
+
 .btn1 {
   @apply disabled:text-menuTextoSeparador disabled:bg-fondoTablaHeader focus:ring-offset-1 bg-fondoBoton1 text-textoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover  ring-bordeExteriorBotonSeleccionado
   justify-center py-1.5 cursor-pointer px-3 rounded-lg focus:ring-1 border-0 focus:outline-none shadow disabled:cursor-not-allowed
@@ -204,20 +208,6 @@ table {
   @apply animate-spin rounded-full h-4 w-4 border-2 shadow-lg border-fondoBoton2Hover dark:border-textoGolden1 border-t-transparent;
 }
 
-.form-row {
-  margin-top: 1rem;
-}
-/*
-select,
-input[type="text"],
-input[type="email"],
-input[type="password"],
-button {
-  padding: 0.5em;
-  font: inherit;
-  line-height: 1;
-}
-*/
 @theme {
   /*  --font-font1: "__className_d65c78"; /*Inter*/
   /*  --font-font2: "__className_721240"; /*Roboto condensed*/

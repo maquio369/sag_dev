@@ -37,11 +37,8 @@ const Modal = ({
     // Open modal when `isOpen` changes to true
     if (isOpen) {
       modalElement.showModal();
-      console.log("isOpen------------>",isOpen," ",title);
+      //console.log("isOpen------------>",isOpen," ",title);
       firstCtrlFocusByName(title??"");
-      //findNextTabStop(modalElement.getElementsByClassName("btnIcon")).focus();      
-      //console.log("isOpen------------>",isOpen,title?.replaceAll(" ",""),modalElement.getElementsByClassName("btnIcon"))
-
     } else {
       modalElement.close();
     }
@@ -87,8 +84,7 @@ const Modal = ({
             {renderWindowTitle(iconType)}
             <span>
               <button
-                id={"exitButton"+title?.replaceAll(" ","")}
-                tabIndex={-1}
+                id={"exitButton"}
                 className="btnIcon"
                 title="Cerrar"
                 aria-label="Cerrar"
@@ -112,32 +108,11 @@ const Modal = ({
 
 /* HTMLInputElement HTMLDivElement HTMLButtonElement */
 const firstCtrlFocusByName = (titleName:string) => {
-  const firstCtrl = document.getElementsByName( "firstCtrl"+titleName.replace("","") );
-  console.log("getElement----------------->",firstCtrl[0]+titleName.replace("",""))
+  const firstCtrl = document.getElementsByName( "firstCtrl"+titleName );
+  //console.log("getElement----------------->",firstCtrl[0]+titleName)
   if (firstCtrl[0]) {
-    (firstCtrl[0] as HTMLElement).focus();
-    console.log("focused----------------->",firstCtrl[0]+titleName.replace("",""))
+    (firstCtrl[0] as HTMLElement).focus();    
   }
 };
 
-const firstCtrlFocusByClass = () => {
-  const firstCtrl = document.getElementsByClassName("firstCtrl"+title.replace("",""));
-  if (firstCtrl[0]) {
-    (firstCtrl[0] as HTMLElement).focus();
-  console.log("HtmlElementFocus----------------->",firstCtrl[0])
-  }
-};
-
- function findNextTabStop(el:any) {
-  
-  let queryString = 
-      'textarea:not([disabled]):not([tabindex="-1"]), input:not([disabled]):not([tabindex="-1"]), select:not([disabled]):not([tabindex="-1"]), [tabindex]:not([disabled]):not([tabindex="-1"])';
-
-    var universe = document.querySelectorAll(queryString);
-    
-    var list = Array.prototype.filter.call(universe, function(item) {return item.tabIndex >= "0"});
-    //const el=document.getElementById("exitButton");
-    var index = list.indexOf(el);
-    return list[index + 3] || list[1];
-  }
 export default Modal;

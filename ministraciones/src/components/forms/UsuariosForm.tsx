@@ -66,7 +66,7 @@ const UsuariosForm = ({ isOpen, onClose, onSubmit, type }: CrudProps) => {
 
         <div>
           <select
-            className="w-full bg-transparent placeholder:text-bordeControl text-textoControl text-sm border border-amber-300-slate-200 rounded pl-3 pr-8 py-2 transition duration-300 ease focus:outline-none focus:border-bordeControl hover:border-bordeControlHover shadow-sm focus:shadow-md appearance-none cursor-pointer"
+            className="select1"
             id="mpio"
             name="mpio"
             value={formData ? formData.mpio : ""}

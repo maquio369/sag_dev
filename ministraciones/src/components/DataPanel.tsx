@@ -464,7 +464,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
               onCancel={() => setShowCreateModal(false)}
               isLoading={crudLoading}
               level={nivel}
-              titleName={`Nuevo registro de ${selectedTable}`.replace("","")}
+              titleName={`Nuevo registro de ${selectedTable}`}
             />
           )}
         </Modal>
@@ -497,7 +497,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
               onCancel={() => setShowEditModal(false)}
               isLoading={crudLoading}
               level={nivel}
-              titleName={`Modificar registro de ${selectedTable}`.replace("","")}
+              titleName={`Modificar registro de ${selectedTable}`}
             />
           )}
         </Modal>
