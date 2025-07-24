@@ -52,12 +52,6 @@ const SideBarMenu = ({ sidebarOpen = true, isMobile = false }: Props) => {
         <div className="  mb-auto h-70">
           <Menu expanded={sidebarOpen} />
         </div>
-        <label className="h-10 w-10">
-          {/* <ToggleDarkMode
-            isActive={true}
-            className="relative -bottom-1.5 -left-22"
-          /> */}
-        </label>
       </div>
     </>
   );

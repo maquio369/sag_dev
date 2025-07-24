@@ -1,18 +1,11 @@
 import { useEffect, useRef } from "react";
 import { CRUD_Props } from "@/components/forms/interfaces";
-/*
-interface Props {
-  isOpen: boolean;
-  onClose?: () => void;
-  type?: "ins" | "upd" | "del" | string;
-  className?: string;
-  children: React.ReactNode;
-}*/
+import { title } from "process";
 
 const Modal = ({
   isOpen,
   onClose,
-  onSubmit,
+  //onSubmit,
   iconType,
   title,
   className,
@@ -24,13 +17,13 @@ const Modal = ({
       onClose();
     }
   };
-
+/*
   const handleSubmitModal = () => {
     if (onSubmit) {
       onSubmit(null);
     }
   };
-
+*/
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDialogElement>) => {
     if (event.key === "Escape") {
       handleCloseModal();
@@ -44,6 +37,11 @@ const Modal = ({
     // Open modal when `isOpen` changes to true
     if (isOpen) {
       modalElement.showModal();
+      console.log("isOpen------------>",isOpen," ",title);
+      firstCtrlFocusByName(title??"");
+      //findNextTabStop(modalElement.getElementsByClassName("btnIcon")).focus();      
+      //console.log("isOpen------------>",isOpen,title?.replaceAll(" ",""),modalElement.getElementsByClassName("btnIcon"))
+
     } else {
       modalElement.close();
     }
@@ -53,55 +51,30 @@ const Modal = ({
     let faIcon = "";
     switch (iconType) {
       case "ins":
-        faIcon = "fa-regular fa-note-sticky";break;
+        faIcon = "fa-regular fa-note-sticky";
+        break;
       case "upd":
-        faIcon = "fa-regular fa-pen-to-square";break;
+        faIcon = "fa-regular fa-pen-to-square";
+        break;
       case "del":
-        faIcon = "fa-regular fa-trash-can";break;
+        faIcon = "fa-regular fa-trash-can";
+        break;
       default:
         faIcon = "■";
     }
 
     return (
       <div className="flex items-center">
-       { faIcon.toString().includes(" fa-") ? (
-        <i className={`${faIcon} text-bordeControl mr-1.5 `}></i>):(
-        <span className="text-sm text-bordeControl mr-1 ">■ </span>)}
+        {faIcon.toString().includes(" fa-") ? (
+          <i className={`${faIcon} text-bordeControl mr-1.5 `}></i>
+        ) : (
+          <span className="text-sm text-bordeControl mr-1 ">■ </span>
+        )}
         {title}
       </div>
     );
   }
 
-  function renderSubmitText(type?: string) {
-    switch (type) {
-      case "ins":
-        return (
-          <>
-            <i className="fa-solid fa-save"></i> Guardar
-          </>
-        );
-      case "upd":
-        return (
-          <>
-            <i className="fa-solid fa-save"></i> Guardar
-          </>
-        );
-      case "del":
-        return (
-          <>
-            <i className="fa-regular fa-trash-can"></i>
-            Eliminar
-          </>
-        );
-      default:
-        return (
-          <div>
-            <i className="fa-solid fa-check mr-1"></i>
-            Aceptar
-          </div>
-        );
-    }
-  }
   return (
     <dialog
       ref={modalRef}
@@ -113,28 +86,16 @@ const Modal = ({
           <div className="tituloVentanaForm">
             {renderWindowTitle(iconType)}
             <span>
-              {/*
-                <button
-                  id="submitButton"
-                  className="btnIcon"
-                  title="Guardar"
-                  aria-label="Guardar"
-                  type="submit"
-                  //onClick={() => alert("Registro guardado satisfactoriamente")}
-                  onClick={handleSubmitModal}
-                >
-                  {renderSubmitText(type)}
-                </button>
-              */}
-
               <button
-                id="exitButton"
+                id={"exitButton"+title?.replaceAll(" ","")}
+                tabIndex={-1}
                 className="btnIcon"
                 title="Cerrar"
                 aria-label="Cerrar"
                 onClick={handleCloseModal}
                 //onClick={() => setOpen(false)}
-                onFocus={(e) => firstCtrlFocus(e)}
+                //onFocus={(e) => firstCtrlFocus()}
+                //onFocus={(e) => findNextTabStop().focus()}
               >
                 <i className="fa-solid fa-xmark"></i>
               </button>
@@ -150,10 +111,33 @@ const Modal = ({
 };
 
 /* HTMLInputElement HTMLDivElement HTMLButtonElement */
-const firstCtrlFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
-  const firstCtrl = document.getElementsByName("firstCtrl");
+const firstCtrlFocusByName = (titleName:string) => {
+  const firstCtrl = document.getElementsByName( "firstCtrl"+titleName.replace("","") );
+  console.log("getElement----------------->",firstCtrl[0]+titleName.replace("",""))
   if (firstCtrl[0]) {
-    firstCtrl[0].focus(); 
+    (firstCtrl[0] as HTMLElement).focus();
+    console.log("focused----------------->",firstCtrl[0]+titleName.replace("",""))
   }
 };
+
+const firstCtrlFocusByClass = () => {
+  const firstCtrl = document.getElementsByClassName("firstCtrl"+title.replace("",""));
+  if (firstCtrl[0]) {
+    (firstCtrl[0] as HTMLElement).focus();
+  console.log("HtmlElementFocus----------------->",firstCtrl[0])
+  }
+};
+
+ function findNextTabStop(el:any) {
+  
+  let queryString = 
+      'textarea:not([disabled]):not([tabindex="-1"]), input:not([disabled]):not([tabindex="-1"]), select:not([disabled]):not([tabindex="-1"]), [tabindex]:not([disabled]):not([tabindex="-1"])';
+
+    var universe = document.querySelectorAll(queryString);
+    
+    var list = Array.prototype.filter.call(universe, function(item) {return item.tabIndex >= "0"});
+    //const el=document.getElementById("exitButton");
+    var index = list.indexOf(el);
+    return list[index + 3] || list[1];
+  }
 export default Modal;

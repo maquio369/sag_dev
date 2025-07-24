@@ -32,6 +32,7 @@ type RecordFormProps = {
   onCancel: () => void;
   isLoading?: boolean;
   level?: string;
+  titleName: string;
 };
 
 const RecordForm = ({
@@ -42,6 +43,7 @@ const RecordForm = ({
   onCancel,
   isLoading = false,
   level,
+  titleName,
 }: RecordFormProps) => {
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [foreignKeyOptions, setForeignKeyOptions] = useState<{
@@ -264,7 +266,7 @@ const RecordForm = ({
           id={column.column_name}
           name={
             hasFocus && column.is_primary_key === false
-              ? "firstCtrl"
+              ? "firstCtrl"+titleName.replace("","") 
               : column.column_name
           }
           value={value}
@@ -392,7 +394,7 @@ const RecordForm = ({
               <input
                 type="checkbox"
                 id={column.column_name}
-                name={hasFocus ? "firstCtrl" : column.column_name}
+                name={hasFocus ? "firstCtrl"+titleName.replace("","") : column.column_name}
                 className="focus:ring-2 focus:ring-offset-2 focus:ring-bordeControlHover ring-rounded-md"
               ></input>
             </div>
@@ -421,7 +423,7 @@ const RecordForm = ({
           </label>
           <input
             id={column.column_name}
-            name={hasFocus ? "firstCtrl" : column.column_name}
+            name={hasFocus ? "firstCtrl"+titleName.replace("","") : column.column_name}
             type={column.data_type === "date" ? "date" : "datetime-local"}
             value={value}
             onChange={(e) =>
@@ -459,7 +461,7 @@ const RecordForm = ({
           </label>
           <textarea
             id={column.column_name}
-            name={hasFocus ? "firstCtrl" : column.column_name}
+            name={hasFocus ? "firstCtrl"+titleName.replace("","") : column.column_name}
             value={value}
             onChange={(e) =>
               handleInputChange(column.column_name, e.target.value)
@@ -507,7 +509,7 @@ const RecordForm = ({
         <input
           type={inputType}
           id={column.column_name}
-          name={hasFocus ? "firstCtrl" : column.column_name}
+          name={hasFocus ? "firstCtrl"+titleName.replace("","") : column.column_name}
           value={value}
           onChange={(e) =>
             handleInputChange(column.column_name, e.target.value)

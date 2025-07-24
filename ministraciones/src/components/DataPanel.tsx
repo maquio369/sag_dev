@@ -441,9 +441,9 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
         <Modal
           isOpen={showCreateModal}
           onClose={() => setShowCreateModal(false)}
-          onSubmit={handleCreateRecord}
+          //onSubmit={handleCreateRecord}
           iconType="ins"
-          title={"Nuevo registro" + " de " + selectedTable}
+          title={`Nuevo registro de ${selectedTable}`}
           className={
             schema &&
             schema.columns.length <=
@@ -464,6 +464,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
               onCancel={() => setShowCreateModal(false)}
               isLoading={crudLoading}
               level={nivel}
+              titleName={`Nuevo registro de ${selectedTable}`.replace("","")}
             />
           )}
         </Modal>
@@ -474,7 +475,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
           onClose={() => setShowEditModal(false)}
           iconType="upd"
           title={`Modificar registro de ${selectedTable}`}
-          onSubmit={handleEditRecord}
+          //onSubmit={handleEditRecord}
           className={
             schema &&
             schema.columns.length <=
@@ -496,6 +497,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
               onCancel={() => setShowEditModal(false)}
               isLoading={crudLoading}
               level={nivel}
+              titleName={`Modificar registro de ${selectedTable}`.replace("","")}
             />
           )}
         </Modal>
