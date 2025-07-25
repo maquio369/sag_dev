@@ -101,6 +101,26 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
     }
   };
 
+  const loadPage = async (page:any) => {
+    if (!selectedTable) return;
+    
+    try {
+      setLoading(true);
+      const response = await apiService.getRecords(selectedTable, { 
+        page, 
+        limit: (pagination && typeof (pagination as any).limit === "number" ? (pagination as any).limit : 50),
+      });
+      
+      setRecords(response.data.data);
+      setPagination(response.data.pagination);
+      
+    } catch (err:any) {
+      setError('Error al cargar la página: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const renderCellValue = (value: any, column: any, record: any) => {
     if (value === null || value === undefined) {
       return (
@@ -257,6 +277,54 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
     );
   };
 
+{/* Paginación */}
+          {pagination.totalPages > 1 && (
+            <div className="mt-6 flex items-center justify-between">
+              <div className="text-sm text-gray-700">
+                Mostrando <span className="font-medium">{((pagination.page - 1) * pagination.limit) + 1}</span> a{' '}
+                <span className="font-medium">{Math.min(pagination.page * pagination.limit, pagination.total)}</span> de{' '}
+                <span className="font-medium">{pagination.total}</span> resultados
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => loadPage(pagination.page - 1)}
+                  disabled={!pagination.hasPrev}
+                  className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                >
+                  Anterior
+                </button>
+                
+                <div className="flex items-center space-x-1">
+                  {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+                    const pageNum = i + 1;
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => loadPage(pageNum)}
+                        className={`px-3 py-2 text-sm rounded-lg transition-colors duration-200 ${
+                          pagination.page === pageNum
+                            ? 'bg-blue-600 text-white'
+                            : 'text-gray-700 hover:bg-gray-100'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <button
+                  onClick={() => loadPage(pagination.page + 1)}
+                  disabled={!pagination.hasNext}
+                  className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                >
+                  Siguiente
+                </button>
+              </div>
+            </div>
+  )
+  }
+  
   // CRUD Operations
   const handleCreateRecord = async (data: any) => {
     try {
