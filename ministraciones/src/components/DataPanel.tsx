@@ -9,6 +9,8 @@ import Modal from "./elements/Modal";
 import RecordForm from "./RecordForm";
 import Spinner from "./elements/Spinner";
 
+import { iPagination } from "./forms/interfaces";
+
 const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
   const esta_borrado = process.env.NEXT_PUBLIC_DELETED_COLUMN_NAME;
   const fk_postfix = process.env.NEXT_PUBLIC_FK_COLUMN_POSTFIX;
@@ -39,7 +41,14 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
   const [schema, setSchema] = useState<TableSchema | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [pagination, setPagination] = useState({});
+  const [pagination, setPagination] = useState<iPagination>({
+    page: 1,
+    limit: 50,
+    total: 0,
+    totalPages: 1,
+    hasNext: false,
+    hasPrev: false,
+  });
   const [foreignKeyMappings, setForeignKeyMappings] = useState<
     Record<string, any>
   >({}); // NUEVO: Para mapear FK //anterior = useState({});
@@ -101,21 +110,23 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
     }
   };
 
-  const loadPage = async (page:any) => {
+  const loadPage = async (page: any) => {
     if (!selectedTable) return;
-    
+
     try {
       setLoading(true);
-      const response = await apiService.getRecords(selectedTable, { 
-        page, 
-        limit: (pagination && typeof (pagination as any).limit === "number" ? (pagination as any).limit : 50),
+      const response = await apiService.getRecords(selectedTable, {
+        page,
+        limit:
+          pagination && typeof (pagination as any).limit === "number"
+            ? (pagination as any).limit
+            : 50,
       });
-      
+
       setRecords(response.data.data);
       setPagination(response.data.pagination);
-      
-    } catch (err:any) {
-      setError('Error al cargar la página: ' + err.message);
+    } catch (err: any) {
+      setError("Error al cargar la página: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -273,58 +284,73 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
             </table>
           </div>
         )}
-      </div>
-    );
-  };
 
-{/* Paginación */}
-          {pagination.totalPages > 1 && (
-            <div className="mt-6 flex items-center justify-between">
-              <div className="text-sm text-gray-700">
-                Mostrando <span className="font-medium">{((pagination.page - 1) * pagination.limit) + 1}</span> a{' '}
-                <span className="font-medium">{Math.min(pagination.page * pagination.limit, pagination.total)}</span> de{' '}
-                <span className="font-medium">{pagination.total}</span> resultados
-              </div>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => loadPage(pagination.page - 1)}
-                  disabled={!pagination.hasPrev}
-                  className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                >
-                  Anterior
-                </button>
-                
-                <div className="flex items-center space-x-1">
-                  {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+        {/* Paginación */}
+        {pagination.totalPages > 1 && (
+          <div className="mt-2 flex items-center justify_-between shadow text-sm" >
+            <div className="flex items-center space-x-0.5 mr-3 ">
+              <button
+                onClick={() => loadPage(1)}
+                disabled={!pagination.hasPrev}
+                className="btn4 text-fondoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover"
+              >
+                <i className="fa-solid fa-angles-left"></i>
+              </button>
+              <button
+                onClick={() => loadPage(pagination.page - 1)}
+                disabled={!pagination.hasPrev}
+                className="btn4 text-fondoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover"
+              >
+                <i className="fa-solid fa-angle-left"></i>
+              </button>
+              <div className="flex items-center space-x-0.5">
+                {Array.from(
+                  { length: Math.min(5, pagination.totalPages) },
+                  (_, i) => {
                     const pageNum = i + 1;
                     return (
                       <button
                         key={pageNum}
                         onClick={() => loadPage(pageNum)}
-                        className={`px-3 py-2 text-sm rounded-lg transition-colors duration-200 ${
+                        className={`btn4  ${
                           pagination.page === pageNum
-                            ? 'bg-blue-600 text-white'
-                            : 'text-gray-700 hover:bg-gray-100'
+                            ? "bg-fondoBoton1 text-textoBoton1"
+                            : "text-fondoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover"
                         }`}
                       >
                         {pageNum}
                       </button>
                     );
-                  })}
-                </div>
-
-                <button
-                  onClick={() => loadPage(pagination.page + 1)}
-                  disabled={!pagination.hasNext}
-                  className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                >
-                  Siguiente
-                </button>
+                  }
+                )}
               </div>
+              <button
+                onClick={() => loadPage(pagination.page + 1)}
+                disabled={!pagination.hasNext}
+                className="btn4 text-fondoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover"
+              >
+                <i className="fa-solid fa-angle-right"></i>
+              </button>
+              <button
+                onClick={() => loadPage(pagination.totalPages)}
+                disabled={!pagination.hasNext}
+                className="btn4 text-fondoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover"
+              >
+                <i className="fa-solid fa-angles-right"></i>
+              </button>
             </div>
-  )
-  }
-  
+            <div className="text-xs font-light">
+              [ {(pagination.page - 1) * pagination.limit + 1}-
+              {Math.min(pagination.page * pagination.limit, pagination.total)} ]
+              de <span className="font-medium">{pagination.total}</span>{" "}
+              registros
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // CRUD Operations
   const handleCreateRecord = async (data: any) => {
     try {

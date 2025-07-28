@@ -98,8 +98,8 @@ input[type="button"] {
 }
 
 .btn4 {
-  @apply disabled:text-menuTextoSeparador disabled:bg-fondoTablaHeader focus:ring-offset-1 ring-bordeExteriorBotonSeleccionado
-   py-1.5 cursor-pointer px-3 rounded-lg focus:ring-1 border-0 focus:outline-none disabled:cursor-not-allowed
+  @apply dark:disabled:text-menuTextoSeparador disabled:text-textoSeparadorDark disabled:bg-transparent focus:ring-offset-1 ring-bordeExteriorBotonSeleccionado
+   py-1.5 cursor-pointer px-3 rounded-lg focus:ring-1 border-0 focus:outline-none disabled:cursor-default
   transition-all duration-200 flex items-center;
 }
 
