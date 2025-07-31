@@ -57,6 +57,9 @@ input[type="button"] {
 .select1 {
   @apply text-textoControl dark:text-textoEncabezadoDark w-full pl-0.5 py-2 border rounded-lg border-textoSeparadorDark focus:border-bordeExteriorBotonSeleccionado hover:border-1 focus:outline-none hover:ring-1 hover:ring-bordeControlHover focus:border-2 cursor-pointer;
 }
+.select2{
+  @apply rounded-md border-0 appearance-none dark:text-textoLink dark:hover:text-textoLinkHover hover:text-textoLink text-textoLinkHover ;
+}
 
 .btn1 {
   @apply disabled:text-menuTextoSeparador disabled:bg-fondoTablaHeader focus:ring-offset-1 bg-fondoBoton1 text-textoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover  ring-bordeExteriorBotonSeleccionado
@@ -71,8 +74,8 @@ input[type="button"] {
 }
 
 .btn3 {
-  @apply disabled:text-fondoTransparenteObscuroNotificacion focus:ring-offset-1 bg-transparent text-textoBoton2 dark:text-textoLink hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover ring-bordeExteriorBotonSeleccionado
-  shadow-transparent py-1 cursor-pointer px-2 rounded-xl flex items-center focus:ring-1 border-0 focus:outline-none  disabled:cursor-not-allowed
+  @apply disabled:text-fondoTransparenteObscuroNotificacion focus:ring-offset-1 text-textoBoton2 dark:text-textoLink hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover ring-bordeExteriorBotonSeleccionado
+  py-1 cursor-pointer px-2 rounded-xl flex items-center focus:ring-1 border-0 focus:outline-none  disabled:cursor-not-allowed
   transition-all duration-200;
 }
 

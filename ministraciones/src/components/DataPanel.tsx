@@ -10,6 +10,7 @@ import RecordForm from "./RecordForm";
 import Spinner from "./elements/Spinner";
 
 import { iPagination } from "./forms/interfaces";
+import FormStyleFiltersModal from "@/components/FormStyleFiltersModal";
 
 const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
   const esta_borrado = process.env.NEXT_PUBLIC_DELETED_COLUMN_NAME;
@@ -36,7 +37,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
   // Cargar tablas al montar el componente
   const [tables, setTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState(entity);
-  const [records, setRecords] = useState([]);
+  const [records, setRecords] = useState<any[]>([]);
   type TableSchema = { columns: any[]; [key: string]: any };
   const [schema, setSchema] = useState<TableSchema | null>(null);
   const [loading, setLoading] = useState(true);
@@ -60,6 +61,12 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [crudLoading, setCrudLoading] = useState(false);
   const [text2display, setText2display] = useState("");
+
+  // Estados para filtros inteligentes
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [currentFilters, setCurrentFilters] = useState({});
+  const [activeFiltersCount, setActiveFiltersCount] = useState(0);
+  const [smartFilters, setSmartFilters] = useState({}); // 🚀 NUEVO: Para almacenar filtros inteligentes
 
   useEffect(() => {
     selectTable(entity);
@@ -287,7 +294,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
 
         {/* Paginación */}
         {pagination.totalPages > 1 && (
-          <div className="mt-2 flex items-center justify_-between shadow text-sm" >
+          <div className="mt-2 flex items-center justify_-between shadow text-sm">
             <div className="flex items-center space-x-0.5 mr-3 ">
               <button
                 onClick={() => loadPage(1)}
@@ -464,6 +471,299 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
     setShowDeleteModal(true);
   };
 
+  // 🚀 FUNCIÓN CORREGIDA PARA APLICAR FILTROS
+  const handleApplyFilters = async (filterData: any) => {
+    try {
+      setLoading(true);
+      console.log("🔍 Aplicando filtros:", filterData);
+
+      // Detectar el formato del filtro
+      let processedFilters: Record<string, any> = {};
+      let activeCount = 0;
+
+      // Formato del FormStyleFiltersModal: { filters: {...}, connectors: [...] }
+      if (filterData.filters && typeof filterData.filters === "object") {
+        console.log("📋 Procesando formato FormStyleFiltersModal");
+
+        Object.entries(filterData.filters).forEach(
+          ([fieldName, filterConfig]) => {
+            // Add a type guard to ensure filterConfig is an object with operator and value
+            if (
+              filterConfig &&
+              typeof filterConfig === "object" &&
+              "operator" in filterConfig &&
+              "value" in filterConfig
+            ) {
+              const { operator, value, value2 } = filterConfig as {
+                operator: string;
+                value: string;
+                value2?: string;
+              };
+
+              if (value && value.trim() !== "") {
+                console.log(
+                  `🔧 Aplicando filtro: ${fieldName} ${operator} "${value}"`
+                );
+
+                switch (operator) {
+                  case "like":
+                    // Para LIKE, enviar directamente el valor (el backend ya maneja el ILIKE)
+                    processedFilters[fieldName] = value;
+                    break;
+
+                  case "=":
+                    processedFilters[fieldName] = value;
+                    break;
+
+                  case "!=":
+                    processedFilters[`${fieldName}_not_equal`] = value;
+                    break;
+
+                  case ">":
+                    processedFilters[`${fieldName}_gt`] = value;
+                    break;
+
+                  case "<":
+                    processedFilters[`${fieldName}_lt`] = value;
+                    break;
+
+                  case ">=":
+                    processedFilters[`${fieldName}_gte`] = value;
+                    break;
+
+                  case "<=":
+                    processedFilters[`${fieldName}_lte`] = value;
+                    break;
+
+                  case "between":
+                    if (value.includes(" - ")) {
+                      const [min, max] = value.split(" - ");
+                      if (min && max) {
+                        processedFilters[`${fieldName}_gte`] = min.trim();
+                        processedFilters[`${fieldName}_lte`] = max.trim();
+                      }
+                    }
+                    break;
+
+                  case "M":
+                    // Para filtro de mes
+                    processedFilters[`${fieldName}_month`] = value;
+                    break;
+
+                  default:
+                    // Para operadores no reconocidos, usar valor directo
+                    processedFilters[fieldName] = value;
+                    break;
+                }
+
+                activeCount++;
+              }
+            }
+          }
+        );
+      }
+      // Formato de otros modales (SmartFiltersModal, AdvancedFilterModal)
+      else if (typeof filterData === "object" && !filterData.filters) {
+        console.log("📋 Procesando formato SmartFiltersModal");
+
+        Object.entries(filterData).forEach(([fieldName, config]) => {
+          if (
+            config &&
+            typeof config === "object" &&
+            "value" in config &&
+            typeof (config as any).value === "string" &&
+            (config as any).value.trim() !== ""
+          ) {
+            const value = (config as any).value;
+            const operator = (config as any).operator;
+            switch (operator) {
+              case "LIKE":
+                processedFilters[fieldName] = value;
+                break;
+              case "BETWEEN":
+                if (value.includes(",")) {
+                  const [min, max] = value.split(",");
+                  if (min && max) {
+                    processedFilters[`${fieldName}_gte`] = min.trim();
+                    processedFilters[`${fieldName}_lte`] = max.trim();
+                  }
+                }
+                break;
+              case "IS_NULL":
+                processedFilters[`${fieldName}_is_null`] = "true";
+                break;
+              case "IS_NOT_NULL":
+                processedFilters[`${fieldName}_is_not_null`] = "true";
+                break;
+              default:
+                processedFilters[`${fieldName}_${operator.toLowerCase()}`] =
+                  value;
+                break;
+            }
+            activeCount++;
+          }
+        });
+      }
+
+      // Actualizar estado de filtros
+      setCurrentFilters(processedFilters);
+      setActiveFiltersCount(activeCount);
+
+      // Construir parámetros para el backend
+      const params = {
+        page: "1", // Resetear a primera página al filtrar
+        limit: "50",
+        ...processedFilters,
+      };
+
+      console.log("🚀 Parámetros enviados al backend:", params);
+
+      const response = await apiService.getRecords(selectedTable, params);
+      console.log("📊 Respuesta del filtro:", response);
+
+      // Extraer los datos correctamente según la estructura de respuesta
+      let recordsData, paginationData;
+
+      if (response.data && response.data.data) {
+        recordsData = response.data.data;
+        paginationData = response.data.pagination;
+      } else if (response.data) {
+        recordsData = response.data;
+        paginationData = {};
+      } else {
+        recordsData = response;
+        paginationData = {};
+      }
+
+      // Asegurar que recordsData es un array
+      if (!Array.isArray(recordsData)) {
+        console.warn("Records data is not an array:", recordsData);
+        recordsData = [];
+      }
+
+      setRecords(recordsData);
+      setPagination(paginationData || {});
+
+      // Mostrar mensaje de filtros aplicados
+      if (activeCount > 0) {
+        console.log(
+          `✅ Se aplicaron ${activeCount} filtro(s), encontrados ${recordsData.length} registros`
+        );
+      }
+    } catch (error) {
+      console.error("❌ Error al aplicar filtros:", error);
+      setRecords([]);
+      setPagination({
+        page: 1,
+        limit: 50,
+        total: 0,
+        totalPages: 1,
+        hasNext: false,
+        hasPrev: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Función para limpiar filtros
+  const handleClearAllFilters = () => {
+    setCurrentFilters({});
+    setActiveFiltersCount(0);
+    fetchRecords(selectedTable, 1); // Recargar datos sin filtros
+  };
+
+  const fetchSchema = async (table: any) => {
+    try {
+      console.log(`📋 Obteniendo schema de ${table}...`);
+      const response = await apiService.getTableSchema(table);
+      console.log("Schema response:", response); // Debug
+
+      // Extraer los datos correctamente según la estructura de respuesta
+      let schemaData;
+      if (response.data && response.data.data) {
+        schemaData = response.data.data;
+      } else if (response.data) {
+        schemaData = response.data;
+      } else {
+        schemaData = response;
+      }
+
+      setSchema(schemaData);
+      console.log(
+        `✅ Schema de ${table} cargado, columnas:`,
+        schemaData.columns?.length || 0
+      );
+    } catch (error) {
+      console.error("Error fetching schema:", error);
+      setSchema(null);
+    }
+  };
+  // Función modificada para mantener filtros al cambiar de página
+  const fetchRecords = async (
+    table: any,
+    page = 1,
+    maintainFilters = false
+  ) => {
+    if (!table) return;
+
+    try {
+      setLoading(true);
+      console.log(`📖 Cargando registros de ${table}, página ${page}`);
+
+      // Mantener filtros actuales si se especifica
+      const filters = maintainFilters ? currentFilters : {};
+
+      // Construir parámetros
+      const params = {
+        page: page.toString(),
+        limit: "50",
+        ...filters,
+      };
+
+      const response = await apiService.getRecords(table, params);
+      console.log("Records response:", response); // Debug
+
+      // Extraer los datos correctamente según la estructura de respuesta
+      let recordsData, paginationData;
+
+      if (response.data && response.data.data) {
+        recordsData = response.data.data;
+        paginationData = response.data.pagination;
+      } else if (response.data) {
+        recordsData = response.data;
+        paginationData = {};
+      } else {
+        recordsData = response;
+        paginationData = {};
+      }
+
+      // Asegurar que recordsData es un array
+      if (!Array.isArray(recordsData)) {
+        console.warn("Records data is not an array:", recordsData);
+        recordsData = [];
+      }
+
+      setRecords(recordsData);
+      setPagination(paginationData || {});
+
+      console.log(`✅ Se cargaron ${recordsData.length} registros de ${table}`);
+    } catch (error) {
+      console.error("Error fetching records:", error);
+      setRecords([]);
+      setPagination({
+        page: 1,
+        limit: 50,
+        total: 0,
+        totalPages: 1,
+        hasNext: false,
+        hasPrev: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col overflow-auto pb-3">
       <div className="flex flex-wrap w-full gap-4 px-4">
@@ -473,13 +773,14 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
         >
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-0">
-              <div className="inline-flex">
+              <div className="inline-flex space-x-1">
                 <span className="text-bordeControl">■</span>
                 <span className="mr-6 text-lg">&nbsp;{aOracion(entity)}</span>
                 {/*
                 <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
                 <span>{tables.length} tablas detectadas</span>
               */}
+                {/* Agregar */}
                 <button
                   className="btn3"
                   title="Agregar registro"
@@ -489,6 +790,40 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                 >
                   <i className="fa-solid fa-plus"></i>
                   <span className="lblBtn">Agregar</span>
+                </button>
+
+                {/* 🚀 BOTÓN FILTROS DE BÚSQUEDA */}
+                <button
+                  className={`btn3 ${
+                    activeFiltersCount > 0
+                      ? "bg-fondoTablaFilaZebra dark:bg-textoSeparadorDark"
+                      : ""
+                  }`}
+                  title="Ver filtros de búsqueda"
+                  onClick={() => setShowFilterModal(true)}
+                >
+                  <i className="fa-solid fa-filter"></i>
+                  <span className="lblBtn">Ver filtros</span>
+                  {activeFiltersCount > 0 && (
+                    <span className="bg-menuIcon text-white text-xs ml-2 mr-3 rounded-full min-w-[20px] flex items-center justify-center">
+                      {activeFiltersCount}
+                    </span>
+                  )}
+                </button>
+                {activeFiltersCount > 0 && (
+                  <button
+                    onClick={handleClearAllFilters}
+                    className="text-TextoLblError relative right-5.5 z-2 hover:scale-100 scale-75"
+                    title="Limpiar filtros"
+                  >
+                    <i className="fa-solid fa-xmark"></i>
+                  </button>
+                )}
+
+                {/* Exportar */}
+                <button className="btn3 " title="Exportar registros a excel">
+                  <i className="fa-solid fa-file-export"></i>
+                  <span className="lblBtn">Exportar</span>
                 </button>
               </div>
             </div>
@@ -504,10 +839,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                 <span className="lblBtn">Filtrar</span>
               </button>
               
-              <button className="btn3 " title="Exportar">
-                <i className="fa-solid fa-file-export"></i>
-                <span className="lblBtn">Exportar</span>
-              </button>
+              
 */}
               {/*
               <button className="btn3 " title="Imprimir">
@@ -668,6 +1000,16 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
             </div>
           )}
         </Modal>
+
+        {/* 🚀 NUEVO: Modal Filtros Inteligentes */}
+        <FormStyleFiltersModal
+          isOpen={showFilterModal}
+          onClose={() => setShowFilterModal(false)}
+          onApplyFilters={handleApplyFilters}
+          schema={schema}
+          currentFilters={currentFilters}
+          tableName={selectedTable}
+        />
       </div>
     </div>
   );

@@ -82,7 +82,7 @@ const LoginForm = () => {
         id="id_sistema"
         value={idSistema}
         onChange={(e) => setIdSistema(e.target.value)}
-        className="w-full rounded-md text-center text-xl font-bold border-0 appearance-none"
+        className="w-full text-center text-xl font-bold select2"
       >
         <option value="1">Administración SAG</option>
         <option value="2">Ministraciones</option>
