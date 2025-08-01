@@ -803,7 +803,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                   onClick={() => setShowFilterModal(true)}
                 >
                   <i className="fa-solid fa-filter"></i>
-                  <span className="lblBtn">Ver filtros</span>
+                  <span className="lblBtn">Filtrar</span>
                   {activeFiltersCount > 0 && (
                     <span className="bg-menuIcon text-white text-xs ml-2 mr-3 rounded-full min-w-[20px] flex items-center justify-center">
                       {activeFiltersCount}

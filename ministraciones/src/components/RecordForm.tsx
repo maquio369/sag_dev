@@ -545,7 +545,7 @@ const RecordForm = ({
     );
   };
 
-  // 🎯 FILTRAR COLUMNAS VISIBLES (excluir auto-increment PKs)
+  // 🎯 FILTRAR COLUMNAS VISIBLES (excluir auto-increment PKs) max-h-[calc(100vh-160px)]  max-h-[78vh]
   const visibleColumns = schema.columns.filter((column: any) => {
     // En modo creación, excluir auto-increment primary keys
     if (!isEdit && column.is_primary_key && column.is_identity) {
@@ -557,7 +557,7 @@ const RecordForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-1">
-      <div className="pr-2 max-h-[70vh] overflow-y-auto ">
+      <div className="pr-2 max-h-[78vh] overflow-y-auto ">
         <div
           className={
             visibleColumns.length <=
