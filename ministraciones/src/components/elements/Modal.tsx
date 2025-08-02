@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { CRUD_Props } from "@/components/forms/interfaces";
-import { title } from "process";
+import { makeDialogDraggable } from "dialog-draggable"
 
 const Modal = ({
   isOpen,
@@ -29,21 +29,25 @@ const Modal = ({
       handleCloseModal();
     }
   };
+  
+  useEffect(() => {
+      makeDialogDraggable();    
+  }, []);
+
   useEffect(() => {
     // Grabbing a reference to the modal in question
     const modalElement = modalRef.current;
     if (!modalElement) return;
 
     // Open modal when `isOpen` changes to true
-    if (isOpen) {
-      modalElement.showModal();
-      //console.log("isOpen------------>",isOpen," ",title);
+    if (isOpen) {      
+      modalElement.showModal();      
       firstCtrlFocusByName(title??"");
     } else {
       modalElement.close();
     }
   }, [isOpen]);
-
+  
   function renderWindowTitle(iconType?: string) {
     let faIcon = "";
     switch (iconType) {
@@ -79,8 +83,8 @@ const Modal = ({
       className={"fondoVentanaForm " + "  " + className}
     >
       {
-        <div className="encabezadoVentanaForm">
-          <div className="tituloVentanaForm">
+        <div className="encabezadoVentanaForm ">
+          <div className="tituloVentanaForm dialog-header cursor-grab" data-dialog-draggable>
             {renderWindowTitle(iconType)}
             <span>
               <button
