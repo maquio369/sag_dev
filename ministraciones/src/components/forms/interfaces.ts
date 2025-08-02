@@ -6,6 +6,8 @@ export interface CRUD_Props {
   title?: string;
   className?: string;
   children?: React.ReactNode;
+  resizable?: boolean;
+  noModal?: boolean;
 }
 
 export interface modelContactos {

@@ -872,15 +872,16 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
           title={`Nuevo registro de ${selectedTable}`}
           className={
             schema &&
-            schema.columns.length <=
+              schema.columns.length <=
               Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_SM)
               ? "w-[88%] md:w-[68%] lg:w-[48%]  fondoVentanaForm fondoVentanaForm-center min-h-3/12"
               : schema &&
-                  schema.columns.length <=
-                    Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_MD)
+                schema.columns.length <=
+                Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_MD)
                 ? "w-[98%] md:w-[78%] lg:w-[68%] fondoVentanaForm-center min-h-3/12"
                 : "fondoVentanaForm-width fondoVentanaForm-center min-h-3/12"
           }
+          
         >
           {schema && (
             <RecordForm
@@ -913,6 +914,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                 ? "w-[98%] md:w-[78%] lg:w-[68%] fondoVentanaForm-center min-h-3/12"
                 : "fondoVentanaForm-width fondoVentanaForm-center min-h-3/12"
           }
+          resizable={true}
         >
           {schema && selectedRecord && (
             <RecordForm

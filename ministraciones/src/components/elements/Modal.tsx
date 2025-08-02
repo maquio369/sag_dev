@@ -10,6 +10,8 @@ const Modal = ({
   title,
   className,
   children,
+  resizable,
+  noModal,
 }: CRUD_Props) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const handleCloseModal = () => {
@@ -41,7 +43,7 @@ const Modal = ({
 
     // Open modal when `isOpen` changes to true
     if (isOpen) {      
-      modalElement.showModal();      
+      noModal?modalElement.show():modalElement.showModal();
       firstCtrlFocusByName(title??"");
     } else {
       modalElement.close();
@@ -81,10 +83,12 @@ const Modal = ({
       ref={modalRef}
       onKeyDown={handleKeyDown}
       className={"fondoVentanaForm " + "  " + className}
+      style={{ resize: resizable ? "both" : "none" }}
     >
       {
-        <div className="encabezadoVentanaForm ">
-          <div className="tituloVentanaForm dialog-header cursor-grab" data-dialog-draggable>
+        <div className="encabezadoVentanaForm cursor-grab" data-dialog-draggable>
+
+          <div className="tituloVentanaForm">
             {renderWindowTitle(iconType)}
             <span>
               <button

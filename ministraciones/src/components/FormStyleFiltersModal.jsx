@@ -476,6 +476,8 @@ console.log(column.data_type,dataType);
             ? "w-[98%] md:w-[78%] lg:w-[68%] fondoVentanaForm-center min-h-3/12"
             : "fondoVentanaForm-width fondoVentanaForm-center min-h-3/12"
       }
+      resizable={true}
+      noModal={false}
     >
       <div className="space-y-1">
         {/* Lista de filtros max-h-[calc(100vh-135px)]   */}
