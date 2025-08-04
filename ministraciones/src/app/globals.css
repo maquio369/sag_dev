@@ -174,15 +174,15 @@ input[type="button"] {
 }
 
 .grid4cols {
-  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4;
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6;
 }
 
 .grid3cols {
-  @apply grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-4;
+  @apply grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6;
 }
 
 .grid2cols {
-  @apply grid grid-cols-1 sm:grid-cols-1 xl:grid-cols-2 gap-x-4;
+  @apply grid grid-cols-1 sm:grid-cols-1 xl:grid-cols-2 gap-x-6;
 }
 .grid1col {
   @apply grid grid-cols-1 gap-x-4;

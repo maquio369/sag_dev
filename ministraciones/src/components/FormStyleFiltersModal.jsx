@@ -9,10 +9,12 @@ const FormStyleFiltersModal = ({
   schema,
   currentFilters = {},
   tableName,
+  access_level,
 }) => {
   const [filters, setFilters] = useState({});
   const [activeFiltersCount, setActiveFiltersCount] = useState(0);
-
+  const campoEstaBorrado = process.env.NEXT_PUBLIC_DELETED_COLUMN_NAME;
+  
   useEffect(() => {
     if (isOpen && schema) {
       initializeFilters();
@@ -140,13 +142,21 @@ const FormStyleFiltersModal = ({
       ];
     }
 
+    // Operadores para números
+    if (
+      dataType === "boolean"
+    ) {
+      return [
+        { value: "=", label: "=", title: "igual a" },
+        { value: "!=", label: "≠", title: "diferente de" },
+      ];
+    }
+
     // Operadores para texto
     return [
       { value: "=", label: "=", title: "igual a" },
       { value: "like", label: "≈", title: "contiene" },
       { value: "!=", label: "≠", title: "diferente de" },
-      { value: ">=", label: "≥", title: "mayor o igual a" },
-      { value: "<=", label: "≤", title: "menor o igual a" },
     ];
   };
 
@@ -165,19 +175,19 @@ const FormStyleFiltersModal = ({
       }
 
       //if (col.is_primary_key) return false;
-
+/*
       const systemColumns = [
-        "esta_borrado_",
+        "deleted",
         "created_at",
         "updated_at",
         "fecha_creacion",
         "fecha_actualizacion",
       ];
       if (systemColumns.includes(col.column_name)) return false;//and Nivel=4
-
+*/
       // ✅ AGREGADO: timestamp without time zone
       const dataType = col.data_type || "text";
-      console.log(dataType,"<-------herewego-------->",col.data_type);
+      
       const filterableTypes = [
         "text",
         "varchar",
@@ -300,13 +310,7 @@ const FormStyleFiltersModal = ({
                     {mes.label}
                   </option>
                 ))}
-              </select>
-              <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                📅{" "}
-                {value
-                  ? meses.find((m) => m.value === value)?.label || "Mes"
-                  : "Mes"}
-              </div>
+              </select>              
             </div>
           );
 
@@ -371,35 +375,35 @@ const FormStyleFiltersModal = ({
           );
       }
     }
-console.log(column.data_type,dataType);
+    
+//usar select si es boolean
     if (dataType === "boolean") {
-      console.log("--------------------> formFilterBoolean");
-
+      //console.log("--------------------> formFilterBoolean");
+      //className={`${column.column_name.includes(campoEstaBorrado) && access_level !== "4" ? "hidden" : ""}`}
+      if(fieldName.includes(campoEstaBorrado) && access_level !== "4") return null
       return (
-        <input
-          type="checked"
-          //value={value}
-          onChange={(e) => updateFilter(fieldName, { value: e.target.checked })}
-          //placeholder={`Filtrar por ${getColumnDisplayName(fieldName).toLowerCase()}...`}
-          className="focus:ring-2 focus:ring-offset-2 focus:ring-bordeControlHover ring-rounded-md"
-        />
+        <select
+          value={value}
+          onChange={(e) => updateFilter(fieldName, { value: e.target.value })}
+          className="select1"
+        >
+          <option value="">Seleccionar...</option>
+          <option value="true">☑ Si</option>
+          <option value="false">◻ No</option>
+        </select>
       );
     }
 
     // 🔢 CAMPOS NUMÉRICOS
     const inputType =
-      dataType === "integer" || dataType === "numeric"
-        ? "number"
-        : dataType === "boolean"
-          ? "checkbox"
-          : "text";
+      dataType === "integer" || dataType === "numeric"? "number" : "text";
 
     return (
       <input
         type={inputType}
         value={value}
         onChange={(e) => updateFilter(fieldName, { value: e.target.value })}
-        placeholder={`Filtrar por ${getColumnDisplayName(fieldName).toLowerCase()}...`}
+        placeholder={`(${dataType}>${inputType}) Filtrar por ${getColumnDisplayName(fieldName).toLowerCase()}...`}
         className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm flex-1"
       />
     );
@@ -499,7 +503,9 @@ console.log(column.data_type,dataType);
                   return null;
                 }
 
-                const fieldName = column.column_desc ?? column.column_name;
+                if (column.column_name.includes(campoEstaBorrado) && access_level !== "4") return null
+
+                const fieldName = column.column_name;
                 const filter = filters[fieldName] || {};
                 const operators = getOperators(column.data_type || "text");
                 const hasValue = filter.value && filter.value.trim() !== "";
@@ -509,7 +515,7 @@ console.log(column.data_type,dataType);
                   <div key={fieldName} className="mb-2">
                     <div className="flex flex-row items-center">
                       {/* Nombre del Campo */}
-                      <span className="lbl">{fieldName}</span>
+                      <span className="lbl">{column.column_desc}</span>
                       {/* Selector de Operador */}
 
                       <select
@@ -573,6 +579,39 @@ console.log(column.data_type,dataType);
             )}
           </div>
         </div>
+
+        
+
+        {/* Vista previa de filtros activos */}
+        {activeFiltersCount > 0 && (
+          <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+            <h5 className="font-medium text-green-900 mb-2">Filtros activos:</h5>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(filters)
+                .filter(([_, filter]) => filter.value && filter.value.trim() !== '')
+                .map(([fieldName, filter], index, array) => (
+                  <div key={fieldName} className="flex items-center">
+                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
+                      <strong>{fieldName}</strong> {
+                        getOperators(filter.column?.data_type || 'text').find(op => op.value === filter.operator)?.label || filter.operator
+                      } <em>{
+                        filter.operator === 'between' ? 
+                        `${filter.value}` : 
+                        filter.value}
+                      </em>
+                    </span>
+                    {index < array.length - 1 && (
+                      <span className="text-green-600 font-bold mx-2">
+                        {filter.connector === 'OR' ? 'O' : 'Y'}
+                      </span>
+                    )}
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
+        
 
         {/* Footer con botones */}
         <div className="pt-1 border-t border-gray-200">

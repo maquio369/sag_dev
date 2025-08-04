@@ -13,7 +13,7 @@ import { iPagination } from "./forms/interfaces";
 import FormStyleFiltersModal from "@/components/FormStyleFiltersModal";
 
 const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
-  const esta_borrado = process.env.NEXT_PUBLIC_DELETED_COLUMN_NAME;
+  const campoEstaBorrado = process.env.NEXT_PUBLIC_DELETED_COLUMN_NAME;
   const fk_postfix = process.env.NEXT_PUBLIC_FK_COLUMN_POSTFIX;
 
   const nums =
@@ -239,13 +239,13 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
         ) : (
           <div className="overflow-x-auto table_-wrp block_ max-h-[calc(100vh-160px)]">
             <table className="min-w-full">
-              <thead className="thead sticky top-0 bg-bordeBlancoTransparente dark:bg-fondoObscuroTransparente">
+              <thead className="thead sticky top-0 bg-bordeBlancoTransparente dark:bg-fondoObscuroTransparente h-10" >
                 <tr className="">
                   <th className="w-1 pl-3">☷</th>
                   {schema.columns.map((column: any) => (
                     <th
                       key={column.column_name}
-                      className={`${column.data_type === "boolean" || column.column_name.includes("icon") ? "justify-items-center" : ""} ${column.column_name.includes(esta_borrado) && nivel !== "4" ? "hidden" : ""}`}
+                      className={`${column.data_type === "boolean" || column.column_name.includes("icon") ? "justify-items-center" : ""} ${column.column_name.includes(campoEstaBorrado) && nivel !== "4" ? "hidden" : ""}`}
                     >
                       <div className="">
                         <span className="">
@@ -262,7 +262,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
               <tbody className="">
                 {records.map((record, index) => (
                   <tr key={index} className="trZebra">
-                    <td className="w-fit relative">
+                    <td className="w-fit relative py-2">
                       <DropdownMenuCRUD
                         recordId={record[0]}
                         recordData={record}
@@ -274,7 +274,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                     {schema.columns.map((column: any) => (
                       <td
                         key={column.column_name}
-                        className={`${column.column_name.includes(esta_borrado) && nivel !== "4" ? "hidden" : ""}`}
+                        className={`${column.column_name.includes(campoEstaBorrado) && nivel !== "4" ? "hidden" : ""}`}
                       >
                         <div className="max-w-xs overflow-hidden">
                           {renderCellValue(
@@ -942,7 +942,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
             <div>
               <div className="mb-6">
                 <div className="flex items-start mb-6">
-                  <div className="w-15 h-15 bg-TextoLblErrorSoft dark:bg-fondoTransparenteObscuroNotificacion rounded-xl flex items-center justify-center mr-4">
+                  <div className="w-15 h-15 dark:bg-fondoTransparenteObscuroNotificacion rounded-xl flex items-center justify-center mr-4">
                     <span className="text-3xl text-textoGolden2">⚠️</span>
                   </div>
                   <div>
@@ -990,7 +990,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                 <button
                   onClick={handleDeleteRecord}
                   disabled={crudLoading}
-                  className="btn4 bg-TextoLblError hover:bg-bordeControlInvalido focus:bg-bordeControlInvalido text-textoBoton1 hover:text-textoBoton1Hover"
+                  className="btn4 ml-19 bg-TextoLblError hover:bg-bordeControlInvalido focus:bg-bordeControlInvalido text-textoBoton1 hover:text-textoBoton1Hover"
                 >
                   {crudLoading && (
                     <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
@@ -1011,6 +1011,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
           schema={schema}
           currentFilters={currentFilters}
           tableName={selectedTable}
+          access_level={String(nivel)}
         />
       </div>
     </div>

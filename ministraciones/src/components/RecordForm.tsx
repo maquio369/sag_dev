@@ -52,7 +52,7 @@ const RecordForm = ({
   const [errors, setErrors] = useState<Record<string, string | null>>({});
   const [loadingOptions, setLoadingOptions] = useState(false);
 
-  const esta_borrado = process.env.NEXT_PUBLIC_DELETED_COLUMN_NAME;
+  const campoEstaBorrado = process.env.NEXT_PUBLIC_DELETED_COLUMN_NAME;
   let hasFocus = true;
 
   const isEdit = !!record;
@@ -383,7 +383,7 @@ const RecordForm = ({
       return (
         <div
           className="mb-2"
-          hidden={column.column_name === esta_borrado && level !== "4"}
+          hidden={column.column_name === campoEstaBorrado && level !== "4"}
         >
           <label className="lbl" htmlFor={column.column_name}>
             {column.column_desc}
