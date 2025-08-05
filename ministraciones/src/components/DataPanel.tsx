@@ -160,7 +160,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
 
     if (column.data_type === "boolean") {
       return (
-        <span className={`flex justify-center`}>{value ? "▣" : "◻"}</span>
+        <span className={`flex justify-center text-lg`}>{value ? "☑" : "◻"}</span>
       );
     }
 

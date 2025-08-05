@@ -1,7 +1,7 @@
 // src/components/RecordForm.jsx - Con layout 2x2 para los campos
 import react, { useState, useEffect, useRef } from "react";
 import { apiService } from "../services/api";
-import { aOracion } from "@/utils/util";
+import { getColumnDisplayName } from "@/utils/util";
 import SubmitBtn from "./elements/SubmitBtn";
 
 type SchemaColumn = {
@@ -221,11 +221,6 @@ const RecordForm = ({
     });
 
     onSave(dataToSend);
-  };
-
-  // 🎯 FUNCIÓN PARA OBTENER NOMBRE AMIGABLE DE COLUMNAS
-  const getColumnDisplayName = (columnName: string, columnDesc: string) => {
-    return columnDesc ? columnDesc : aOracion(columnName);
   };
 
   // 🎯 FUNCIÓN PARA RENDERIZAR CAMPOS DE FOREIGN KEY

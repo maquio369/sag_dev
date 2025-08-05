@@ -55,7 +55,7 @@ input[type="button"] {
 }
 
 .select1 {
-  @apply text-textoControl dark:text-textoEncabezadoDark w-full pl-0.5 py-2 border rounded-lg border-textoSeparadorDark focus:border-bordeExteriorBotonSeleccionado hover:border-1 focus:outline-none hover:ring-1 hover:ring-bordeControlHover focus:border-2 cursor-pointer;
+  @apply text-textoControl dark:text-textoEncabezadoDark w-full pl-0.5 py-1.5 border rounded-lg border-textoSeparadorDark focus:border-bordeExteriorBotonSeleccionado hover:border-1 focus:outline-none hover:ring-1 hover:ring-bordeControlHover focus:border-2 cursor-pointer;
 }
 .select2{
   @apply rounded-md border-0 appearance-none dark:text-textoLink dark:hover:text-textoLinkHover hover:text-textoLink text-textoLinkHover ;

@@ -28,7 +28,11 @@ export function setCookie(cname: string, cvalue: string | null) {
 export function ofuscad(cad: string, encode: boolean): string {
   let encoded = "";
   if (encode) {
-    encoded = Buffer.from(cad.toString()).toString("base64").split("").reverse().join("");
+    encoded = Buffer.from(cad.toString())
+      .toString("base64")
+      .split("")
+      .reverse()
+      .join("");
   } else {
     encoded = Buffer.from(cad.split("").reverse().join(""), "base64").toString(
       "utf-8"
@@ -101,6 +105,10 @@ export function unzip64(str64zip: string) {
 }
 
 export function aOracion(cadena: string) {
-  const frase = cadena.replace(/_/g, ' ').toLowerCase();
+  const frase = cadena.replace(/_/g, " ").toLowerCase();
   return frase.charAt(0).toUpperCase() + frase.slice(1);
+}
+
+export function getColumnDisplayName(columnName: string, columnDesc: string) {
+  return columnDesc ? columnDesc : aOracion(columnName);
 }

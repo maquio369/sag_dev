@@ -1,6 +1,21 @@
 // frontend/src/components/FormStyleFiltersModal.jsx
 import React, { useState, useEffect } from "react";
 import Modal from "@/components/elements/Modal";
+import { getColumnDisplayName } from "@/utils/util";
+import { apiService } from "../services/api";
+
+/*
+type SchemaColumn = {
+  column_name: string;
+  column_desc?: string;
+  data_type: string;
+  is_primary_key?: boolean;
+  is_identity?: boolean;
+  is_nullable?: string;
+  column_default?: any;
+  character_maximum_length?: number;
+};
+*/
 
 const FormStyleFiltersModal = ({
   isOpen,
@@ -14,12 +29,130 @@ const FormStyleFiltersModal = ({
   const [filters, setFilters] = useState({});
   const [activeFiltersCount, setActiveFiltersCount] = useState(0);
   const campoEstaBorrado = process.env.NEXT_PUBLIC_DELETED_COLUMN_NAME;
-  
+
+  const [foreignKeyOptions, setForeignKeyOptions] = useState({});
+
   useEffect(() => {
     if (isOpen && schema) {
       initializeFilters();
     }
   }, [isOpen, schema]);
+
+  useEffect(() => {
+    //initializeForm();
+    if (schema && schema.foreignKeys && schema.foreignKeys.length > 0) {
+      loadForeignKeyOptions();
+    }
+  }, [schema]);
+  //const error = errors[column.column_name];
+  /*const isRequired = column.is_nullable === "NO" && !column.column_default;
+    const columnDisplayName = getColumnDisplayName(
+      column.column_name,
+      column.column_desc
+    );*/
+
+  // 🎯 FUNCIÓN PARA RENDERIZAR CAMPOS DE FOREIGN KEY
+  const renderForeignKeyField = (
+    column,
+    value,
+    //error,
+    //isRequired,
+    displayName
+  ) => {
+    /*
+    // Si están cargando las opciones, mostrar loading
+    if (loadingOptions) {
+      return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="flex items-center space-x-3">
+              <div className="animateSpin"></div>
+              <span className="text-gray-700">
+                Cargando opciones de relaciones...
+              </span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+      */
+    return (
+      <div className="mb-2">
+        {" "}
+        {/* Foreign Key Select */}
+        <select
+          id={column.column_name}
+          name={column.column_name}
+          value={value}
+          onChange={(e) =>
+            updateFilter(column.column_name, { value: e.target.value })
+          }
+          /*onChange={(e) =>
+            handleInputChange(
+              column.column_name,
+              e.target.value ? parseInt(e.target.value) : ""
+            )
+          }*/
+          className="select1"
+        >
+          <option
+            value=""
+            className="text-textoSeparadorDark dark:text-textoEtiqueta"
+          >
+            Seleccionar...
+          </option>
+          {foreignKeyOptions[column.column_name]?.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        {/*error && (
+          <p className="text-sm text-TextoLblError flex items-center space-x-1">
+            <span>⚠️</span>
+            <span>{error}</span>
+          </p>
+        )*/}
+      </div>
+    );
+  };
+  const loadForeignKeyOptions = async () => {
+    if (!schema.foreignKeys || schema.foreignKeys.length === 0) {
+      return;
+    }
+
+    //setLoadingOptions(true);Type annotations can only be used in TypeScript files
+    const options = {};
+
+    try {
+      // Cargar opciones para cada foreign key
+      const promises = schema.foreignKeys.map(async (fk) => {
+        try {
+          const response = await apiService.getForeignKeyOptions(
+            tableName,
+            fk.column_name
+          );
+          options[fk.column_name] = response.data.data.options;
+          //console.log(`Opciones cargadas para ${fk.column_name}:`, response.data.data.options);
+        } catch (error) {
+          console.error(
+            `Error cargando opciones para ${fk.column_name}:`,
+            error
+          );
+          // Si falla, crear opciones vacías
+          options[fk.column_name] = [];
+        }
+      });
+
+      await Promise.all(promises);
+      setForeignKeyOptions(options);
+    } catch (error) {
+      console.error("Error general cargando opciones FK:", error);
+      // showNotification('Error al cargar opciones de relaciones', 'error');
+    } finally {
+      //setLoadingOptions(false);
+    }
+  };
 
   // Inicializar filtros vacíos
   const initializeFilters = () => {
@@ -143,9 +276,7 @@ const FormStyleFiltersModal = ({
     }
 
     // Operadores para números
-    if (
-      dataType === "boolean"
-    ) {
+    if (dataType === "boolean") {
       return [
         { value: "=", label: "=", title: "igual a" },
         { value: "!=", label: "≠", title: "diferente de" },
@@ -175,7 +306,7 @@ const FormStyleFiltersModal = ({
       }
 
       //if (col.is_primary_key) return false;
-/*
+      /*
       const systemColumns = [
         "deleted",
         "created_at",
@@ -187,7 +318,7 @@ const FormStyleFiltersModal = ({
 */
       // ✅ AGREGADO: timestamp without time zone
       const dataType = col.data_type || "text";
-      
+
       const filterableTypes = [
         "text",
         "varchar",
@@ -204,39 +335,6 @@ const FormStyleFiltersModal = ({
 
       return filterableTypes.includes(dataType);
     });
-  };
-
-  // Obtener el nombre display de la columna
-  const getColumnDisplayName = (columnName) => {
-    const translations = {
-      nombres: "Nombre",
-      apellidos: "Apellidos",
-      correo: "Correo Electrónico",
-      usuario: "Usuario",
-      id_rol: "Rol",
-      rol: "Rol",
-      esta_borrado: "Estado",
-      descripcion: "Descripción",
-      activo: "Activo",
-      estado: "Estado",
-      telefono: "Teléfono",
-      direccion: "Dirección",
-      fecha_nacimiento: "Fecha de Nacimiento",
-      salario: "Salario",
-      departamento: "Departamento",
-      cargo: "Cargo",
-      codigo: "Código",
-      nombre: "Nombre",
-      precio: "Precio",
-      cantidad: "Cantidad",
-      categoria: "Categoría",
-    };
-
-    return (
-      translations[columnName] ||
-      columnName.charAt(0).toUpperCase() +
-        columnName.slice(1).replace(/_/g, " ")
-    );
   };
 
   // Actualizar filtro
@@ -310,7 +408,7 @@ const FormStyleFiltersModal = ({
                     {mes.label}
                   </option>
                 ))}
-              </select>              
+              </select>
             </div>
           );
 
@@ -375,12 +473,13 @@ const FormStyleFiltersModal = ({
           );
       }
     }
-    
-//usar select si es boolean
+
+    //usar select si es boolean
     if (dataType === "boolean") {
       //console.log("--------------------> formFilterBoolean");
       //className={`${column.column_name.includes(campoEstaBorrado) && access_level !== "4" ? "hidden" : ""}`}
-      if(fieldName.includes(campoEstaBorrado) && access_level !== "4") return null
+      if (fieldName.includes(campoEstaBorrado) && access_level !== "4")
+        return null;
       return (
         <select
           value={value}
@@ -394,9 +493,23 @@ const FormStyleFiltersModal = ({
       );
     }
 
-    // 🔢 CAMPOS NUMÉRICOS
+    // 🚀 NUEVA LÓGICA: Verificar si es foreign key
+    const isForeignKey = schema.foreignKeys?.some(
+      (fk) => fk.column_name === column.column_name
+    );
+    if (isForeignKey) {
+      return renderForeignKeyField(
+        column,
+        value,
+        //error,
+        //isRequired,
+        getColumnDisplayName(fieldName)
+      );
+    }
+
+    // 🔢 CAMPOS: NUMÉRICO o TEXTO
     const inputType =
-      dataType === "integer" || dataType === "numeric"? "number" : "text";
+      dataType === "integer" || dataType === "numeric" ? "number" : "text";
 
     return (
       <input
@@ -503,7 +616,11 @@ const FormStyleFiltersModal = ({
                   return null;
                 }
 
-                if (column.column_name.includes(campoEstaBorrado) && access_level !== "4") return null
+                if (
+                  column.column_name.includes(campoEstaBorrado) &&
+                  access_level !== "4"
+                )
+                  return null;
 
                 const fieldName = column.column_name;
                 const filter = filters[fieldName] || {};
@@ -515,7 +632,12 @@ const FormStyleFiltersModal = ({
                   <div key={fieldName} className="mb-2">
                     <div className="flex flex-row items-center">
                       {/* Nombre del Campo */}
-                      <span className="lbl">{column.column_desc}</span>
+                      <span className="lbl">
+                        {getColumnDisplayName(
+                          column.column_name,
+                          column.column_desc
+                        )}
+                      </span>
                       {/* Selector de Operador */}
 
                       <select
@@ -580,29 +702,31 @@ const FormStyleFiltersModal = ({
           </div>
         </div>
 
-        
-
         {/* Vista previa de filtros activos */}
-        {activeFiltersCount > 0 && (
-          <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-            <h5 className="font-medium text-green-900 mb-2">Filtros activos:</h5>
+        {access_level == "4" && activeFiltersCount > 0 && (
+          <div className="p-1 bg-green-50 border border-green-200 rounded-lg text-xs">
+            <h5 className=" text-gray-500 mb-0">Filtros activos:</h5>
             <div className="flex flex-wrap gap-2">
               {Object.entries(filters)
-                .filter(([_, filter]) => filter.value && filter.value.trim() !== '')
+                .filter(
+                  ([_, filter]) => filter.value && filter.value.trim() !== ""
+                )
                 .map(([fieldName, filter], index, array) => (
                   <div key={fieldName} className="flex items-center">
-                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
-                      <strong>{fieldName}</strong> {
-                        getOperators(filter.column?.data_type || 'text').find(op => op.value === filter.operator)?.label || filter.operator
-                      } <em>{
-                        filter.operator === 'between' ? 
-                        `${filter.value}` : 
-                        filter.value}
+                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded ">
+                      <strong>{fieldName}</strong>{" "}
+                      {getOperators(filter.column?.data_type || "text").find(
+                        (op) => op.value === filter.operator
+                      )?.label || filter.operator}{" "}
+                      <em>
+                        {filter.operator === "between"
+                          ? `${filter.value}`
+                          : filter.value}
                       </em>
                     </span>
                     {index < array.length - 1 && (
                       <span className="text-green-600 font-bold mx-2">
-                        {filter.connector === 'OR' ? 'O' : 'Y'}
+                        {filter.connector === "OR" ? "O" : "Y"}
                       </span>
                     )}
                   </div>
@@ -610,8 +734,6 @@ const FormStyleFiltersModal = ({
             </div>
           </div>
         )}
-
-        
 
         {/* Footer con botones */}
         <div className="pt-1 border-t border-gray-200">
