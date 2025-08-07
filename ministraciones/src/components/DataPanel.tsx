@@ -512,42 +512,42 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                     break;
 
                   case "=":
-                    processedFilters[fieldName] = value;
+                    processedFilters[`${fieldName}~equal`] = value;
                     break;
 
                   case "!=":
-                    processedFilters[`${fieldName}_not_equal`] = value;
+                    processedFilters[`${fieldName}~not_equal`] = value;
                     break;
 
                   case ">":
-                    processedFilters[`${fieldName}_gt`] = value;
+                    processedFilters[`${fieldName}~gt`] = value;
                     break;
 
                   case "<":
-                    processedFilters[`${fieldName}_lt`] = value;
+                    processedFilters[`${fieldName}~lt`] = value;
                     break;
 
                   case ">=":
-                    processedFilters[`${fieldName}_gte`] = value;
+                    processedFilters[`${fieldName}~gte`] = value;
                     break;
 
                   case "<=":
-                    processedFilters[`${fieldName}_lte`] = value;
+                    processedFilters[`${fieldName}~lte`] = value;
                     break;
 
                   case "between":
                     if (value.includes(" - ")) {
                       const [min, max] = value.split(" - ");
                       if (min && max) {
-                        processedFilters[`${fieldName}_gte`] = min.trim();
-                        processedFilters[`${fieldName}_lte`] = max.trim();
+                        processedFilters[`${fieldName}~gte`] = min.trim();
+                        processedFilters[`${fieldName}~lte`] = max.trim();
                       }
                     }
                     break;
 
                   case "M":
                     // Para filtro de mes
-                    processedFilters[`${fieldName}_month`] = value;
+                    processedFilters[`${fieldName}~month`] = value;
                     break;
 
                   default:

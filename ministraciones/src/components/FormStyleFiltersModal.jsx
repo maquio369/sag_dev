@@ -459,16 +459,7 @@ const FormStyleFiltersModal = ({
                   updateFilter(fieldName, { value: e.target.value })
                 }
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm flex-1"
-              />
-              <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                {operator === "="
-                  ? "📅 Exacta"
-                  : operator === ">="
-                    ? "📅 Desde"
-                    : operator === "<="
-                      ? "📅 Hasta"
-                      : "📅"}
-              </div>
+              />              
             </div>
           );
       }
