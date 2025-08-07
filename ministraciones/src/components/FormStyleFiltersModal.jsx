@@ -287,7 +287,8 @@ const FormStyleFiltersModal = ({
     return [
       { value: "=", label: "=", title: "igual a" },
       { value: "like", label: "≈", title: "contiene" },
-      { value: "!=", label: "≠", title: "diferente de" },
+      { value: "!~", label: "≠", title: "diferente de" },
+      { value: "not_like", label: "!≈", title: "no contiene" },
     ];
   };
 
