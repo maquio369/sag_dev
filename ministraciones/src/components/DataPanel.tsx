@@ -514,7 +514,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                   case "=":
                     processedFilters[`${fieldName}~equal`] = value;
                     break;
-                  case "!~":
+                  case "<>":
                     processedFilters[`${fieldName}~text_not_equal`] = value;
                     break;
                   case "!=":

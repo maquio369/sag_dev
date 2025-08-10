@@ -285,10 +285,10 @@ const FormStyleFiltersModal = ({
 
     // Operadores para texto
     return [
-      { value: "=", label: "=", title: "igual a" },
       { value: "like", label: "≈", title: "contiene" },
-      { value: "!~", label: "≠", title: "diferente de" },
       { value: "not_like", label: "!≈", title: "no contiene" },
+      { value: "=", label: "=", title: "igual a" },
+      { value: "<>", label: "≠", title: "diferente de" },
     ];
   };
 
@@ -299,14 +299,20 @@ const FormStyleFiltersModal = ({
       return [];
     }
 
-    return schema.columns.filter((col) => {
+    return schema.columns.filter((column) => {
       // Validación básica de columna
-      if (!col || !col.column_name) {
-        console.warn("Columna sin column_name:", col);
+      if (!column || !column.column_name) {
+        console.warn("Columna sin column_name:", column);
         return false;
       }
-
-      //if (col.is_primary_key) return false;
+      if (
+        column.column_name.includes("clave") ||
+        column.column_name.includes("constraseña") ||
+        column.column_name.includes("password")
+      ) {
+        return false;
+      }
+      //if (column.is_primary_key) return false;
       /*
       const systemColumns = [
         "deleted",
@@ -315,10 +321,10 @@ const FormStyleFiltersModal = ({
         "fecha_creacion",
         "fecha_actualizacion",
       ];
-      if (systemColumns.includes(col.column_name)) return false;//and Nivel=4
+      if (systemColumns.includes(column.column_name)) return false;//and Nivel=4
 */
       // ✅ AGREGADO: timestamp without time zone
-      const dataType = col.data_type || "text";
+      const dataType = column.data_type || "text";
 
       const filterableTypes = [
         "text",
@@ -460,7 +466,7 @@ const FormStyleFiltersModal = ({
                   updateFilter(fieldName, { value: e.target.value })
                 }
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm flex-1"
-              />              
+              />
             </div>
           );
       }

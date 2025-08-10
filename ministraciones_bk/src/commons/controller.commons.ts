@@ -73,8 +73,14 @@ export abstract class BaseController<T extends ObjectLiteral> {
     try {
           return await this.getService().save(entity);
     } catch (error) {      
+      if (entity && 'password' in entity) {
+         (entity as any).password = "•••••"
+      }
+      if (entity && 'contraseña' in entity) {
+         (entity as any).contraseña = "•••••"
+      }
       if (entity && 'clave' in entity) {
-         (entity as any).clave = "••••••••••"
+         (entity as any).clave = "•••••"
       }
           console.log(this.constructor.name, req.url+":", error.message, entity);
           throw new HttpException(req.url+": "+error.message, HttpStatus.INTERNAL_SERVER_ERROR);

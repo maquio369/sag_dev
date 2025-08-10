@@ -199,7 +199,7 @@ class CrudService {
             tableName === relation ? relation + "_autoref" : relation
           }`; // _autoref necesario para la autoreferencia
           joins.push(`
-            INNER JOIN ${relation} ${alias} 
+            LEFT JOIN ${relation} ${alias} 
             ON ${tableName}.${fkColumn.column_name} = ${alias}.${fkColumn.foreign_column_name}
           `);
 
@@ -578,7 +578,7 @@ class CrudService {
         currentParamCount++;
         break;
 
-      case "!~":
+      case "<>":
       case "text_not_equal":
         clause = `unaccent(${columnRef}) NOT ILIKE $${currentParamCount}`;
         params.push(`${value}`);
