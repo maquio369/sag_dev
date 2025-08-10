@@ -68,24 +68,22 @@ export abstract class BaseController<T extends ObjectLiteral> {
 
   @Post('save')
   @HttpCode(HttpStatus.CREATED)
-  async save(@Body() entity: T,
-    @Req() req: any,): Promise<T> {
+  async save(@Body() entity: T, @Req() req: any): Promise<T> {
     try {
-          return await this.getService().save(entity);
-    } catch (error) {      
-      if (entity && 'password' in entity) {
-         (entity as any).password = "•••••"
-      }
+      return await this.getService().save(entity);
+    } catch (error) {
       if (entity && 'contraseña' in entity) {
-         (entity as any).contraseña = "•••••"
+        (entity as any).contraseña = '•••••';
       }
-      if (entity && 'clave' in entity) {
-         (entity as any).clave = "•••••"
+      if (entity && 'password' in entity) {
+        (entity as any).password = '•••••';
       }
-          console.log(this.constructor.name, req.url+":", error.message, entity);
-          throw new HttpException(req.url+": "+error.message, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    
+      console.log(this.constructor.name, req.url + ':', error.message, entity);
+      throw new HttpException(
+        req.url + ': ' + error.message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Post('saveMany')
@@ -108,7 +106,10 @@ export abstract class BaseController<T extends ObjectLiteral> {
   }
   @Delete('softDelete/:id/:isDeleted')
   @HttpCode(HttpStatus.OK)
-  async softDeleteIsDeleted(@Param('id') id:number, @Param('isDeleted') isDeleted:boolean) {
+  async softDeleteIsDeleted(
+    @Param('id') id: number,
+    @Param('isDeleted') isDeleted: boolean,
+  ) {
     return this.getService().softDelete(id, isDeleted);
   }
 
@@ -117,7 +118,9 @@ export abstract class BaseController<T extends ObjectLiteral> {
     return await this.getService().count();
   }
   @Get('count/:isDeleted')
-  async countIsDeleted(@Param('isDeleted') isDeleted: boolean): Promise<number> {
+  async countIsDeleted(
+    @Param('isDeleted') isDeleted: boolean,
+  ): Promise<number> {
     return await this.getService().count(isDeleted);
   }
 }

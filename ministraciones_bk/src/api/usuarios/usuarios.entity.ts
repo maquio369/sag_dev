@@ -21,7 +21,7 @@ export class Usuarios {
   usuario: string;
 
   @Column({ nullable: false })
-  clave: string;
+  contraseña: string;
 
   @Column()
   foto: string;

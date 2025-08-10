@@ -31,25 +31,25 @@ export class AppController {
   BODY (JSON):
   {
     "usuario": "admin",
-    "clave": "123",
+    "contraseña": "•••••",
     "id_sistema": 2
   }    */
   @Post('api/auth')
   @HttpCode(HttpStatus.OK)
   async auth(
-    @Body() body: { usuario: string; clave: string; id_sistema: number },
+    @Body() body: { usuario: string; contraseña: string; id_sistema: number },
     @Res() res: any
   ): Promise<any> {
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
       throw new Error('JWT_SECRET no definida');
     }
-    const { usuario, clave, id_sistema } = body;
+    const { usuario, contraseña, id_sistema } = body;
 
-    const jsonObj = await this.usuariosSql.auth(usuario, clave, id_sistema);
-    //console.log("app.controller = ",clave, usuario,jsonObj);
+    const jsonObj = await this.usuariosSql.auth(usuario, contraseña, id_sistema);
+    //console.log("app.controller = ", usuario,jsonObj);
     if (jsonObj.length > 0) {
-      //console.log('select:', jsonObj[0].usuario, jsonObj[0].id_rol, clave);
+      //console.log('select:', jsonObj[0].usuario, jsonObj[0].id_rol);
       var expTime = process.env.JWT_EXPIRATION as StringValue;
       const token = jwt.sign(jsonObj[0], jwtSecret as string, {
         expiresIn: expTime ? expTime : '7h',

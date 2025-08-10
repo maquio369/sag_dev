@@ -497,8 +497,7 @@ const RecordForm = ({
           : column.column_name.toLowerCase().includes("telefono")
             ? "tel"
             : column.column_name.toLowerCase().includes("password") ||
-                column.column_name.toLowerCase().includes("contraseña") ||
-                column.column_name.toLowerCase().includes("clave")
+                column.column_name.toLowerCase().includes("contraseña")
               ? "password"
               : "text";
 

@@ -22,7 +22,7 @@ export async function handleSubmit(formData: FormData): Promise<any> {
         },
         body: JSON.stringify({
           usuario: username,
-          clave: password,
+          contraseña: password,
           id_sistema: idSistema,
         }),
       });

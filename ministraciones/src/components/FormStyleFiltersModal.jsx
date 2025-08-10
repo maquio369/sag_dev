@@ -306,7 +306,6 @@ const FormStyleFiltersModal = ({
         return false;
       }
       if (
-        column.column_name.includes("clave") ||
         column.column_name.includes("constraseña") ||
         column.column_name.includes("password")
       ) {

@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class AppService {
   getHey(): string {
-    return '🐧';
+    return '🐧=͟͟͞ clave';
   }
 /*
   constructor(
@@ -11,7 +11,7 @@ export class AppService {
   ) {}
 
   async auth(usr: string, pwd: string) {
-    const qry = `SELECT usuario_id,usuario,clave FROM usuarios WHERE usuario = '${usr}'`;
+    const qry = `SELECT usuario_id,usuario,password FROM usuarios WHERE usuario = '${usr}'`;
     const result = await this.dataSource.query(qry);
     return result; 
   }

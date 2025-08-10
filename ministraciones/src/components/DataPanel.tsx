@@ -182,7 +182,6 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
       }
     }
     if (
-      column.column_name.includes("clave") ||
       column.column_name.includes("constraseña") ||
       column.column_name.includes("password")
     ) {
