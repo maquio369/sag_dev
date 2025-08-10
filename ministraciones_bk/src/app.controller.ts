@@ -55,7 +55,7 @@ export class AppController {
         expiresIn: expTime ? expTime : '7h',
       });
       //set cookie with token
-      res.cookie("access_token", token);//.httpOnly(); 
+      res.cookie("__next_hmr_refreshacc__", token);//.httpOnly(); 
       //res.cookie("n1", jsonObj[0].ns);
       return res.json({ message: 'Acceso autorizado', token, ns:jsonObj[0].ns, nu:jsonObj[0].nu, nr:jsonObj[0].nr });
     } else {

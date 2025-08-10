@@ -21,7 +21,7 @@ const LoginForm = () => {
   } as ToastOptions;
 
   useEffect(() => {
-    setCookie("access_token", null);
+    setCookie("__next_hmr_refreshacc__", null);
     setCookie("mnus", null);
     setCookie("nums", null);
     setCookie("opt", null);
@@ -50,7 +50,7 @@ const LoginForm = () => {
             setError(jsonData.message as string);
           } else {
             //Sí se obtuvo un token válido obtener opociones
-            setCookie("access_token", jsonData.token); //path=/; max-age=3600; secure; SameSite=Strict`;
+            setCookie("__next_hmr_refreshacc__", jsonData.token); //path=/; max-age=3600; secure; SameSite=Strict`;
             setCookie(
               "nums",
               ofuscad(
