@@ -306,7 +306,7 @@ const FormStyleFiltersModal = ({
         return false;
       }
       if (
-        column.column_name.includes("constraseña") ||
+        column.column_name.includes("contraseña") ||
         column.column_name.includes("password")
       ) {
         return false;
