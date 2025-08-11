@@ -217,7 +217,7 @@ const FormStyleFiltersModal = ({
       case "datetime":
       case "timestamp without time zone":
       case "timestamp with time zone":
-        return "="; // Por defecto "igual a" para fechas
+        return "M"; // Por defecto "igual a" para fechas
       default:
         return "=";
     }
