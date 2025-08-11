@@ -643,7 +643,13 @@ class CrudService {
           }
         }
         break;
-      
+
+      case "month":
+        clause = `EXTRACT(MONTH FROM ${columnRef}) = $${currentParamCount}`;
+        params.push(value);
+        currentParamCount++;
+        break;
+
       case "!≈":
       case "not_like":
         clause = `unaccent(${columnRef}) NOT ILIKE $${currentParamCount}`;

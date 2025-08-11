@@ -197,15 +197,24 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
       try {
         const date = new Date(value);
         return (
-          <span className="">
-            {date.toLocaleDateString("es-ES", {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </span>
+          <div className="flex flex-col">
+            <span className="font_-light text_-xs">
+              {date.toLocaleDateString("es-MX", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              })}
+            </span>
+            {column.data_type.includes("timestamp") &&
+              column.column_desc.includes("Hr") && (
+                <span className="text-xs font-light">
+                  {date.toLocaleTimeString("es-MX", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              )}
+          </div>
         );
       } catch {
         return <span className="">{String(value)}</span>;

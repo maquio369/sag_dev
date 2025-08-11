@@ -242,6 +242,11 @@ const FormStyleFiltersModal = ({
       dataType === "timestamp with time zone"
     ) {
       return [
+      {
+          value: "between_same_day",
+          label: "==",
+          title: "filtrar por día",
+        }, //considera en value2 la hr: Fecha2+' 23:59:59' (timestamp with time zone)        
         {
           value: "M",
           label: "🗓",
@@ -252,11 +257,7 @@ const FormStyleFiltersModal = ({
           label: "//",
           title: "filtrar por rango de fechas",
         },
-        {
-          value: "between_same_day",
-          label: "==",
-          title: "filtrar por día"
-        }, //considera en value2 la hr: Fecha2+' 23:59:59' (timestamp with time zone)
+        
       ];
     }
 
@@ -426,35 +427,29 @@ const FormStyleFiltersModal = ({
           const values = value ? value.split(" - ") : ["", ""];
           return (
             <div className="flex items-center space-x-2 flex-1">
-              <div className="flex flex-col">
-                <label className="text-xs text-gray-500 mb-1">Desde:</label>
-                <input
-                  type="date"
-                  value={values[0] || ""}
-                  onChange={(e) =>
-                    updateFilter(fieldName, {
-                      value: `${e.target.value} - ${values[1] || ""}`,
-                    })
-                  }
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                />
-              </div>
-              <div className="flex items-center justify-center mt-5">
-                <span className="text-gray-400 text-sm font-bold">→</span>
-              </div>
-              <div className="flex flex-col">
-                <label className="text-xs text-gray-500 mb-1">Hasta:</label>
-                <input
-                  type="date"
-                  value={values[1] || ""}
-                  onChange={(e) =>
-                    updateFilter(fieldName, {
-                      value: `${values[0] || ""} - ${e.target.value}`,
-                    })
-                  }
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                />
-              </div>
+              <input
+                type="date"
+                value={values[0] || ""}
+                onChange={(e) =>
+                  updateFilter(fieldName, {
+                    value: `${e.target.value} - ${values[1] || ""}`,
+                  })
+                }
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              />
+
+              <span className="text-gray-400 text-sm font-bold">→</span>
+
+              <input
+                type="date"
+                value={values[1].split(" 23:59:59")[0] || ""}
+                onChange={(e) =>
+                  updateFilter(fieldName, {
+                    value: `${values[0] || ""} - ${e.target.value} 23:59:59`,
+                  })
+                }
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              />
             </div>
           );
 
@@ -467,10 +462,10 @@ const FormStyleFiltersModal = ({
                 type="date"
                 value={values2[0] || ""}
                 onChange={(e) =>
-                    updateFilter(fieldName, {
-                      value: `${e.target.value} - ${e.target.value} 23:59:59`,
-                    })
-                  }                
+                  updateFilter(fieldName, {
+                    value: `${e.target.value} - ${e.target.value} 23:59:59`,
+                  })
+                }
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm flex-1"
               />
             </div>
@@ -722,9 +717,7 @@ const FormStyleFiltersModal = ({
                       {getOperators(filter.column?.data_type || "text").find(
                         (op) => op.value === filter.operator
                       )?.label || filter.operator}{" "}
-                      <em>
-                        {filter.value}
-                      </em>
+                      <em>{filter.value}</em>
                     </span>
                     {index < array.length - 1 && (
                       <span className="text-green-600 font-bold mx-2">
