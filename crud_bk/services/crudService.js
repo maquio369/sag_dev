@@ -127,7 +127,9 @@ class CrudService {
         if (columnInfo) {
           //solo nombreCampo, usar iLIKE
           if (typeof value === "string" && columnInfo.data_type === "text") {
-            whereConditions.push(`unaccent(${tableName}.${column}) ILIKE $${paramCount}`);
+            whereConditions.push(
+              `unaccent(${tableName}.${column}) ILIKE $${paramCount}`
+            );
             params.push(`%${value}%`);
           }
           paramCount++;
@@ -627,6 +629,8 @@ class CrudService {
         currentParamCount++;
         break;
 
+      case "==":
+      case "between_same_day":
       case "between":
         if (value && value.includes(",")) {
           const [min, max] = value.split(",");
@@ -639,6 +643,7 @@ class CrudService {
           }
         }
         break;
+      
       case "!≈":
       case "not_like":
         clause = `unaccent(${columnRef}) NOT ILIKE $${currentParamCount}`;

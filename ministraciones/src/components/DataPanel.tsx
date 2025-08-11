@@ -160,7 +160,9 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
 
     if (column.data_type === "boolean") {
       return (
-        <span className={`flex justify-center text-lg`}>{value ? "☑" : "◻"}</span>
+        <span className={`flex justify-center text-lg`}>
+          {value ? "☑" : "◻"}
+        </span>
       );
     }
 
@@ -238,7 +240,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
         ) : (
           <div className="overflow-x-auto table_-wrp block_ max-h-[calc(100vh-160px)]">
             <table className="min-w-full">
-              <thead className="thead sticky top-0 bg-bordeBlancoTransparente dark:bg-fondoObscuroTransparente h-10" >
+              <thead className="thead sticky top-0 bg-bordeBlancoTransparente dark:bg-fondoObscuroTransparente h-10">
                 <tr className="">
                   <th className="w-1 pl-3">☷</th>
                   {schema.columns.map((column: any) => (
@@ -536,6 +538,8 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                     processedFilters[`${fieldName}~lte`] = value;
                     break;
 
+                  case "==":
+                  case "between_same_day":
                   case "between":
                     if (value.includes(" - ")) {
                       const [min, max] = value.split(" - ");
@@ -873,16 +877,15 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
           title={`Nuevo registro de ${selectedTable}`}
           className={
             schema &&
-              schema.columns.length <=
+            schema.columns.length <=
               Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_SM)
               ? "w-[88%] md:w-[68%] lg:w-[48%]  fondoVentanaForm fondoVentanaForm-center min-h-3/12"
               : schema &&
-                schema.columns.length <=
-                Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_MD)
+                  schema.columns.length <=
+                    Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_MD)
                 ? "w-[98%] md:w-[78%] lg:w-[68%] fondoVentanaForm-center min-h-3/12"
                 : "fondoVentanaForm-width fondoVentanaForm-center min-h-3/12"
           }
-          
         >
           {schema && (
             <RecordForm

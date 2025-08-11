@@ -560,7 +560,7 @@ const RecordForm = ({
               : visibleColumns.length <=
                   Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_MD)
                 ? "grid2cols"
-                : "grid3col"
+                : "grid3cols"
           }
         >
           {(hasFocus = true)}

@@ -252,7 +252,11 @@ const FormStyleFiltersModal = ({
           label: "//",
           title: "filtrar por rango de fechas",
         },
-        { value: "=", label: "=", title: "filtrar por día" },
+        {
+          value: "between_same_day",
+          label: "==",
+          title: "filtrar por día"
+        }, //considera en value2 la hr: Fecha2+' 23:59:59' (timestamp with time zone)
       ];
     }
 
@@ -454,16 +458,19 @@ const FormStyleFiltersModal = ({
             </div>
           );
 
-        case "=": // Fecha exacta
+        case "between_same_day": // Fecha exacta
         default:
+          const values2 = value ? value.split(" - ") : ["", ""];
           return (
             <div className="flex items-center space-x-2 flex-1">
               <input
                 type="date"
-                value={value}
+                value={values2[0] || ""}
                 onChange={(e) =>
-                  updateFilter(fieldName, { value: e.target.value })
-                }
+                    updateFilter(fieldName, {
+                      value: `${e.target.value} - ${e.target.value} 23:59:59`,
+                    })
+                  }                
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm flex-1"
               />
             </div>
@@ -604,7 +611,7 @@ const FormStyleFiltersModal = ({
                 : filterableColumns.length <=
                     Number(process.env.NEXT_PUBLIC_COLUMNS_LENGTH_MD)
                   ? "grid2cols"
-                  : "grid3col"
+                  : "grid3cols"
             }
           >
             {filterableColumns.length > 0 ? (
@@ -716,9 +723,7 @@ const FormStyleFiltersModal = ({
                         (op) => op.value === filter.operator
                       )?.label || filter.operator}{" "}
                       <em>
-                        {filter.operator === "between"
-                          ? `${filter.value}`
-                          : filter.value}
+                        {filter.value}
                       </em>
                     </span>
                     {index < array.length - 1 && (
