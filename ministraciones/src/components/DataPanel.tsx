@@ -494,9 +494,11 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
       // Formato del FormStyleFiltersModal: { filters: {...}, connectors: [...] }
       if (filterData.filters && typeof filterData.filters === "object") {
         console.log("📋 Procesando formato FormStyleFiltersModal");
-
+        let j = 0;
         Object.entries(filterData.filters).forEach(
           ([fieldName, filterConfig]) => {
+            let logicalOperator = filterData.connectors[j].connector;
+            j++;
             // Add a type guard to ensure filterConfig is an object with operator and value
             if (
               filterConfig &&
@@ -516,35 +518,39 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                 );
 
                 switch (operator) {
-                  case "like":
-                    // Para LIKE, enviar directamente el valor (el backend ya maneja el ILIKE)
-                    processedFilters[fieldName] = value;
-                    break;
-
                   case "=":
-                    processedFilters[`${fieldName}~equal`] = value;
+                    processedFilters[`${fieldName}~equal~${logicalOperator}`] =
+                      value;
                     break;
                   case "<>":
-                    processedFilters[`${fieldName}~text_not_equal`] = value;
+                    processedFilters[
+                      `${fieldName}~text_not_equal~${logicalOperator}`
+                    ] = value;
                     break;
                   case "!=":
-                    processedFilters[`${fieldName}~not_equal`] = value;
+                    processedFilters[
+                      `${fieldName}~not_equal~${logicalOperator}`
+                    ] = value;
                     break;
 
                   case ">":
-                    processedFilters[`${fieldName}~gt`] = value;
+                    processedFilters[`${fieldName}~gt~${logicalOperator}`] =
+                      value;
                     break;
 
                   case "<":
-                    processedFilters[`${fieldName}~lt`] = value;
+                    processedFilters[`${fieldName}~lt~${logicalOperator}`] =
+                      value;
                     break;
 
                   case ">=":
-                    processedFilters[`${fieldName}~gte`] = value;
+                    processedFilters[`${fieldName}~gte~${logicalOperator}`] =
+                      value;
                     break;
 
                   case "<=":
-                    processedFilters[`${fieldName}~lte`] = value;
+                    processedFilters[`${fieldName}~lte~${logicalOperator}`] =
+                      value;
                     break;
 
                   case "==":
@@ -554,20 +560,31 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                       const [min, max] = value.split(" - ");
                       if (min && max) {
                         processedFilters[`${fieldName}~gte`] = min.trim();
-                        processedFilters[`${fieldName}~lte`] = max.trim();
+                        processedFilters[
+                          `${fieldName}~lte~${logicalOperator}`
+                        ] = max.trim();
                       }
                     }
                     break;
 
                   case "M":
                     // Para filtro de mes
-                    processedFilters[`${fieldName}~month`] = value;
+                    processedFilters[`${fieldName}~month~${logicalOperator}`] =
+                      value;
                     break;
 
+                  case "like":
+                  default:
+                    // Para LIKE, enviar directamente el valor (el backend ya maneja el ILIKE)
+                    //processedFilters[fieldName] = value;
+                    processedFilters[`${fieldName}~like~${logicalOperator}`] =
+                      value;
+                    break;
+                  /*
                   default:
                     // Para operadores no reconocidos, usar valor directo
                     processedFilters[fieldName] = value;
-                    break;
+                    break;*/
                 }
 
                 activeCount++;
