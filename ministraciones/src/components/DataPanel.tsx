@@ -576,7 +576,12 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                     processedFilters[`${fieldName}~month~${logicalOperator}`] =
                       value;
                     break;
-
+                  
+                  case "!≈":
+                  case "not_like":
+                    processedFilters[`${fieldName}~not_like~${logicalOperator}`] =
+                      value;
+                    break;
                   case "like":
                   default:
                     // Para LIKE, enviar directamente el valor (el backend ya maneja el ILIKE)
