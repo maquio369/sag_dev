@@ -497,7 +497,11 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
         let j = 0;
         Object.entries(filterData.filters).forEach(
           ([fieldName, filterConfig]) => {
-            let logicalOperator = filterData.connectors[j].connector;
+            let logicalOperator = "AND";
+            try {
+              logicalOperator = filterData.connectors[j].connector;
+            } catch (error) {}
+
             j++;
             // Add a type guard to ensure filterConfig is an object with operator and value
             if (
