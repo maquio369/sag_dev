@@ -625,7 +625,7 @@ const FormStyleFiltersModal = ({
                 const filter = filters[fieldName] || {};
                 const operators = getOperators(column.data_type || "text");
                 const hasValue = filter.value && filter.value.trim() !== "";
-                const isLastField = index === filterableColumns.length - 1;
+                const isLastField = index === filterableColumns.length - 2;
 
                 return (
                   <div key={fieldName} className="mb-2">
@@ -680,6 +680,7 @@ const FormStyleFiltersModal = ({
                               })
                             }
                             className="select2 font-bold ml-1.5 text-xs w-min-52"
+                            disabled={fieldName===campoEstaBorrado}
                           >
                             <option value="AND">Y</option>
                             <option value="OR">O</option>
