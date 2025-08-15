@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { toast, ToastOptions } from "react-toastify";
-import { aOracion, getCookie, ofuscad } from "@/utils/util";
+import { aOracion, getCookie, getColumnDisplayName } from "@/utils/util";
 
 import { apiService } from "../services/api";
 import DropdownMenuCRUD from "./DropdownMenuCRUD";
@@ -11,6 +11,8 @@ import Spinner from "./elements/Spinner";
 
 import { iPagination } from "./forms/interfaces";
 import FormStyleFiltersModal from "@/components/FormStyleFiltersModal";
+
+import ExcelJS from "exceljs";
 
 const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
   const campoEstaBorrado = process.env.NEXT_PUBLIC_DELETED_COLUMN_NAME;
@@ -67,6 +69,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
   const [currentFilters, setCurrentFilters] = useState({});
   const [activeFiltersCount, setActiveFiltersCount] = useState(0);
   const [smartFilters, setSmartFilters] = useState({}); // 🚀 NUEVO: Para almacenar filtros inteligentes
+  const [exportLoading, setExportLoading] = useState(false); // Estado para exportación
 
   useEffect(() => {
     selectTable(entity);
@@ -168,7 +171,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
 
     if (column.is_primary_key) {
       return (
-        <span className="text-fondoTablaHeader px-1 text-xs">{value}</span>
+        <span className="text-fondoTablaHeader px-1 text-xs font-light">{value}</span>
       );
     }
 
@@ -259,9 +262,10 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                     >
                       <div className="">
                         <span className="">
-                          {column.column_desc
-                            ? column.column_desc
-                            : column.column_name}
+                          {getColumnDisplayName(
+                            column.column_name,
+                            column.column_desc
+                          )}
                         </span>
                       </div>
                     </th>
@@ -576,11 +580,12 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                     processedFilters[`${fieldName}~month~${logicalOperator}`] =
                       value;
                     break;
-                  
+
                   case "!≈":
                   case "not_like":
-                    processedFilters[`${fieldName}~not_like~${logicalOperator}`] =
-                      value;
+                    processedFilters[
+                      `${fieldName}~not_like~${logicalOperator}`
+                    ] = value;
                     break;
                   case "like":
                   default:
@@ -711,6 +716,241 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
     setCurrentFilters({});
     setActiveFiltersCount(0);
     fetchRecords(selectedTable, 1); // Recargar datos sin filtros
+  };
+
+  // Función principal de exportación Excel (con ExcelJS)
+  const handleExportToExcel = async () => {
+    if (!selectedTable || !records.length) {
+      alert("No hay datos para exportar");
+      return;
+    }
+
+    try {
+      setExportLoading(true);
+      //console.log("📊 Iniciando exportación a Excel...");
+
+      // Obtener todos los registros (sin paginación) con filtros aplicados
+      const exportParams = {
+        limit: "10000", // Exportar todos los registros
+        page: "1",
+        ...currentFilters, // Mantener filtros aplicados
+      };
+
+      const response = await apiService.getRecords(selectedTable, exportParams);
+
+      let allRecords;
+      if (response.data && response.data.data) {
+        allRecords = response.data.data;
+      } else if (response.data) {
+        allRecords = response.data;
+      } else {
+        allRecords = response;
+      }
+
+      if (!Array.isArray(allRecords) || allRecords.length === 0) {
+        alert("No hay registros para exportar");
+        return;
+      }else{
+        console.log(aOracion(selectedTable),"- Registros para exportación:", allRecords.length);
+      }
+
+      // Crear workbook y worksheet
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet(
+        selectedTable.charAt(0).toUpperCase() + selectedTable.slice(1)
+      );
+
+      // Preparar datos para Excel
+      const excelData = prepareDataForExcel(allRecords);
+      
+      if (excelData) {
+        if (excelData.length === 0) {
+          alert("No hay datos para exportar");
+          return;
+        }
+
+        // Agregar headers con estilo
+        const headers = Object.keys(excelData[0]);
+        const headerRow = worksheet.addRow(headers);
+
+        // Estilizar headers
+        headerRow.eachCell((cell, colNumber) => {
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FF181818" }, // Color encabezado
+          };
+          cell.font = {
+            color: { argb: "FFFFFFFF" }, // Texto blanco
+            bold: true,
+            size: 11,
+          };
+          cell.alignment = {
+            vertical: "middle",
+            horizontal: "left",
+          };
+          cell.border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+        });
+
+        // Agregar datos
+        excelData.forEach((record:any, index: number) => {
+          const row = worksheet.addRow(Object.values(record));
+
+          // Aplicar estilos alternados a las filas
+          row.eachCell((cell, colNumber) => {
+            // Bordes
+            cell.border = {
+              top: { style: "thin", color: { argb: "FFE5E7EB" } },
+              left: { style: "thin", color: { argb: "FFE5E7EB" } },
+              bottom: { style: "thin", color: { argb: "FFE5E7EB" } },
+              right: { style: "thin", color: { argb: "FFE5E7EB" } },
+            };
+
+            // Color de fondo alternado
+            if (index % 2 === 0) {
+              cell.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "FFF9FAFB" }, // Gris muy claro
+              };
+            }
+
+            // Alineación
+            cell.alignment = {
+              vertical: "top",
+              horizontal: "left",
+            };
+          });
+        });
+
+        // Ajustar ancho de columnas automáticamente
+        worksheet.columns.forEach((column, index) => {
+          let maxLength = headers[index].length;
+
+          // Calcular el ancho máximo basado en el contenido
+          excelData.forEach((record: any) => {
+            const value = Object.values(record)[index];
+            if (value && value.toString().length > maxLength) {
+              maxLength = value.toString().length;
+            }
+          });
+
+          // Establecer ancho con límites
+          column.width = Math.min(Math.max(maxLength + 2, 10), 50);
+        });
+
+        // Agregar filtros automáticos
+        worksheet.autoFilter = {
+          from: "A1",
+          to: worksheet.lastColumn?.letter + "1",
+        };
+
+        // Congelar primera fila (headers)
+        worksheet.views = [{ state: "frozen", ySplit: 1 }];
+
+        // Generar archivo y descargar
+        const buffer = await workbook.xlsx.writeBuffer();
+        downloadExcelFile(buffer, selectedTable);
+
+        //console.log(`✅ Exportación Excel completada`);
+
+        // Mostrar mensaje de éxito
+        const exportedCount = allRecords.length;
+        /*alert(
+          `✅ Exportación exitosa!\n\n📊 ${exportedCount} registros exportados\n📁 Formato: Excel (.xlsx)\n🎨 Con estilos y filtros`
+        );*/
+      }
+    } catch (error: any) {
+      console.error("❌ Error durante la exportación:", error);
+      alert(
+        "Error al exportar: " + (error.response?.data?.message || error.message)
+      );
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
+  const prepareDataForExcel = (records:any) => {
+  if (!records.length || !schema) return [];
+
+  return records.map((record:any) => {
+    const excelRow: { [key: string]: any } = {};
+
+    // Procesar cada columna según su tipo
+    schema.columns.forEach(column => {
+      const columnName = column.column_name;
+      let value = record[columnName];
+      const displayName = getColumnDisplayName(column.column_name, column.column_desc);
+
+      // Manejar claves foráneas - mostrar el texto descriptivo
+      if (schema.foreignKeys) {
+        const fkColumn = schema.foreignKeys.find((fk: any) => fk.column_name === columnName);
+        if (fkColumn) {
+          const displayField = `${columnName}_display`;
+          const displayValue = record[displayField];
+          
+          if (displayValue) {
+            excelRow[displayName] =value? `${value} ${displayValue}`:'';
+            return;
+          }
+        }
+      }
+
+      // Procesar según tipo de dato
+      if (value === null || value === undefined) {
+        excelRow[displayName] = '';
+      } else if (typeof value === 'boolean') {
+        excelRow[displayName] = value ? 'Sí' : 'No';
+      } else if (column.data_type === 'timestamp' || column.data_type === 'date') {
+        try {
+          const date = new Date(value);
+          // ExcelJS maneja fechas nativas de JavaScript automáticamente
+          excelRow[displayName] = date;
+        } catch {
+          excelRow[displayName] = value;
+        }
+      } else if (typeof value === 'number') {
+        // Mantener números como números para que Excel los reconozca
+        excelRow[displayName] = value;
+      } else {
+        excelRow[displayName] = value.toString();
+      }
+    });
+
+    return excelRow;
+  });
+  };
+
+  // Función para descargar archivo Excel
+  const downloadExcelFile = (buffer: any, tableName: string) => {
+    // Crear blob
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    // Crear URL temporal
+    const url = URL.createObjectURL(blob);
+
+    // Crear elemento de descarga
+    const link = document.createElement("a");
+    link.href = url;
+
+    // Generar nombre de archivo
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, "-");
+    link.download = `${tableName}_export_${timestamp}.xlsx`;
+
+    // Simular click para descargar
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Limpiar URL temporal
+    URL.revokeObjectURL(url);
   };
 
   const fetchSchema = async (table: any) => {
@@ -861,7 +1101,12 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                 )}
 
                 {/* Exportar */}
-                <button className="btn3 " title="Exportar registros a excel">
+                <button
+                  className="btn3 "
+                  title="Exportar registros a Excel"
+                  onClick={handleExportToExcel}
+                  disabled={exportLoading || !selectedTable || !records.length}
+                >
                   <i className="fa-solid fa-file-export"></i>
                   <span className="lblBtn">Exportar</span>
                 </button>
