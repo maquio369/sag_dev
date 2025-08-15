@@ -171,7 +171,9 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
 
     if (column.is_primary_key) {
       return (
-        <span className="text-fondoTablaHeader px-1 text-xs font-light">{value}</span>
+        <span className="text-fondoTablaHeader px-1 text-xs font-light">
+          {value}
+        </span>
       );
     }
 
@@ -750,8 +752,12 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
       if (!Array.isArray(allRecords) || allRecords.length === 0) {
         alert("No hay registros para exportar");
         return;
-      }else{
-        console.log(aOracion(selectedTable),"- Registros para exportación:", allRecords.length);
+      } else {
+        console.log(
+          aOracion(selectedTable),
+          "- Registros para exportación:",
+          allRecords.length
+        );
       }
 
       // Crear workbook y worksheet
@@ -759,10 +765,10 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
       const worksheet = workbook.addWorksheet(
         selectedTable.charAt(0).toUpperCase() + selectedTable.slice(1)
       );
-
+      
       // Preparar datos para Excel
       const excelData = prepareDataForExcel(allRecords);
-      
+
       if (excelData) {
         if (excelData.length === 0) {
           alert("No hay datos para exportar");
@@ -772,7 +778,8 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
         // Agregar headers con estilo
         const headers = Object.keys(excelData[0]);
         const headerRow = worksheet.addRow(headers);
-
+        
+        worksheet.getRow(1).height = 30; // Set the height to 30 units (default is usually 15)
         // Estilizar headers
         headerRow.eachCell((cell, colNumber) => {
           cell.fill = {
@@ -798,7 +805,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
         });
 
         // Agregar datos
-        excelData.forEach((record:any, index: number) => {
+        excelData.forEach((record: any, index: number) => {
           const row = worksheet.addRow(Object.values(record));
 
           // Aplicar estilos alternados a las filas
@@ -875,55 +882,65 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
     }
   };
 
-  const prepareDataForExcel = (records:any) => {
-  if (!records.length || !schema) return [];
+  const prepareDataForExcel = (records: any) => {
+    if (!records.length || !schema) return [];
 
-  return records.map((record:any) => {
-    const excelRow: { [key: string]: any } = {};
+    return records.map((record: any) => {
+      const excelRow: { [key: string]: any } = {};
 
-    // Procesar cada columna según su tipo
-    schema.columns.forEach(column => {
-      const columnName = column.column_name;
-      let value = record[columnName];
-      const displayName = getColumnDisplayName(column.column_name, column.column_desc);
+      // Procesar cada columna según su tipo
+      schema.columns.forEach((column) => {
+        if (column.column_name !== campoEstaBorrado) {
+          const columnName = column.column_name;
+          let value = record[columnName];
+          const displayName = getColumnDisplayName(
+            column.column_name,
+            column.column_desc
+          );
 
-      // Manejar claves foráneas - mostrar el texto descriptivo
-      if (schema.foreignKeys) {
-        const fkColumn = schema.foreignKeys.find((fk: any) => fk.column_name === columnName);
-        if (fkColumn) {
-          const displayField = `${columnName}_display`;
-          const displayValue = record[displayField];
-          
-          if (displayValue) {
-            excelRow[displayName] =value? `${value} ${displayValue}`:'';
-            return;
+          // Manejar claves foráneas - mostrar el texto descriptivo
+          if (schema.foreignKeys) {
+            const fkColumn = schema.foreignKeys.find(
+              (fk: any) => fk.column_name === columnName
+            );
+            if (fkColumn) {
+              const displayField = `${columnName}_display`;
+              const displayValue = record[displayField];
+
+              if (displayValue) {
+                excelRow[displayName] = value ? `${value} ${displayValue}` : "";
+                return;
+              }
+            }
+          }
+
+          // Procesar según tipo de dato
+          if (value === null || value === undefined) {
+            excelRow[displayName] = "";
+          } else if (typeof value === "boolean") {
+            excelRow[displayName] = value ? "Sí" : "No";
+          } else if (
+            column.data_type === "timestamp" ||
+            column.data_type === "date"
+          ) {
+            try {
+              const date = new Date(value);
+              // ExcelJS maneja fechas nativas de JavaScript automáticamente
+              excelRow[displayName] = date;
+            } catch {
+              excelRow[displayName] = value;
+            }
+          } else if (typeof value === "number") {
+            // Mantener números como números para que Excel los reconozca
+            excelRow[displayName] = value;
+          } else {
+            excelRow[displayName] = value.toString();
           }
         }
-      }
+      });
 
-      // Procesar según tipo de dato
-      if (value === null || value === undefined) {
-        excelRow[displayName] = '';
-      } else if (typeof value === 'boolean') {
-        excelRow[displayName] = value ? 'Sí' : 'No';
-      } else if (column.data_type === 'timestamp' || column.data_type === 'date') {
-        try {
-          const date = new Date(value);
-          // ExcelJS maneja fechas nativas de JavaScript automáticamente
-          excelRow[displayName] = date;
-        } catch {
-          excelRow[displayName] = value;
-        }
-      } else if (typeof value === 'number') {
-        // Mantener números como números para que Excel los reconozca
-        excelRow[displayName] = value;
-      } else {
-        excelRow[displayName] = value.toString();
-      }
+      return excelRow;
     });
-
-    return excelRow;
-  });
   };
 
   // Función para descargar archivo Excel
