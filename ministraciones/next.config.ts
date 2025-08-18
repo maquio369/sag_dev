@@ -1,27 +1,17 @@
-import type { NextConfig } from "next";
-//require('dotenv').config();
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Configuración para Docker
+  output: 'standalone',
+  
+  // Configuración existente (agregar a lo que ya tienes)
+  experimental: {
+    // Otras configuraciones experimentales que puedas tener
+  },
+  
+  // Variables de entorno públicas
+  env: {
+    NEXT_PUBLIC_API_BASE: process.env.NEXT_PUBLIC_API_BASE || 'http://172.16.35.75:3011',
+  }
+}
 
-const nextConfig: NextConfig = {
-  env: { 
-    //usar prefijo NEXT_PUBLIC_ para que sean visibles en el lado del cliente
-    NEXT_PUBLIC_API_BASE: process.env.API_URL2 !== undefined ? process.env.API_URL2 : "http://localhost:3001", 
-    
-    NEXT_PUBLIC_DELETED_COLUMN_NAME:"esta_borrado",
-    
-    NEXT_PUBLIC_COLUMNS_LENGTH_SM:"6",
-    NEXT_PUBLIC_COLUMNS_LENGTH_MD:"10",
-
-    NEXT_PUBLIC_FK_COLUMN_POSTFIX:"_display",
-    //NEXT_PUBLIC_ID_PREFIX:"id_"
-   },
-  /* config options here */
-  /*images: {
-    remotePatterns: [
-      {
-        hostname: "pexels.com",        
-      }
-    ],
-  },*/
-};
-
-export default nextConfig;
+module.exports = nextConfig
