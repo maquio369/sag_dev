@@ -20,7 +20,7 @@ class CrudService {
 
       // Excluir primary key si es serial/autoincrement
       const isAutoIncrement = col.is_primary_key && col.is_identity;
-      console.log("🅰️ isAutoIncrement: ", isAutoIncrement);
+      //console.log("🅰️ isAutoIncrement: ", isAutoIncrement);
 
       return hasValue && !isAutoIncrement;
     });
@@ -33,8 +33,8 @@ class CrudService {
     const values = validColumns.map((col) => data[col.column_name]);
     const placeholders = values.map((_, index) => `$${index + 1}`);
 
-    console.log("Columnas a insertar:", columns);
-    console.log("Valores a insertar:", values);
+    //console.log("Columnas a insertar:", columns);
+    //console.log("Valores a insertar:", values);
 
     const query = `
       INSERT INTO ${tableName} (${columns.join(", ")})
@@ -43,14 +43,14 @@ class CrudService {
     `;
 
     const result = await executeQuery(query, values);
-    console.log("✅ Registro creado exitosamente");
+    //console.log("✅ Registro creado exitosamente");
     return result.rows[0];
   }
 
   // READ - Obtener registros con paginación y filtros (CON AUTO-INCLUDE DE FOREIGN KEYS Y FILTROS AVANZADOS)
   static async read(tableName, options = {}) {
-    console.log(`📖 Leyendo registros de tabla: ${tableName}`);
-    console.log("Opciones:", options);
+    //console.log(`📖 Leyendo registros de tabla: ${tableName}`);
+    //console.log("Opciones:", options);
 
     const {
       page = 1,
@@ -79,7 +79,7 @@ class CrudService {
         .filter((tableName) => !include.includes(tableName));
 
       finalInclude = [...include, ...autoForeignTables];
-      console.log("🔗 Auto-incluyendo foreign keys:", autoForeignTables);
+      //console.log("🔗 Auto-incluyendo foreign keys:", autoForeignTables);
     }
 
     // Construir WHERE clause para filtros
@@ -95,40 +95,31 @@ class CrudService {
         col.column_name === "is_deleted"
     );
 
-    if (
-      softDeleteColumn &&
-      !filters.hasOwnProperty(softDeleteColumn.column_name)
-    ) {
+    let t = Object.entries(filters).length;
+    let j = -1;
+    if (softDeleteColumn) {
       whereConditions.push(
         `${tableName}.${softDeleteColumn.column_name} = $${paramCount}`
       );
       params.push(false);
       paramCount++;
+      t--;
     }
-
+    //console.log("borradoLen:>>>>",borrado)
     // Filtros del usuario (filtros simples tradicionales)
     Object.entries(filters).forEach(([column, value]) => {
       if (value !== null && value !== undefined && value !== "") {
+        j++;
         const columnInfo = schema.columns.find(
           (col) => col.column_name === column
         );
-        console.log(
-          `🔍 Aplicando filtro para ${column}: ${value}`,
-          "~~~~~~>",
-          columnInfo
-        );
         if (typeof value === "boolean") {
-          console.log(
-            `🔍 Aplicando filtro para ${column}: ${value}`,
-            "~~-->",
-            Boolean(value)
-          );
         }
         if (columnInfo) {
           //solo nombreCampo, usar iLIKE
           if (typeof value === "string" && columnInfo.data_type === "text") {
             whereConditions.push(
-              `unaccent(${tableName}.${column}) ILIKE $${paramCount}`
+              `unaccent(${tableName}.${column}) ILIKE unaccent($${paramCount})`
             );
             params.push(`%${value}%`);
           }
@@ -141,42 +132,29 @@ class CrudService {
             field: columnAndOperator[0],
             operator: columnAndOperator[1],
             value: value,
+            logicalOperator: columnAndOperator[2] || "AND",
           };
-          console.log(
-            `>>>Aplicando filtro para No-columnInfo: ${value}`,
-            "~~~>",
-            conditions
-          );
-          //const condicionArray = column ? column.split('~') : [];
           //construir y agregar condicion where
-          //.buildConditionClause(conditions,tableName, paramCount);
-
           const { clause, conditionParams, newParamCount } =
             this.buildConditionClause(conditions, tableName, paramCount);
 
           if (clause) {
-            console.log("🔍 Agregando condición:*---->", clause);
-            whereConditions.push(clause);
-            params.push(conditionParams);
-            paramCount = newParamCount;
-            /*
-              // Agregar operador lógico si no es la primera condición
-              if (i > 0 && condition.logicalOperator) {
-                conditionClauses.push(`${condition.logicalOperator} ${clause}`);
+            if (conditions.field.includes(softDeleteColumn.column_name)) {
+              //si es el campo esta_borrado, solo actualizar valores conditions[0]
+              whereConditions[0] = clause.split("$")[0] + "$1";
+              params[0] = conditionParams[0];
+            } else {
+              // Agregar Condición y operador lógico si no es la última condición
+              if (j < t && conditions.logicalOperator) {
+                whereConditions.push(`${clause} ${conditions.logicalOperator}`);
               } else {
-                conditionClauses.push(clause);
+                //solo agregar condición
+                whereConditions.push(`${clause} `);
               }
-              
-              params.push(...conditionParams);
-              currentParamCount = newParamCount;*/
+              params.push(conditionParams[0]);
+              paramCount = newParamCount;
+            }
           }
-
-          /*
-            //agregar condicion a whereConditions
-            whereConditions.push(`${tableName}.${column} = $${paramCount}`);
-            
-            params.push(value);
-            */
         }
       }
     });
@@ -186,7 +164,7 @@ class CrudService {
     let joinClauses = "";
 
     if (finalInclude.length > 0) {
-      console.log("Incluyendo relaciones:", finalInclude);
+      //console.log("Incluyendo relaciones:", finalInclude);
       const joins = [];
       const additionalSelects = [];
 
@@ -243,10 +221,16 @@ class CrudService {
     }
 
     // Query principal
-    const whereClause =
-      whereConditions.length > 0
-        ? `WHERE ${whereConditions.join(" AND ")}`
-        : "";
+
+    // Construir WHERE con conectores lógicos personalizados
+    if (whereConditions.length > 1) {
+      whereConditions[0] = `${whereConditions[0]} AND (`;
+    }
+    let whereClause =
+      whereConditions.length > 0 ? `WHERE ${whereConditions.join(" ")}` : "";
+    if (whereConditions.length > 1) {
+      whereClause += ")";
+    }
 
     const mainQuery = `
       SELECT ${selectColumns}
@@ -307,10 +291,6 @@ class CrudService {
       return processedRow;
     });
 
-    console.log(
-      `✅ Se obtuvieron ${dataResult.rows.length} registros de ${total} totales`
-    );
-
     return {
       data: processedData,
       pagination: {
@@ -329,7 +309,7 @@ class CrudService {
     foreign_column_desc,
     foreign_table_name
   ) {
-    console.log(`📜 get Options List: ${foreign_table_name}`);
+    //console.log(`📜 get Options List: ${foreign_table_name}`);
     const mainQuery = `
       SELECT ${foreign_column_name} as optionvalue, trim(${foreign_column_desc}) as optiontext 
       FROM ${foreign_table_name} 
@@ -337,10 +317,10 @@ class CrudService {
       LIMIT 1976;
     `;
     const r = await executeQuery(mainQuery);
-    console.log(
+    /*console.log(
       `💬 get Options List ${foreign_table_name}[${r.rows.length}]:`,
       r.rows
-    );
+    );*/
     return r.rows;
   }
 
@@ -365,17 +345,15 @@ class CrudService {
     for (const priority of priorities) {
       const found = schema.columns.find(priority);
       if (found) {
-        console.log(
-          `📝 Columna de display encontrada: ${found.column_name} (${found.data_type})`
-        );
+        //console.log(`📝 Columna de display encontrada: ${found.column_name} (${found.data_type})`);
         return found.column_name;
       }
     }
 
     // Si no encuentra nada, usar la primary key como último recurso
-    console.log(
+    /*console.log(
       "⚠️ No se encontró columna de display apropiada, usando primary key"
-    );
+    );*/
     return schema.primaryKey;
   }
 
@@ -386,10 +364,6 @@ class CrudService {
 
   // READ ONE - Obtener un registro específico
   static async readOne(tableName, id, include = []) {
-    console.log(
-      `📖 Obteniendo registro individual de ${tableName} con ID: ${id}`
-    );
-
     const schema = await SchemaService.getTableSchema(tableName);
 
     if (!schema.primaryKey) {
@@ -408,8 +382,8 @@ class CrudService {
 
   // UPDATE - Actualizar registro
   static async update(tableName, id, data) {
-    console.log(`📝 Actualizando registro en tabla: ${tableName}, ID: ${id}`);
-    console.log("Datos para actualizar:", data);
+    //console.log(`📝 Actualizando registro en tabla: ${tableName}, ID: ${id}`);
+    //console.log("Datos para actualizar:", data);
 
     const schema = await SchemaService.getTableSchema(tableName);
 
@@ -435,13 +409,13 @@ class CrudService {
     );
     const values = validColumns.map((col) => data[col.column_name]);
     values.push(id); // Para el WHERE
-
+    /*
     console.log(
       "Columnas a actualizar:",
       validColumns.map((c) => c.column_name)
     );
     console.log("Valores:", values);
-
+*/
     const query = `
       UPDATE ${tableName}
       SET ${setClauses.join(", ")}
@@ -457,13 +431,13 @@ class CrudService {
       );
     }
 
-    console.log("✅ Registro actualizado exitosamente");
+    //console.log("✅ Registro actualizado exitosamente");
     return result.rows[0];
   }
 
   // DELETE - Eliminar registro (soft delete si existe el campo)
   static async delete(tableName, id) {
-    console.log(`🗑️ Eliminando registro de tabla: ${tableName}, ID: ${id}`);
+    //console.log(`🗑️ Eliminando registro de tabla: ${tableName}, ID: ${id}`);
 
     const schema = await SchemaService.getTableSchema(tableName);
 
@@ -482,9 +456,6 @@ class CrudService {
     let query;
     if (softDeleteColumn) {
       // Soft delete
-      console.log(
-        `Realizando soft delete usando columna: ${softDeleteColumn.column_name}`
-      );
       query = `
         UPDATE ${tableName}
         SET ${softDeleteColumn.column_name} = true
@@ -493,7 +464,7 @@ class CrudService {
       `;
     } else {
       // Hard delete
-      console.log("Realizando hard delete (eliminación física)");
+      //console.log("Realizando hard delete (eliminación física)");
       query = `
         DELETE FROM ${tableName}
         WHERE ${schema.primaryKey} = $1
@@ -509,13 +480,13 @@ class CrudService {
       );
     }
 
-    console.log("✅ Registro eliminado exitosamente");
+    //console.log("✅ Registro eliminado exitosamente");
     return result.rows[0];
   }
 
   // Obtener opciones para campos de foreign key
   static async getForeignKeyOptions(tableName, columnName) {
-    console.log(`🔗🔗 Obteniendo opciones para FK: ${tableName}.${columnName}`);
+    //console.log(`🔗🔗 Obteniendo opciones para FK: ${tableName}.${columnName}`);
 
     const schema = await SchemaService.getTableSchema(tableName);
     const fkColumn = schema.foreignKeys.find(
@@ -525,13 +496,6 @@ class CrudService {
     if (!fkColumn) {
       throw new Error(`La columna ${columnName} no es una foreign key`);
     }
-
-    console.log(
-      `🏴‍☠️🏴‍☠️🏴‍☠️ Obteniendo opciones para FK: ${fkColumn.foreign_column_desc}-${fkColumn.column_desc}`
-    );
-    console.log(
-      `🏴‍☠️🏴‍☠️🏴‍☠️ Obteniendo opciones para FK: ${fkColumn.foreign_table_name}-${fkColumn.foreign_column_desc}-${fkColumn.foreign_column_name}`
-    );
 
     const foreignSchema = await SchemaService.getTableSchema(
       fkColumn.foreign_table_name
@@ -547,12 +511,12 @@ class CrudService {
       displayColumn,
       fkColumn.foreign_table_name
     );
-
+    /*
     console.log(
       `💬✅ opciones para ${fkColumn.foreign_table_name}[${options.length}]`,
       options
     );
-
+*/
     return {
       options: options.map((item) => ({
         value: item["optionvalue"],
@@ -571,7 +535,7 @@ class CrudService {
     let params = [];
     let currentParamCount = paramCount;
 
-    console.log(condition, "+ operator>>>>", field, operator, value);
+    //console.log(condition, "+ operator>>>>", field, operator, value);
     switch (operator) {
       case "equal":
       case "=":
@@ -582,7 +546,7 @@ class CrudService {
 
       case "<>":
       case "text_not_equal":
-        clause = `unaccent(${columnRef}) NOT ILIKE $${currentParamCount}`;
+        clause = `unaccent(${columnRef}) NOT ILIKE unaccent($${currentParamCount})`;
         params.push(`${value}`);
         currentParamCount++;
         break;
@@ -605,7 +569,7 @@ class CrudService {
       case "<":
         clause = `${columnRef} < $${currentParamCount}`;
         params.push(value);
-        console.log(columnRef, " < ", value, " $", currentParamCount);
+        //console.log(columnRef, " < ", value, " $", currentParamCount);
         currentParamCount++;
         break;
 
@@ -624,7 +588,7 @@ class CrudService {
         break;
 
       case "like":
-        clause = `unaccent(${columnRef}) ILIKE $${currentParamCount}`;
+        clause = `unaccent(${columnRef}) ILIKE unaccent($${currentParamCount})`;
         params.push(`%${value}%`);
         currentParamCount++;
         break;
@@ -652,19 +616,19 @@ class CrudService {
 
       case "!≈":
       case "not_like":
-        clause = `unaccent(${columnRef}) NOT ILIKE $${currentParamCount}`;
+        clause = `unaccent(${columnRef}) NOT ILIKE unaccent($${currentParamCount})`;
         params.push(`%${value}%`);
         currentParamCount++;
         break;
 
       case "STARTS_WITH":
-        clause = `unaccent(${columnRef}) ILIKE $${currentParamCount}`;
+        clause = `unaccent(${columnRef}) ILIKE unaccent($${currentParamCount})`;
         params.push(`${value}%`);
         currentParamCount++;
         break;
 
       case "ENDS_WITH":
-        clause = `unaccent(${columnRef}) ILIKE $${currentParamCount}`;
+        clause = `unaccent(${columnRef}) ILIKE unaccent($${currentParamCount})`;
         params.push(`%${value}`);
         currentParamCount++;
         break;
@@ -681,10 +645,10 @@ class CrudService {
         console.warn(`Operador no soportado: ${operator}`);
         break;
     }
-    console.log("🔧 Cláusula:", clause, "   🅿 Parámetros:", params);
+    //console.log("🔧 sentence:", clause, "   🅿 Parámetros:", params);
     return {
       clause,
-      conditionParams: value,
+      conditionParams: params, //value,
       newParamCount: currentParamCount,
     };
   }
