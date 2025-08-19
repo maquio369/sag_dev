@@ -7,7 +7,7 @@ import { RequisicionesService } from './requisiciones.service';
 @Module({
     imports: [TypeOrmModule.forFeature([Requisiciones])],
     providers: [RequisicionesService],
-    controllers: [RequisicionesController]
+    controllers: [RequisicionesController],
     exports: [RequisicionesService]
 })
 export class RequisicionesModule { }
