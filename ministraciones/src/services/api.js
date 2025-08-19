@@ -202,10 +202,12 @@ export const apiService = {
   // Mapear rutas /tables/ a rutas existentes
   getTables: () => {
     return Promise.resolve({
-      data: [
-        'sistemas', 'usuarios', 'roles', 'productos', 'requisiciones',
-        'areas', 'puestos', 'categorias', 'unidades_de_medida'
-      ]
+      data: {
+        data: [
+          'sistemas', 'usuarios', 'roles', 'productos', 'requisiciones',
+          'areas', 'puestos', 'categorias', 'unidades_de_medida'
+        ]
+      }
     });
   },
 
@@ -219,7 +221,12 @@ export const apiService = {
       primaryKey: 'id'
     };
     
-    return Promise.resolve({ data: schema });
+    // FORMATO CORRECTO: Envolver en data.data para que coincida con el patrón esperado
+    return Promise.resolve({ 
+      data: {
+        data: schema
+      }
+    });
   },
   
   // REDIRECCIONAR a endpoints existentes
@@ -242,7 +249,7 @@ export const apiService = {
       const data = Array.isArray(response.data) ? response.data : response.data?.data || [];
       return {
         data: {
-          data: data,
+          data: data, // Los datos reales
           pagination: {
             page: validatedParams.page,
             limit: validatedParams.limit,
