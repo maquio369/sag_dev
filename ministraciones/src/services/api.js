@@ -212,6 +212,8 @@ export const apiService = {
   },
 
   getTableSchema: (tableName) => {
+    console.log(`🔍 Getting schema for: ${tableName}`);
+    
     // Esquemas específicos para cada tabla
     const schema = TABLE_SCHEMAS[tableName] || {
       columns: [
@@ -221,42 +223,41 @@ export const apiService = {
       primaryKey: 'id'
     };
     
-    // FORMATO CORRECTO: Envolver en data.data para que coincida con el patrón esperado
+    console.log(`✅ Schema for ${tableName}:`, schema);
+    
+    // Retornar directamente el esquema sin anidar
     return Promise.resolve({ 
-      data: {
-        data: schema
-      }
+      data: schema
     });
   },
   
   // REDIRECCIONAR a endpoints existentes
   getRecords: (tableName, params = {}) => {
-    const endpoint = ENDPOINT_MAP[tableName];
+    const endpointMap = {
+      'usuarios': '/api/usuarios/findAll',
+      'sistemas': '/api/sistemas/findAll', 
+      'roles': '/api/roles/findAll',
+      'productos': '/api/productos/findAll'
+    };
+
+    const endpoint = endpointMap[tableName];
     if (!endpoint) {
       return Promise.reject(new Error(`Table ${tableName} not found`));
     }
 
-    // Validar parámetros
-    const validatedParams = {
-      ...params,
-      limit: Math.min(params.limit || 50, 200), // Máximo 200 registros
-      page: Math.max(params.page || 1, 1), // Mínimo página 1
-    };
-
     // Llamar al endpoint existente y formatear respuesta
-    return api.get(`${endpoint}/findAll`, { params: validatedParams }).then(response => {
+    return api.get(endpoint, { params }).then(response => {
       // Formatear para que coincida con lo que espera el frontend
-      const data = Array.isArray(response.data) ? response.data : response.data?.data || [];
       return {
         data: {
-          data: data, // Los datos reales
+          data: response.data, // Los datos reales
           pagination: {
-            page: validatedParams.page,
-            limit: validatedParams.limit,
-            total: data.length,
-            totalPages: Math.ceil(data.length / validatedParams.limit),
+            page: 1,
+            limit: 50,
+            total: response.data?.length || 0,
+            totalPages: 1,
             hasNext: false,
-            hasPrev: validatedParams.page > 1
+            hasPrev: false
           }
         }
       };
@@ -265,48 +266,37 @@ export const apiService = {
 
   // Otros métodos redirigidos...
   getRecord: (tableName, id, params = {}) => {
-    if (!id) throw new Error('ID is required');
-    
-    const endpoint = ENDPOINT_MAP[tableName];
-    if (!endpoint) {
-      return Promise.reject(new Error(`Table ${tableName} not found`));
-    }
-    
-    return api.get(`${endpoint}/find/${encodeURIComponent(id)}`, { params });
+    const endpointMap = {
+      'usuarios': `/api/usuarios/find/${id}`,
+      'sistemas': `/api/sistemas/find/${id}`,
+      'roles': `/api/roles/find/${id}`
+    };
+    const endpoint = endpointMap[tableName];
+    return endpoint ? api.get(endpoint, { params }) : Promise.reject(new Error('Not found'));
   },
 
   createRecord: (tableName, data) => {
-    if (!data || typeof data !== 'object') {
-      throw new Error('Valid data object is required');
-    }
-    
-    const endpoint = ENDPOINT_MAP[tableName];
-    if (!endpoint) {
-      return Promise.reject(new Error(`Table ${tableName} not found`));
-    }
-    
-    return api.post(`${endpoint}/save`, data);
+    const endpointMap = {
+      'usuarios': '/api/usuarios/save',
+      'sistemas': '/api/sistemas/save',
+      'roles': '/api/roles/save'
+    };
+    const endpoint = endpointMap[tableName];
+    return endpoint ? api.post(endpoint, data) : Promise.reject(new Error('Not found'));
   },
 
   updateRecord: (tableName, id, data) => {
-    if (!id) throw new Error('ID is required');
-    if (!data || typeof data !== 'object') {
-      throw new Error('Valid data object is required');
-    }
-    
-    // Incluir el ID en los datos para la actualización
     return this.createRecord(tableName, { ...data, id });
   },
 
   deleteRecord: (tableName, id) => {
-    if (!id) throw new Error('ID is required');
-    
-    const endpoint = ENDPOINT_MAP[tableName];
-    if (!endpoint) {
-      return Promise.reject(new Error(`Table ${tableName} not found`));
-    }
-    
-    return api.delete(`${endpoint}/softDelete/${encodeURIComponent(id)}`);
+    const endpointMap = {
+      'usuarios': `/api/usuarios/softDelete/${id}`,
+      'sistemas': `/api/sistemas/softDelete/${id}`,
+      'roles': `/api/roles/softDelete/${id}`
+    };
+    const endpoint = endpointMap[tableName];
+    return endpoint ? api.delete(endpoint) : Promise.reject(new Error('Not found'));
   },
   
   // Utilidades adaptadas
