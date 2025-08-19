@@ -22,6 +22,8 @@ import { UsuariosModule } from './api/usuarios/usuarios.module';
 import { ProductoEstatusModule } from './api/producto_estatus/producto_estatus.module';
 import { Usuarios } from './api/usuarios/usuarios.entity';
 import { UsuariosSql } from './api/usuarios/usuarios.sql';
+// Import TablesController
+import { TablesController } from './api/tables.controller';
 //import { UsuariosService } from './api/usuarios/usuarios.service';
 //import { DatabaseService } from './lib/DatabaseService';
 
@@ -56,7 +58,10 @@ import { UsuariosSql } from './api/usuarios/usuarios.sql';
     UnidadesDeMedidaModule,
     UsuariosModule,
   ],
-  controllers: [AppController],
-  providers: [AppService,UsuariosSql ],  //,UsuariosService  // ,DatabaseService
+  controllers: [
+    AppController,
+    TablesController  // 👈 AGREGADO: TablesController
+  ],
+  providers: [AppService, UsuariosSql],  //,UsuariosService  // ,DatabaseService
 })
 export class AppModule {}
