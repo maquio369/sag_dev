@@ -8,6 +8,8 @@ import { SistemasService } from './sistemas.service';
     imports: [TypeOrmModule.forFeature([Sistemas])],
     providers: [SistemasService],
     controllers: [SistemasController]
+    exports: [SistemasService]
+    
 })
 export class SistemasModule {
 
