@@ -86,14 +86,181 @@ const retryRequest = async (fn, maxRetries = 3, delay = 1000) => {
   }
 };
 
-// Servicios de API con manejo de errores mejorado
+// Mapeo de tablas a endpoints existentes
+const ENDPOINT_MAP = {
+  'usuarios': {
+    findAll: '/usuarios/findAll',
+    find: '/usuarios/find',
+    save: '/usuarios/save',
+    delete: '/usuarios/softDelete'
+  },
+  'sistemas': {
+    findAll: '/sistemas/findAll',
+    find: '/sistemas/find',
+    save: '/sistemas/save',
+    delete: '/sistemas/softDelete'
+  },
+  'roles': {
+    findAll: '/roles/findAll',
+    find: '/roles/find',
+    save: '/roles/save',
+    delete: '/roles/softDelete'
+  },
+  'productos': {
+    findAll: '/productos/findAll',
+    find: '/productos/find',
+    save: '/productos/save',
+    delete: '/productos/softDelete'
+  },
+  'requisiciones': {
+    findAll: '/requisiciones/findAll',
+    find: '/requisiciones/find',
+    save: '/requisiciones/save',
+    delete: '/requisiciones/softDelete'
+  },
+  'areas': {
+    findAll: '/areas/findAll',
+    find: '/areas/find',
+    save: '/areas/save',
+    delete: '/areas/softDelete'
+  },
+  'puestos': {
+    findAll: '/puestos/findAll',
+    find: '/puestos/find',
+    save: '/puestos/save',
+    delete: '/puestos/softDelete'
+  },
+  'categorias': {
+    findAll: '/categorias/findAll',
+    find: '/categorias/find',
+    save: '/categorias/save',
+    delete: '/categorias/softDelete'
+  },
+  'unidades_de_medida': {
+    findAll: '/unidades_de_medida/findAll',
+    find: '/unidades_de_medida/find',
+    save: '/unidades_de_medida/save',
+    delete: '/unidades_de_medida/softDelete'
+  }
+};
+
+// Esquemas básicos para cada tabla
+const TABLE_SCHEMAS = {
+  usuarios: {
+    columns: [
+      { column_name: 'id', data_type: 'integer', is_primary_key: true },
+      { column_name: 'nombre', data_type: 'varchar' },
+      { column_name: 'email', data_type: 'varchar' },
+      { column_name: 'rol_id', data_type: 'integer', is_foreign_key: true, reference_table: 'roles' },
+      { column_name: 'esta_borrado', data_type: 'boolean' }
+    ],
+    primaryKey: 'id'
+  },
+  sistemas: {
+    columns: [
+      { column_name: 'id', data_type: 'integer', is_primary_key: true },
+      { column_name: 'nombre', data_type: 'varchar' },
+      { column_name: 'descripcion', data_type: 'text' },
+      { column_name: 'esta_borrado', data_type: 'boolean' }
+    ],
+    primaryKey: 'id'
+  },
+  roles: {
+    columns: [
+      { column_name: 'id', data_type: 'integer', is_primary_key: true },
+      { column_name: 'nombre', data_type: 'varchar' },
+      { column_name: 'permisos', data_type: 'json' },
+      { column_name: 'esta_borrado', data_type: 'boolean' }
+    ],
+    primaryKey: 'id'
+  },
+  productos: {
+    columns: [
+      { column_name: 'id', data_type: 'integer', is_primary_key: true },
+      { column_name: 'nombre', data_type: 'varchar' },
+      { column_name: 'descripcion', data_type: 'text' },
+      { column_name: 'categoria_id', data_type: 'integer', is_foreign_key: true, reference_table: 'categorias' },
+      { column_name: 'unidad_medida_id', data_type: 'integer', is_foreign_key: true, reference_table: 'unidades_de_medida' },
+      { column_name: 'precio', data_type: 'decimal' },
+      { column_name: 'esta_borrado', data_type: 'boolean' }
+    ],
+    primaryKey: 'id'
+  },
+  requisiciones: {
+    columns: [
+      { column_name: 'id', data_type: 'integer', is_primary_key: true },
+      { column_name: 'folio', data_type: 'varchar' },
+      { column_name: 'usuario_id', data_type: 'integer', is_foreign_key: true, reference_table: 'usuarios' },
+      { column_name: 'area_id', data_type: 'integer', is_foreign_key: true, reference_table: 'areas' },
+      { column_name: 'fecha_solicitud', data_type: 'date' },
+      { column_name: 'estado', data_type: 'varchar' },
+      { column_name: 'esta_borrado', data_type: 'boolean' }
+    ],
+    primaryKey: 'id'
+  },
+  areas: {
+    columns: [
+      { column_name: 'id', data_type: 'integer', is_primary_key: true },
+      { column_name: 'nombre', data_type: 'varchar' },
+      { column_name: 'descripcion', data_type: 'text' },
+      { column_name: 'esta_borrado', data_type: 'boolean' }
+    ],
+    primaryKey: 'id'
+  },
+  puestos: {
+    columns: [
+      { column_name: 'id', data_type: 'integer', is_primary_key: true },
+      { column_name: 'nombre', data_type: 'varchar' },
+      { column_name: 'area_id', data_type: 'integer', is_foreign_key: true, reference_table: 'areas' },
+      { column_name: 'descripcion', data_type: 'text' },
+      { column_name: 'esta_borrado', data_type: 'boolean' }
+    ],
+    primaryKey: 'id'
+  },
+  categorias: {
+    columns: [
+      { column_name: 'id', data_type: 'integer', is_primary_key: true },
+      { column_name: 'nombre', data_type: 'varchar' },
+      { column_name: 'descripcion', data_type: 'text' },
+      { column_name: 'esta_borrado', data_type: 'boolean' }
+    ],
+    primaryKey: 'id'
+  },
+  unidades_de_medida: {
+    columns: [
+      { column_name: 'id', data_type: 'integer', is_primary_key: true },
+      { column_name: 'nombre', data_type: 'varchar' },
+      { column_name: 'abreviacion', data_type: 'varchar' },
+      { column_name: 'esta_borrado', data_type: 'boolean' }
+    ],
+    primaryKey: 'id'
+  }
+};
+
+// Servicios de API - Redirección a endpoints existentes
 export const apiService = {
-  // Tablas
-  getTables: () => retryRequest(() => api.get('/tables')),
-  getTableSchema: (tableName) => api.get(`/tables/${encodeURIComponent(tableName)}/schema`),
+  // Mapear rutas /tables/ a rutas existentes
+  getTables: () => {
+    return Promise.resolve({
+      data: Object.keys(ENDPOINT_MAP)
+    });
+  },
   
-  // CRUD con validación de parámetros
+  getTableSchema: (tableName) => {
+    const schema = TABLE_SCHEMAS[tableName];
+    if (!schema) {
+      return Promise.reject(new Error(`Schema for table ${tableName} not found`));
+    }
+    return Promise.resolve({ data: schema });
+  },
+  
+  // REDIRECCIONAR a endpoints existentes
   getRecords: (tableName, params = {}) => {
+    const tableEndpoints = ENDPOINT_MAP[tableName];
+    if (!tableEndpoints) {
+      return Promise.reject(new Error(`Table ${tableName} not found`));
+    }
+    
     // Validar parámetros
     const validatedParams = {
       ...params,
@@ -101,19 +268,48 @@ export const apiService = {
       page: Math.max(params.page || 1, 1), // Mínimo página 1
     };
     
-    return api.get(`/tables/${encodeURIComponent(tableName)}`, { params: validatedParams });
+    // Llamar al endpoint existente y formatear respuesta
+    return api.get(tableEndpoints.findAll, { params: validatedParams }).then(response => {
+      // Formatear para que coincida con lo que espera el frontend
+      const data = Array.isArray(response.data) ? response.data : response.data?.data || [];
+      return {
+        data: {
+          data: data,
+          pagination: {
+            page: validatedParams.page,
+            limit: validatedParams.limit,
+            total: data.length,
+            totalPages: Math.ceil(data.length / validatedParams.limit),
+            hasNext: false,
+            hasPrev: validatedParams.page > 1
+          }
+        }
+      };
+    });
   },
   
   getRecord: (tableName, id, params = {}) => {
     if (!id) throw new Error('ID is required');
-    return api.get(`/tables/${encodeURIComponent(tableName)}/${encodeURIComponent(id)}`, { params });
+    
+    const tableEndpoints = ENDPOINT_MAP[tableName];
+    if (!tableEndpoints) {
+      return Promise.reject(new Error(`Table ${tableName} not found`));
+    }
+    
+    return api.get(`${tableEndpoints.find}/${encodeURIComponent(id)}`, { params });
   },
   
   createRecord: (tableName, data) => {
     if (!data || typeof data !== 'object') {
       throw new Error('Valid data object is required');
     }
-    return api.post(`/tables/${encodeURIComponent(tableName)}`, data);
+    
+    const tableEndpoints = ENDPOINT_MAP[tableName];
+    if (!tableEndpoints) {
+      return Promise.reject(new Error(`Table ${tableName} not found`));
+    }
+    
+    return api.post(tableEndpoints.save, data);
   },
   
   updateRecord: (tableName, id, data) => {
@@ -121,34 +317,91 @@ export const apiService = {
     if (!data || typeof data !== 'object') {
       throw new Error('Valid data object is required');
     }
-    return api.put(`/tables/${encodeURIComponent(tableName)}/${encodeURIComponent(id)}`, data);
+    
+    const tableEndpoints = ENDPOINT_MAP[tableName];
+    if (!tableEndpoints) {
+      return Promise.reject(new Error(`Table ${tableName} not found`));
+    }
+    
+    // Incluir el ID en los datos para la actualización
+    return api.post(tableEndpoints.save, { ...data, id });
   },
   
   deleteRecord: (tableName, id) => {
     if (!id) throw new Error('ID is required');
-    return api.delete(`/tables/${encodeURIComponent(tableName)}/${encodeURIComponent(id)}`);
+    
+    const tableEndpoints = ENDPOINT_MAP[tableName];
+    if (!tableEndpoints) {
+      return Promise.reject(new Error(`Table ${tableName} not found`));
+    }
+    
+    return api.delete(`${tableEndpoints.delete}/${encodeURIComponent(id)}`);
   },
   
-  // Utilidades
+  // Utilidades adaptadas
   getForeignKeyOptions: (tableName, columnName) => {
     if (!tableName || !columnName) {
       throw new Error('Table name and column name are required');
     }
-    return api.get(`/tables/${encodeURIComponent(tableName)}/foreign-key-options/${encodeURIComponent(columnName)}`);
+    
+    const schema = TABLE_SCHEMAS[tableName];
+    if (!schema) {
+      return Promise.reject(new Error(`Schema for table ${tableName} not found`));
+    }
+    
+    const column = schema.columns.find(col => col.column_name === columnName);
+    if (!column || !column.is_foreign_key) {
+      return Promise.reject(new Error(`Column ${columnName} is not a foreign key`));
+    }
+    
+    // Obtener opciones de la tabla referenciada
+    const referenceTable = column.reference_table;
+    return this.getRecords(referenceTable).then(response => {
+      return {
+        data: response.data.data.map(item => ({
+          value: item.id,
+          label: item.nombre || item.name || `ID: ${item.id}`
+        }))
+      };
+    });
   },
   
   validateData: (tableName, data) => {
     if (!data || typeof data !== 'object') {
       throw new Error('Valid data object is required');
     }
-    return api.post(`/tables/${encodeURIComponent(tableName)}/validate`, data);
+    
+    const schema = TABLE_SCHEMAS[tableName];
+    if (!schema) {
+      return Promise.reject(new Error(`Schema for table ${tableName} not found`));
+    }
+    
+    // Validación básica del lado cliente
+    const errors = [];
+    const requiredColumns = schema.columns.filter(col => 
+      !col.is_primary_key && col.column_name !== 'esta_borrado'
+    );
+    
+    requiredColumns.forEach(col => {
+      if (col.column_name === 'nombre' && !data[col.column_name]) {
+        errors.push(`${col.column_name} is required`);
+      }
+    });
+    
+    if (errors.length > 0) {
+      return Promise.reject(new Error(`Validation errors: ${errors.join(', ')}`));
+    }
+    
+    return Promise.resolve({ data: { valid: true } });
   },
   
   searchRecords: (tableName, searchData) => {
     if (!searchData || typeof searchData !== 'object') {
       throw new Error('Valid search data is required');
     }
-    return api.post(`/tables/${encodeURIComponent(tableName)}/search`, searchData);
+    
+    // Por ahora, usar getRecords con filtros básicos
+    return this.getRecords(tableName, searchData);
   },
 
   // Método para verificar la salud del backend
