@@ -722,7 +722,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
 
   // Función principal de exportación Excel (con ExcelJS)
   const handleExportToExcel = async () => {
-    if (!selectedTable || !records.length) {
+    if (!selectedTable || !records || records.length === 0) {
       alert("No hay datos para exportar");
       return;
     }
