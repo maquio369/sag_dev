@@ -25,7 +25,7 @@ services:
       - API_PORT=3011
       - MODE=DEV
       - RUN_MIGRATIONS=false
-      - API_URL2=http://172.16.35.75:3001/api
+      - API_URL2=http://172.16.35.75:3013/api
     restart: unless-stopped
     networks:
       - ministraciones-network
@@ -60,7 +60,7 @@ services:
       - PORT=3010
       - API_PORT=3011
       - API_URL=http://172.16.35.75:3011/
-      - API_URL2=http://172.16.35.75:3001
+      - API_URL2=http://172.16.35.75:3013
       - MODE=DEV
       - IS_DEV_MODE=true
       - RUN_MIGRATIONS=false
