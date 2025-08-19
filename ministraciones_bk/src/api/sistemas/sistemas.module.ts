@@ -7,7 +7,7 @@ import { SistemasService } from './sistemas.service';
 @Module({
     imports: [TypeOrmModule.forFeature([Sistemas])],
     providers: [SistemasService],
-    controllers: [SistemasController]
+    controllers: [SistemasController],
     exports: [SistemasService]
     
 })
