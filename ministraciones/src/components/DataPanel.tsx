@@ -1122,7 +1122,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                   className="btn3 "
                   title="Exportar registros a Excel"
                   onClick={handleExportToExcel}
-                  disabled={exportLoading || !selectedTable || !records.length}
+                  disabled={exportLoading || !selectedTable || !Array.isArray(records) || records.length === 0}
                 >
                   <i className="fa-solid fa-file-export"></i>
                   <span className="lblBtn">Exportar</span>
