@@ -370,6 +370,9 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
             </div>
           </div>
         )}
+      </div>  
+    );
+  };
 
   // CRUD Operations
   const handleCreateRecord = async (data: any) => {
