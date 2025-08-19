@@ -235,7 +235,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
         {/* Tabla de datos */}
         {loading ? (
           <Spinner className="h-16 w-16 mt-18 border-4" />
-        ) : records.length === 0 ? (
+        ) : (!records || records.length === 0) ? (
           <div className="flex items-center justify-center h-52">
             <div className="text-center">
               <div className="mx-auto mb-2">
