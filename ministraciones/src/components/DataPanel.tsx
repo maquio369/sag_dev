@@ -309,26 +309,26 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
         )}
 
         {/* Paginación */}
-        {pagination.totalPages > 1 && (
+        {pagination && pagination.totalPages > 1 && (
           <div className="mt-2 flex items-center justify_-between shadow text-sm">
             <div className="flex items-center space-x-0.5 mr-3 ">
               <button
                 onClick={() => loadPage(1)}
-                disabled={!pagination.hasPrev}
+                disabled={!pagination || !pagination.hasPrev}
                 className="btn4 text-fondoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover"
               >
                 <i className="fa-solid fa-angles-left"></i>
               </button>
               <button
-                onClick={() => loadPage(pagination.page - 1)}
-                disabled={!pagination.hasPrev}
+                onClick={() => loadPage((pagination?.page || 1) - 1)}
+                disabled={!pagination || !pagination.hasPrev}
                 className="btn4 text-fondoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover"
               >
                 <i className="fa-solid fa-angle-left"></i>
               </button>
               <div className="flex items-center space-x-0.5">
                 {Array.from(
-                  { length: Math.min(5, pagination.totalPages) },
+                  { length: Math.min(5, pagination?.totalPages || 1) },
                   (_, i) => {
                     const pageNum = i + 1;
                     return (
@@ -336,7 +336,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                         key={pageNum}
                         onClick={() => loadPage(pageNum)}
                         className={`btn4  ${
-                          pagination.page === pageNum
+                          (pagination?.page || 1) === pageNum
                             ? "bg-fondoBoton1 text-textoBoton1"
                             : "text-fondoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover"
                         }`}
@@ -348,31 +348,28 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                 )}
               </div>
               <button
-                onClick={() => loadPage(pagination.page + 1)}
-                disabled={!pagination.hasNext}
+                onClick={() => loadPage((pagination?.page || 1) + 1)}
+                disabled={!pagination || !pagination.hasNext}
                 className="btn4 text-fondoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover"
               >
                 <i className="fa-solid fa-angle-right"></i>
               </button>
               <button
-                onClick={() => loadPage(pagination.totalPages)}
-                disabled={!pagination.hasNext}
+                onClick={() => loadPage(pagination?.totalPages || 1)}
+                disabled={!pagination || !pagination.hasNext}
                 className="btn4 text-fondoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover"
               >
                 <i className="fa-solid fa-angles-right"></i>
               </button>
             </div>
             <div className="text-xs font-light">
-              [ {(pagination.page - 1) * pagination.limit + 1}-
-              {Math.min(pagination.page * pagination.limit, pagination.total)} ]
-              de <span className="font-medium">{pagination.total}</span>{" "}
+              [ {((pagination?.page || 1) - 1) * (pagination?.limit || 50) + 1}-
+              {Math.min((pagination?.page || 1) * (pagination?.limit || 50), pagination?.total || 0)} ]
+              de <span className="font-medium">{pagination?.total || 0}</span>{" "}
               registros
             </div>
           </div>
         )}
-      </div>
-    );
-  };
 
   // CRUD Operations
   const handleCreateRecord = async (data: any) => {
