@@ -86,93 +86,53 @@ const retryRequest = async (fn, maxRetries = 3, delay = 1000) => {
   }
 };
 
-// Mapeo de tablas a endpoints existentes
+// Mapeo de tablas a endpoints existentes (formato simplificado)
 const ENDPOINT_MAP = {
-  'usuarios': {
-    findAll: '/usuarios/findAll',
-    find: '/usuarios/find',
-    save: '/usuarios/save',
-    delete: '/usuarios/softDelete'
-  },
-  'sistemas': {
-    findAll: '/sistemas/findAll',
-    find: '/sistemas/find',
-    save: '/sistemas/save',
-    delete: '/sistemas/softDelete'
-  },
-  'roles': {
-    findAll: '/roles/findAll',
-    find: '/roles/find',
-    save: '/roles/save',
-    delete: '/roles/softDelete'
-  },
-  'productos': {
-    findAll: '/productos/findAll',
-    find: '/productos/find',
-    save: '/productos/save',
-    delete: '/productos/softDelete'
-  },
-  'requisiciones': {
-    findAll: '/requisiciones/findAll',
-    find: '/requisiciones/find',
-    save: '/requisiciones/save',
-    delete: '/requisiciones/softDelete'
-  },
-  'areas': {
-    findAll: '/areas/findAll',
-    find: '/areas/find',
-    save: '/areas/save',
-    delete: '/areas/softDelete'
-  },
-  'puestos': {
-    findAll: '/puestos/findAll',
-    find: '/puestos/find',
-    save: '/puestos/save',
-    delete: '/puestos/softDelete'
-  },
-  'categorias': {
-    findAll: '/categorias/findAll',
-    find: '/categorias/find',
-    save: '/categorias/save',
-    delete: '/categorias/softDelete'
-  },
-  'unidades_de_medida': {
-    findAll: '/unidades_de_medida/findAll',
-    find: '/unidades_de_medida/find',
-    save: '/unidades_de_medida/save',
-    delete: '/unidades_de_medida/softDelete'
-  }
+  'usuarios': '/api/usuarios',
+  'sistemas': '/api/sistemas', 
+  'roles': '/api/roles',
+  'productos': '/api/productos',
+  'requisiciones': '/api/requisiciones',
+  'areas': '/api/areas',
+  'puestos': '/api/puestos',
+  'categorias': '/api/categorias',
+  'unidades_de_medida': '/api/unidades_de_medida'
 };
 
-// Esquemas básicos para cada tabla
+// Esquemas específicos para cada tabla
 const TABLE_SCHEMAS = {
   usuarios: {
     columns: [
-      { column_name: 'id', data_type: 'integer', is_primary_key: true },
-      { column_name: 'nombre', data_type: 'varchar' },
-      { column_name: 'email', data_type: 'varchar' },
-      { column_name: 'rol_id', data_type: 'integer', is_foreign_key: true, reference_table: 'roles' },
+      { column_name: 'id_usuario', data_type: 'integer', is_primary_key: true },
+      { column_name: 'nombres', data_type: 'varchar', is_nullable: 'NO' },
+      { column_name: 'apellidos', data_type: 'varchar', is_nullable: 'NO' },
+      { column_name: 'correo', data_type: 'varchar' },
+      { column_name: 'usuario', data_type: 'varchar' },
+      { column_name: 'contraseña', data_type: 'varchar' },
+      { column_name: 'id_rol', data_type: 'integer' },
       { column_name: 'esta_borrado', data_type: 'boolean' }
     ],
-    primaryKey: 'id'
+    primaryKey: 'id_usuario'
   },
   sistemas: {
     columns: [
-      { column_name: 'id', data_type: 'integer', is_primary_key: true },
-      { column_name: 'nombre', data_type: 'varchar' },
-      { column_name: 'descripcion', data_type: 'text' },
+      { column_name: 'id_sistema', data_type: 'integer', is_primary_key: true },
+      { column_name: 'sistema', data_type: 'varchar', is_nullable: 'NO' },
+      { column_name: 'grupo', data_type: 'varchar' },
+      { column_name: 'abreviatura', data_type: 'varchar' },
+      { column_name: 'objetivo', data_type: 'text' },
       { column_name: 'esta_borrado', data_type: 'boolean' }
     ],
-    primaryKey: 'id'
+    primaryKey: 'id_sistema'
   },
   roles: {
     columns: [
-      { column_name: 'id', data_type: 'integer', is_primary_key: true },
-      { column_name: 'nombre', data_type: 'varchar' },
-      { column_name: 'permisos', data_type: 'json' },
+      { column_name: 'id_rol', data_type: 'integer', is_primary_key: true },
+      { column_name: 'rol', data_type: 'varchar', is_nullable: 'NO' },
+      { column_name: 'abreviatura', data_type: 'varchar' },
       { column_name: 'esta_borrado', data_type: 'boolean' }
     ],
-    primaryKey: 'id'
+    primaryKey: 'id_rol'
   },
   productos: {
     columns: [
@@ -242,34 +202,42 @@ export const apiService = {
   // Mapear rutas /tables/ a rutas existentes
   getTables: () => {
     return Promise.resolve({
-      data: Object.keys(ENDPOINT_MAP)
+      data: [
+        'sistemas', 'usuarios', 'roles', 'productos', 'requisiciones',
+        'areas', 'puestos', 'categorias', 'unidades_de_medida'
+      ]
     });
   },
-  
+
   getTableSchema: (tableName) => {
-    const schema = TABLE_SCHEMAS[tableName];
-    if (!schema) {
-      return Promise.reject(new Error(`Schema for table ${tableName} not found`));
-    }
+    // Esquemas específicos para cada tabla
+    const schema = TABLE_SCHEMAS[tableName] || {
+      columns: [
+        { column_name: 'id', data_type: 'integer', is_primary_key: true },
+        { column_name: 'nombre', data_type: 'varchar' }
+      ],
+      primaryKey: 'id'
+    };
+    
     return Promise.resolve({ data: schema });
   },
   
   // REDIRECCIONAR a endpoints existentes
   getRecords: (tableName, params = {}) => {
-    const tableEndpoints = ENDPOINT_MAP[tableName];
-    if (!tableEndpoints) {
+    const endpoint = ENDPOINT_MAP[tableName];
+    if (!endpoint) {
       return Promise.reject(new Error(`Table ${tableName} not found`));
     }
-    
+
     // Validar parámetros
     const validatedParams = {
       ...params,
       limit: Math.min(params.limit || 50, 200), // Máximo 200 registros
       page: Math.max(params.page || 1, 1), // Mínimo página 1
     };
-    
+
     // Llamar al endpoint existente y formatear respuesta
-    return api.get(tableEndpoints.findAll, { params: validatedParams }).then(response => {
+    return api.get(`${endpoint}/findAll`, { params: validatedParams }).then(response => {
       // Formatear para que coincida con lo que espera el frontend
       const data = Array.isArray(response.data) ? response.data : response.data?.data || [];
       return {
@@ -287,55 +255,51 @@ export const apiService = {
       };
     });
   },
-  
+
+  // Otros métodos redirigidos...
   getRecord: (tableName, id, params = {}) => {
     if (!id) throw new Error('ID is required');
     
-    const tableEndpoints = ENDPOINT_MAP[tableName];
-    if (!tableEndpoints) {
+    const endpoint = ENDPOINT_MAP[tableName];
+    if (!endpoint) {
       return Promise.reject(new Error(`Table ${tableName} not found`));
     }
     
-    return api.get(`${tableEndpoints.find}/${encodeURIComponent(id)}`, { params });
+    return api.get(`${endpoint}/find/${encodeURIComponent(id)}`, { params });
   },
-  
+
   createRecord: (tableName, data) => {
     if (!data || typeof data !== 'object') {
       throw new Error('Valid data object is required');
     }
     
-    const tableEndpoints = ENDPOINT_MAP[tableName];
-    if (!tableEndpoints) {
+    const endpoint = ENDPOINT_MAP[tableName];
+    if (!endpoint) {
       return Promise.reject(new Error(`Table ${tableName} not found`));
     }
     
-    return api.post(tableEndpoints.save, data);
+    return api.post(`${endpoint}/save`, data);
   },
-  
+
   updateRecord: (tableName, id, data) => {
     if (!id) throw new Error('ID is required');
     if (!data || typeof data !== 'object') {
       throw new Error('Valid data object is required');
     }
     
-    const tableEndpoints = ENDPOINT_MAP[tableName];
-    if (!tableEndpoints) {
-      return Promise.reject(new Error(`Table ${tableName} not found`));
-    }
-    
     // Incluir el ID en los datos para la actualización
-    return api.post(tableEndpoints.save, { ...data, id });
+    return this.createRecord(tableName, { ...data, id });
   },
-  
+
   deleteRecord: (tableName, id) => {
     if (!id) throw new Error('ID is required');
     
-    const tableEndpoints = ENDPOINT_MAP[tableName];
-    if (!tableEndpoints) {
+    const endpoint = ENDPOINT_MAP[tableName];
+    if (!endpoint) {
       return Promise.reject(new Error(`Table ${tableName} not found`));
     }
     
-    return api.delete(`${tableEndpoints.delete}/${encodeURIComponent(id)}`);
+    return api.delete(`${endpoint}/softDelete/${encodeURIComponent(id)}`);
   },
   
   // Utilidades adaptadas
