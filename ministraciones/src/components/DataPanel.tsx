@@ -257,7 +257,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
               <thead className="thead sticky top-0 bg-bordeBlancoTransparente dark:bg-fondoObscuroTransparente h-10">
                 <tr className="">
                   <th className="w-1 pl-3">☷</th>
-                  {schema.columns.map((column: any) => (
+                  {schema && schema.columns && schema.columns.map((column: any) => (
                     <th
                       key={column.column_name}
                       className={`${column.data_type === "boolean" || column.column_name.includes("icon") ? "justify-items-center" : ""} ${column.column_name.includes(campoEstaBorrado) && nivel !== "4" ? "hidden" : ""}`}
@@ -287,7 +287,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
                         onDelete={() => openDeleteModal(record)} //{() => openEditModal(record)}
                       />
                     </td>
-                    {schema.columns.map((column: any) => (
+                    {schema && schema.columns && schema.columns.map((column: any) => (
                       <td
                         key={column.column_name}
                         className={`${column.column_name.includes(campoEstaBorrado) && nivel !== "4" ? "hidden" : ""}`}
