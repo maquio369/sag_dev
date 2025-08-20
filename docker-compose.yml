@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # Backend - NestJS API
+  # Backend - NestJS API (Puerto 3011 - AUTH)
   ministraciones-backend:
     build:
       context: ./ministraciones_bk
@@ -25,8 +25,6 @@ services:
       - API_PORT=3011
       - MODE=DEV
       - RUN_MIGRATIONS=false
-      # CORREGIR: Cambiar a puerto 3013 donde funciona tu API
-      - API_URL2=http://172.16.35.75:3013/api
     restart: unless-stopped
     networks:
       - ministraciones-network
@@ -40,7 +38,15 @@ services:
     ports:
       - "3010:3010"
     environment:
-      # Database (for any direct connections)
+      # APIs separadas
+      - NEXT_PUBLIC_AUTH_API=http://172.16.35.75:3011
+      - NEXT_PUBLIC_DATA_API=http://172.16.35.75:3013/api
+      
+      # Para server-side
+      - API_URL=http://172.16.35.75:3011/
+      - API_URL2=http://172.16.35.75:3013/api
+      
+      # Database
       - POSTGRES_HOST=172.16.35.75
       - POSTGRES_PORT=32768
       - POSTGRES_USER=maquio
@@ -53,15 +59,9 @@ services:
       
       # App
       - PORT=3010
-      # CORREGIR: URLs consistentes al puerto 3013
-      - API_PORT=3013
-      - API_URL=http://172.16.35.75:3013/api/
-      - API_URL2=http://172.16.35.75:3013/api
       - MODE=DEV
       - IS_DEV_MODE=true
       - RUN_MIGRATIONS=false
-      # CORREGIR: Variable pública correcta
-      - NEXT_PUBLIC_API_BASE=http://172.16.35.75:3013/api
     depends_on:
       - ministraciones-backend
     restart: unless-stopped
