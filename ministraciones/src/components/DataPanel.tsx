@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { toast, ToastOptions } from "react-toastify";
 import { aOracion, getCookie, getColumnDisplayName } from "@/utils/util";
 
-import { apiService } from "../services/api";
+import apiService from "../services/api";
 import DropdownMenuCRUD from "./DropdownMenuCRUD";
 import Modal from "./elements/Modal";
 import RecordForm from "./RecordForm";
