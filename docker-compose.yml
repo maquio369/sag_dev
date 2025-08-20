@@ -25,6 +25,7 @@ services:
       - API_PORT=3011
       - MODE=DEV
       - RUN_MIGRATIONS=false
+      # CORREGIR: Cambiar a puerto 3013 donde funciona tu API
       - API_URL2=http://172.16.35.75:3013/api
     restart: unless-stopped
     networks:
@@ -52,13 +53,15 @@ services:
       
       # App
       - PORT=3010
-      - API_PORT=3011
-      - API_URL=http://172.16.35.75:3011/
-      - API_URL2=http://172.16.35.75:3013
+      # CORREGIR: URLs consistentes al puerto 3013
+      - API_PORT=3013
+      - API_URL=http://172.16.35.75:3013/api/
+      - API_URL2=http://172.16.35.75:3013/api
       - MODE=DEV
       - IS_DEV_MODE=true
       - RUN_MIGRATIONS=false
-      - NEXT_PUBLIC_API_BASE=http://172.16.35.75:3013
+      # CORREGIR: Variable pública correcta
+      - NEXT_PUBLIC_API_BASE=http://172.16.35.75:3013/api
     depends_on:
       - ministraciones-backend
     restart: unless-stopped
