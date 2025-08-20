@@ -89,58 +89,159 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
     }
   };
 
-  const selectTable = async (tableName: string) => {
-    try {
-      setLoading(true);
-      setSelectedTable(tableName);
 
-      // Cargar schema y registros en paralelo
-      const [schemaResponse, recordsResponse] = await Promise.all([
-        apiService.getTableSchema(tableName),
-        apiService.getRecords(tableName, { limit: 50 }),
-      ]);
+  // ===== FUNCIÓN CORREGIDA PARA selectTable() =====
+// Reemplazar la función selectTable existente con esta versión corregida:
 
-      setSchema(schemaResponse.data.data);
-      setRecords(recordsResponse.data.data);
-      setPagination(recordsResponse.data.pagination);
+const selectTable = async (tableName: string) => {
+  try {
+    setLoading(true);
+    setSelectedTable(tableName);
+    
+    console.log(`📋 Cargando tabla: ${tableName}`);
 
-      // NUEVO: Guardar mappings de foreign keys si existen
-      if (recordsResponse.data.foreignKeyMappings) {
-        setForeignKeyMappings(recordsResponse.data.foreignKeyMappings);
-      } else {
-        setForeignKeyMappings({});
-      }
+    // Cargar schema y registros en paralelo
+    const [schemaResponse, recordsResponse] = await Promise.all([
+      apiService.getTableSchema(tableName),
+      apiService.getRecords(tableName, { limit: 50 }),
+    ]);
 
-      setError("");
-    } catch (err: any) {
-      setError("Error al cargar la tabla: " + err.message);
-      console.warn("Error loading table:", err);
-    } finally {
-      setLoading(false);
+    console.log("🔍 Schema response completo:", schemaResponse);
+    console.log("🔍 Records response completo:", recordsResponse);
+
+    // CORREGIR: Extraer schema de manera consistente
+    let schemaData;
+    if (schemaResponse.data && schemaResponse.data.data) {
+      // Si viene envuelto en { data: { data: ... } }
+      schemaData = schemaResponse.data.data;
+    } else if (schemaResponse.data) {
+      // Si viene como { data: ... }
+      schemaData = schemaResponse.data;
+    } else {
+      // Si viene directo
+      schemaData = schemaResponse;
     }
-  };
 
-  const loadPage = async (page: any) => {
-    if (!selectedTable) return;
-
-    try {
-      setLoading(true);
-      const response = await apiService.getRecords(selectedTable, {
-        page,
-        limit:
-          pagination && typeof (pagination as any).limit === "number"
-            ? (pagination as any).limit
-            : 50,
-      });
-
-      setRecords(response.data.data);
-      setPagination(response.data.pagination);
-    } catch (err: any) {
-      setError("Error al cargar la página: " + err.message);
-    } finally {
-      setLoading(false);
+    // VALIDAR que el schema tenga la estructura correcta
+    if (!schemaData || !schemaData.columns) {
+      console.warn("⚠️ Schema no tiene la estructura esperada:", schemaData);
+      // Crear un schema básico para evitar errores
+      schemaData = {
+        columns: [],
+        primaryKey: 'id',
+        tableName: tableName
+      };
     }
-  };
+
+    console.log(`✅ Schema procesado para ${tableName}:`, {
+      totalColumns: schemaData.columns?.length || 0,
+      primaryKey: schemaData.primaryKey,
+      tableName: schemaData.tableName || tableName,
+      columns: schemaData.columns?.map(col => col.column_name) || []
+    });
+
+    setSchema(schemaData);
+    setRecords(recordsResponse.data.data);
+    setPagination(recordsResponse.data.pagination);
+
+    // NUEVO: Guardar mappings de foreign keys si existen
+    if (recordsResponse.data.foreignKeyMappings) {
+      setForeignKeyMappings(recordsResponse.data.foreignKeyMappings);
+    } else {
+      setForeignKeyMappings({});
+    }
+
+    setError("");
+  } catch (err: any) {
+    console.error("❌ Error al cargar la tabla:", err);
+    setError("Error al cargar la tabla: " + err.message);
+    // Asegurar que schema no quede en estado inconsistente
+    setSchema(null);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// ===== FUNCIÓN CORREGIDA PARA fetchSchema() =====
+// Reemplazar la función fetchSchema existente con esta versión:
+
+const fetchSchema = async (table: any) => {
+  try {
+    console.log(`📋 Obteniendo schema de ${table}...`);
+    const response = await apiService.getTableSchema(table);
+    console.log("🔍 Schema response completo:", response);
+
+    // CORREGIR: Usar la misma lógica que selectTable()
+    let schemaData;
+    if (response.data && response.data.data) {
+      schemaData = response.data.data;
+    } else if (response.data) {
+      schemaData = response.data;
+    } else {
+      schemaData = response;
+    }
+
+    // VALIDAR estructura
+    if (!schemaData || !schemaData.columns) {
+      console.warn("⚠️ Schema no tiene la estructura esperada:", schemaData);
+      schemaData = {
+        columns: [],
+        primaryKey: 'id',
+        tableName: table
+      };
+    }
+
+    console.log(`✅ Schema de ${table} cargado:`, {
+      totalColumns: schemaData.columns?.length || 0,
+      primaryKey: schemaData.primaryKey,
+      columns: schemaData.columns?.map(col => col.column_name) || []
+    });
+
+    setSchema(schemaData);
+  } catch (error) {
+    console.error("❌ Error fetching schema:", error);
+    setSchema(null);
+  }
+};
+
+// ===== VALIDACIÓN ADICIONAL PARA FormStyleFiltersModal =====
+// Agregar esta validación antes de renderizar FormStyleFiltersModal:
+
+// En la parte donde renderizas FormStyleFiltersModal, agregar validación:
+{showFilterModal && schema && schema.columns && (
+  <FormStyleFiltersModal
+    isOpen={showFilterModal}
+    onClose={() => setShowFilterModal(false)}
+    onApplyFilters={handleApplyFilters}
+    schema={schema}
+    currentFilters={currentFilters}
+    tableName={selectedTable}
+    access_level={nivel}
+  />
+)}
+
+// ===== DEBUGGING ADICIONAL =====
+// Agregar estos console.log en el componente para debugging:
+
+useEffect(() => {
+  console.log("🔍 Schema state actualizado:", {
+    hasSchema: !!schema,
+    hasColumns: !!(schema && schema.columns),
+    columnsCount: schema?.columns?.length || 0,
+    schemaKeys: schema ? Object.keys(schema) : [],
+    tableName: selectedTable
+  });
+}, [schema]);
+
+useEffect(() => {
+  console.log("🔍 ShowFilterModal cambió:", {
+    showFilterModal,
+    hasSchema: !!schema,
+    hasColumns: !!(schema && schema.columns)
+  });
+}, [showFilterModal, schema]);
+
+  
 
   const renderCellValue = (value: any, column: any, record: any) => {
     if (value === null || value === undefined) {
