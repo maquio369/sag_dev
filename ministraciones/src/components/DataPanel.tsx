@@ -89,159 +89,58 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
     }
   };
 
+  const selectTable = async (tableName: string) => {
+    try {
+      setLoading(true);
+      setSelectedTable(tableName);
 
-  // ===== FUNCIÓN CORREGIDA PARA selectTable() =====
-// Reemplazar la función selectTable existente con esta versión corregida:
+      // Cargar schema y registros en paralelo
+      const [schemaResponse, recordsResponse] = await Promise.all([
+        apiService.getTableSchema(tableName),
+        apiService.getRecords(tableName, { limit: 50 }),
+      ]);
 
-const selectTable = async (tableName: string) => {
-  try {
-    setLoading(true);
-    setSelectedTable(tableName);
-    
-    console.log(`📋 Cargando tabla: ${tableName}`);
+      setSchema(schemaResponse.data.data);
+      setRecords(recordsResponse.data.data);
+      setPagination(recordsResponse.data.pagination);
 
-    // Cargar schema y registros en paralelo
-    const [schemaResponse, recordsResponse] = await Promise.all([
-      apiService.getTableSchema(tableName),
-      apiService.getRecords(tableName, { limit: 50 }),
-    ]);
+      // NUEVO: Guardar mappings de foreign keys si existen
+      if (recordsResponse.data.foreignKeyMappings) {
+        setForeignKeyMappings(recordsResponse.data.foreignKeyMappings);
+      } else {
+        setForeignKeyMappings({});
+      }
 
-    console.log("🔍 Schema response completo:", schemaResponse);
-    console.log("🔍 Records response completo:", recordsResponse);
-
-    // CORREGIR: Extraer schema de manera consistente
-    let schemaData;
-    if (schemaResponse.data && schemaResponse.data.data) {
-      // Si viene envuelto en { data: { data: ... } }
-      schemaData = schemaResponse.data.data;
-    } else if (schemaResponse.data) {
-      // Si viene como { data: ... }
-      schemaData = schemaResponse.data;
-    } else {
-      // Si viene directo
-      schemaData = schemaResponse;
+      setError("");
+    } catch (err: any) {
+      setError("Error al cargar la tabla: " + err.message);
+      console.warn("Error loading table:", err);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    // VALIDAR que el schema tenga la estructura correcta
-    if (!schemaData || !schemaData.columns) {
-      console.warn("⚠️ Schema no tiene la estructura esperada:", schemaData);
-      // Crear un schema básico para evitar errores
-      schemaData = {
-        columns: [],
-        primaryKey: 'id',
-        tableName: tableName
-      };
+  const loadPage = async (page: any) => {
+    if (!selectedTable) return;
+
+    try {
+      setLoading(true);
+      const response = await apiService.getRecords(selectedTable, {
+        page,
+        limit:
+          pagination && typeof (pagination as any).limit === "number"
+            ? (pagination as any).limit
+            : 50,
+      });
+
+      setRecords(response.data.data);
+      setPagination(response.data.pagination);
+    } catch (err: any) {
+      setError("Error al cargar la página: " + err.message);
+    } finally {
+      setLoading(false);
     }
-
-    console.log(`✅ Schema procesado para ${tableName}:`, {
-      totalColumns: schemaData.columns?.length || 0,
-      primaryKey: schemaData.primaryKey,
-      tableName: schemaData.tableName || tableName,
-      columns: schemaData.columns?.map(col => col.column_name) || []
-    });
-
-    setSchema(schemaData);
-    setRecords(recordsResponse.data.data);
-    setPagination(recordsResponse.data.pagination);
-
-    // NUEVO: Guardar mappings de foreign keys si existen
-    if (recordsResponse.data.foreignKeyMappings) {
-      setForeignKeyMappings(recordsResponse.data.foreignKeyMappings);
-    } else {
-      setForeignKeyMappings({});
-    }
-
-    setError("");
-  } catch (err: any) {
-    console.error("❌ Error al cargar la tabla:", err);
-    setError("Error al cargar la tabla: " + err.message);
-    // Asegurar que schema no quede en estado inconsistente
-    setSchema(null);
-  } finally {
-    setLoading(false);
-  }
-};
-
-// ===== FUNCIÓN CORREGIDA PARA fetchSchema() =====
-// Reemplazar la función fetchSchema existente con esta versión:
-
-const fetchSchema = async (table: any) => {
-  try {
-    console.log(`📋 Obteniendo schema de ${table}...`);
-    const response = await apiService.getTableSchema(table);
-    console.log("🔍 Schema response completo:", response);
-
-    // CORREGIR: Usar la misma lógica que selectTable()
-    let schemaData;
-    if (response.data && response.data.data) {
-      schemaData = response.data.data;
-    } else if (response.data) {
-      schemaData = response.data;
-    } else {
-      schemaData = response;
-    }
-
-    // VALIDAR estructura
-    if (!schemaData || !schemaData.columns) {
-      console.warn("⚠️ Schema no tiene la estructura esperada:", schemaData);
-      schemaData = {
-        columns: [],
-        primaryKey: 'id',
-        tableName: table
-      };
-    }
-
-    console.log(`✅ Schema de ${table} cargado:`, {
-      totalColumns: schemaData.columns?.length || 0,
-      primaryKey: schemaData.primaryKey,
-      columns: schemaData.columns?.map(col => col.column_name) || []
-    });
-
-    setSchema(schemaData);
-  } catch (error) {
-    console.error("❌ Error fetching schema:", error);
-    setSchema(null);
-  }
-};
-
-// ===== VALIDACIÓN ADICIONAL PARA FormStyleFiltersModal =====
-// Agregar esta validación antes de renderizar FormStyleFiltersModal:
-
-// En la parte donde renderizas FormStyleFiltersModal, agregar validación:
-{showFilterModal && schema && schema.columns && (
-  <FormStyleFiltersModal
-    isOpen={showFilterModal}
-    onClose={() => setShowFilterModal(false)}
-    onApplyFilters={handleApplyFilters}
-    schema={schema}
-    currentFilters={currentFilters}
-    tableName={selectedTable}
-    access_level={nivel}
-  />
-)}
-
-// ===== DEBUGGING ADICIONAL =====
-// Agregar estos console.log en el componente para debugging:
-
-useEffect(() => {
-  console.log("🔍 Schema state actualizado:", {
-    hasSchema: !!schema,
-    hasColumns: !!(schema && schema.columns),
-    columnsCount: schema?.columns?.length || 0,
-    schemaKeys: schema ? Object.keys(schema) : [],
-    tableName: selectedTable
-  });
-}, [schema]);
-
-useEffect(() => {
-  console.log("🔍 ShowFilterModal cambió:", {
-    showFilterModal,
-    hasSchema: !!schema,
-    hasColumns: !!(schema && schema.columns)
-  });
-}, [showFilterModal, schema]);
-
-  
+  };
 
   const renderCellValue = (value: any, column: any, record: any) => {
     if (value === null || value === undefined) {
@@ -336,7 +235,7 @@ useEffect(() => {
         {/* Tabla de datos */}
         {loading ? (
           <Spinner className="h-16 w-16 mt-18 border-4" />
-        ) : (!records || records.length === 0) ? (
+        ) : records.length === 0 ? (
           <div className="flex items-center justify-center h-52">
             <div className="text-center">
               <div className="mx-auto mb-2">
@@ -358,7 +257,7 @@ useEffect(() => {
               <thead className="thead sticky top-0 bg-bordeBlancoTransparente dark:bg-fondoObscuroTransparente h-10">
                 <tr className="">
                   <th className="w-1 pl-3">☷</th>
-                  {schema && schema.columns && schema.columns.map((column: any) => (
+                  {schema.columns.map((column: any) => (
                     <th
                       key={column.column_name}
                       className={`${column.data_type === "boolean" || column.column_name.includes("icon") ? "justify-items-center" : ""} ${column.column_name.includes(campoEstaBorrado) && nivel !== "4" ? "hidden" : ""}`}
@@ -388,7 +287,7 @@ useEffect(() => {
                         onDelete={() => openDeleteModal(record)} //{() => openEditModal(record)}
                       />
                     </td>
-                    {schema && schema.columns && schema.columns.map((column: any) => (
+                    {schema.columns.map((column: any) => (
                       <td
                         key={column.column_name}
                         className={`${column.column_name.includes(campoEstaBorrado) && nivel !== "4" ? "hidden" : ""}`}
@@ -410,26 +309,26 @@ useEffect(() => {
         )}
 
         {/* Paginación */}
-        {pagination && pagination.totalPages > 1 && (
+        {pagination.totalPages > 1 && (
           <div className="mt-2 flex items-center justify_-between shadow text-sm">
             <div className="flex items-center space-x-0.5 mr-3 ">
               <button
                 onClick={() => loadPage(1)}
-                disabled={!pagination || !pagination.hasPrev}
+                disabled={!pagination.hasPrev}
                 className="btn4 text-fondoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover"
               >
                 <i className="fa-solid fa-angles-left"></i>
               </button>
               <button
-                onClick={() => loadPage((pagination?.page || 1) - 1)}
-                disabled={!pagination || !pagination.hasPrev}
+                onClick={() => loadPage(pagination.page - 1)}
+                disabled={!pagination.hasPrev}
                 className="btn4 text-fondoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover"
               >
                 <i className="fa-solid fa-angle-left"></i>
               </button>
               <div className="flex items-center space-x-0.5">
                 {Array.from(
-                  { length: Math.min(5, pagination?.totalPages || 1) },
+                  { length: Math.min(5, pagination.totalPages) },
                   (_, i) => {
                     const pageNum = i + 1;
                     return (
@@ -437,7 +336,7 @@ useEffect(() => {
                         key={pageNum}
                         onClick={() => loadPage(pageNum)}
                         className={`btn4  ${
-                          (pagination?.page || 1) === pageNum
+                          pagination.page === pageNum
                             ? "bg-fondoBoton1 text-textoBoton1"
                             : "text-fondoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover"
                         }`}
@@ -449,29 +348,29 @@ useEffect(() => {
                 )}
               </div>
               <button
-                onClick={() => loadPage((pagination?.page || 1) + 1)}
-                disabled={!pagination || !pagination.hasNext}
+                onClick={() => loadPage(pagination.page + 1)}
+                disabled={!pagination.hasNext}
                 className="btn4 text-fondoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover"
               >
                 <i className="fa-solid fa-angle-right"></i>
               </button>
               <button
-                onClick={() => loadPage(pagination?.totalPages || 1)}
-                disabled={!pagination || !pagination.hasNext}
+                onClick={() => loadPage(pagination.totalPages)}
+                disabled={!pagination.hasNext}
                 className="btn4 text-fondoBoton1 hover:bg-fondoBoton1Hover hover:text-textoBoton1Hover"
               >
                 <i className="fa-solid fa-angles-right"></i>
               </button>
             </div>
             <div className="text-xs font-light">
-              [ {((pagination?.page || 1) - 1) * (pagination?.limit || 50) + 1}-
-              {Math.min((pagination?.page || 1) * (pagination?.limit || 50), pagination?.total || 0)} ]
-              de <span className="font-medium">{pagination?.total || 0}</span>{" "}
+              [ {(pagination.page - 1) * pagination.limit + 1}-
+              {Math.min(pagination.page * pagination.limit, pagination.total)} ]
+              de <span className="font-medium">{pagination.total}</span>{" "}
               registros
             </div>
           </div>
         )}
-      </div>  
+      </div>
     );
   };
 
@@ -823,7 +722,7 @@ useEffect(() => {
 
   // Función principal de exportación Excel (con ExcelJS)
   const handleExportToExcel = async () => {
-    if (!selectedTable || !records || records.length === 0) {
+    if (!selectedTable || !records.length) {
       alert("No hay datos para exportar");
       return;
     }
@@ -1223,7 +1122,7 @@ useEffect(() => {
                   className="btn3 "
                   title="Exportar registros a Excel"
                   onClick={handleExportToExcel}
-                  disabled={exportLoading || !selectedTable || !Array.isArray(records) || records.length === 0}
+                  disabled={exportLoading || !selectedTable || !records.length}
                 >
                   <i className="fa-solid fa-file-export"></i>
                   <span className="lblBtn">Exportar</span>
