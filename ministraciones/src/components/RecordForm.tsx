@@ -1,6 +1,6 @@
 // src/components/RecordForm.jsx - Con layout 2x2 para los campos
 import react, { useState, useEffect, useRef } from "react";
-import { apiService } from "../services/api";
+import apiService from "../services/api";
 import { getColumnDisplayName } from "@/utils/util";
 import SubmitBtn from "./elements/SubmitBtn";
 
