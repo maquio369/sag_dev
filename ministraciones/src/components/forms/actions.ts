@@ -7,14 +7,17 @@ export async function handleSubmit(formData: FormData): Promise<any> {
     const username = formData.get("username");
     const password = formData.get("password");
     const idSistema = formData.get("id_sistema");
+    
     if (!username || !password) {
       setError = "Por favor, ingrese usuario y contraseña";
     } else {
       console.log("Iniciando proceso de login para usuario:", username);
-      var apiHost =
-        process.env.API_URL !== undefined ? process.env.API_URL : "";
-      //console.log(apiHost);
-      //console.log(formData);
+      
+      // USAR LA API DE AUTENTICACIÓN (Puerto 3011) - CORREGIDO
+      const apiHost = process.env.API_URL || "http://172.16.35.75:3011/";
+      
+      console.log(`🔐 Login API: ${apiHost}api/auth`);
+      
       const response = await fetch(apiHost + "api/auth", {
         method: "POST",
         headers: {
@@ -26,16 +29,19 @@ export async function handleSubmit(formData: FormData): Promise<any> {
           id_sistema: idSistema,
         }),
       });
-      // console.log(response.headers.get("set-cookie")?.substring(13));
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       data = await response.json();
       if (data && "token" in data && data.token === "") {
-        setError = data.message; //console.log(data.message);
+        setError = data.message;
       }
     }
   } catch (err: any) {
     console.log("Error autorizando inicio de sesión", err.message);
-    setError = "Error autorizando inicio de sesión";
+    setError = "Error de conexión con el servidor de autenticación";
   } finally {
     if (setError != "") {
       data = { message: setError, token: "" };
@@ -47,7 +53,11 @@ export async function handleSubmit(formData: FormData): Promise<any> {
 export async function getMenuItems(idSistema: number = 0, idRol: number = 0) {
   let menuItems = [];
   try {
-    var apiHost = process.env.API_URL !== undefined ? process.env.API_URL : "";
+    // USAR LA API DE AUTENTICACIÓN para el menú (Puerto 3011)
+    const apiHost = process.env.API_URL || "http://172.16.35.75:3011/";
+    
+    console.log(`📋 Menu API: ${apiHost}api/opciones/getmenu/${idSistema}/${idRol}`);
+    
     const response = await fetch(
       apiHost + "api/opciones/getmenu/" + idSistema + "/" + idRol,
       {
@@ -57,6 +67,7 @@ export async function getMenuItems(idSistema: number = 0, idRol: number = 0) {
         },
       }
     );
+    
     if (response.ok) {
       menuItems = await response.json();
     } else {
@@ -68,21 +79,23 @@ export async function getMenuItems(idSistema: number = 0, idRol: number = 0) {
     menuItems = [];
   } finally {
     return menuItems;
-    //return JSON.stringify(menuItems);
   }
 }
 
-//get request
+// Para datos generales, usar API de autenticación (Puerto 3011)
 export async function get(request: string) {
   let r = [];
   try {
-    var apiHost = process.env.API_URL !== undefined ? process.env.API_URL : "";
+    const apiHost = process.env.API_URL || "http://172.16.35.75:3011/";
+    console.log(`🔍 GET API: ${apiHost}${request}`);
+    
     const response = await fetch(apiHost + request, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
+    
     if (response.ok) {
       r = await response.json();
     } else {
@@ -94,21 +107,23 @@ export async function get(request: string) {
     r = [];
   } finally {
     return r;
-    //return JSON.stringify(r);
   }
 }
 
-//get request from P:4000
+// Para datos de tablas, usar API de datos (Puerto 3013)
 export async function get2(request: string) {
   let r = [];
   try {
-    var apiHost = process.env.API_URL2 !== undefined ? process.env.API_URL : "";
+    const apiHost = process.env.API_URL2 || "http://172.16.35.75:3013/api";
+    console.log(`📊 Data API: ${apiHost}${request}`);
+    
     const response = await fetch(apiHost + request, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
+    
     if (response.ok) {
       r = await response.json();
     } else {
@@ -120,15 +135,13 @@ export async function get2(request: string) {
     r = [];
   } finally {
     return r;
-    //return JSON.stringify(r);
   }
 }
 
-//get request as affected number of rows (count, delete)
-export async function getAffected(request: string):Promise<number> {
+export async function getAffected(request: string): Promise<number> {
   let r = -1;
   try {
-    var apiHost = process.env.API_URL !== undefined ? process.env.API_URL : "";
+    const apiHost = process.env.API_URL || "http://172.16.35.75:3011/";
     const response = await fetch(apiHost + request, {
       method: "GET",
       headers: {
@@ -146,13 +159,13 @@ export async function getAffected(request: string):Promise<number> {
     r = -1;
   } finally {
     return r;
-    //return JSON.stringify(r);
   }
 }
+
 export async function post(request: string) {
   let r = [];
   try {
-    var apiHost = process.env.API_URL !== undefined ? process.env.API_URL : "";
+    const apiHost = process.env.API_URL || "http://172.16.35.75:3011/";
     const response = await fetch(apiHost + request, {
       method: "GET",
       headers: {
@@ -171,7 +184,6 @@ export async function post(request: string) {
   } finally {
     return r;
   } 
-  
 }
 
 export async function handleSubmitExample() {
