@@ -97,7 +97,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
       // Cargar schema y registros en paralelo
       const [schemaResponse, recordsResponse] = await Promise.all([
         apiService.getTableSchema(tableName),
-        apiService.getRecords(tableName, { limit: 50 }),
+        apiService.getTableData(tableName, { limit: 50 }),
       ]);
 
       setSchema(schemaResponse.data.data);
@@ -125,7 +125,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
 
     try {
       setLoading(true);
-      const response = await apiService.getRecords(selectedTable, {
+      const response = await apiService.getTableData(selectedTable, {
         page,
         limit:
           pagination && typeof (pagination as any).limit === "number"
@@ -665,7 +665,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
 
       console.log("🚀 Parámetros enviados al backend:", params);
 
-      const response = await apiService.getRecords(selectedTable, params);
+      const response = await apiService.getTableData(selectedTable, params);
       console.log("📊 Respuesta del filtro:", response);
 
       // Extraer los datos correctamente según la estructura de respuesta
@@ -738,7 +738,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
         ...currentFilters, // Mantener filtros aplicados
       };
 
-      const response = await apiService.getRecords(selectedTable, exportParams);
+      const response = await apiService.getTableData(selectedTable, exportParams);
 
       let allRecords;
       if (response.data && response.data.data) {
@@ -1018,7 +1018,7 @@ const DataPanel = ({ entity, nivel }: { entity: string; nivel?: string }) => {
         ...filters,
       };
 
-      const response = await apiService.getRecords(table, params);
+      const response = await apiService.getTableData(table, params);
       console.log("Records response:", response); // Debug
 
       // Extraer los datos correctamente según la estructura de respuesta
