@@ -69,36 +69,55 @@ const RecordForm = ({
   }
 }, [schema, record, tableName, level]);
 
+// NUEVO: useEffect separado para reinicializar cuando cambien las opciones FK
+useEffect(() => {
+  if (isEdit && record && Object.keys(foreignKeyOptions).length > 0) {
+    console.log("🔄 Re-inicializando formulario con datos FK cargados");
+    initializeForm();
+  }
+}, [foreignKeyOptions, isEdit, record]);
+
   const initializeForm = () => {
-    const initialData: Record<string, any> = {};
+  const initialData: Record<string, any> = {};
 
-    schema.columns.forEach((column) => {
-      if (isEdit && record) {
-        // Modo edición: usar datos del registro
-        initialData[column.column_name] = record[column.column_name] ?? "";
-      } else {
-        // Modo creación: valores por defecto
-        if (column.is_primary_key && column.is_identity) {
-          // Primary key auto-increment: no incluir
-          return;
-        }
-
-        if (column.column_default) {
-          if (column.data_type === "boolean") {
-            initialData[column.column_name] = column.column_default === "true";
-          } else {
-            initialData[column.column_name] = column.column_default;
-          }
-        } else if (column.data_type === "boolean") {
-          initialData[column.column_name] = false;
-        } else {
-          initialData[column.column_name] = "";
-        }
+  schema.columns.forEach((column) => {
+    if (isEdit && record) {
+      // Modo edición: usar datos del registro
+      let value = record[column.column_name] ?? "";
+      
+      // 🎯 ESPECIAL PARA FOREIGN KEYS: Asegurar que el valor sea string
+      const isForeignKey = schema.foreignKeys?.some(fk => fk.column_name === column.column_name);
+      if (isForeignKey && value !== null && value !== undefined && value !== "") {
+        // Convertir a string para que coincida con las opciones del select
+        value = String(value);
+        console.log(`🔑 FK ${column.column_name}: valor asignado = "${value}"`);
       }
-    });
+      
+      initialData[column.column_name] = value;
+    } else {
+      // Modo creación: valores por defecto
+      if (column.is_primary_key && column.is_identity) {
+        // Primary key auto-increment: no incluir
+        return;
+      }
 
-    setFormData(initialData);
-  };
+      if (column.column_default) {
+        if (column.data_type === "boolean") {
+          initialData[column.column_name] = column.column_default === "true";
+        } else {
+          initialData[column.column_name] = column.column_default;
+        }
+      } else if (column.data_type === "boolean") {
+        initialData[column.column_name] = false;
+      } else {
+        initialData[column.column_name] = "";
+      }
+    }
+  });
+
+  console.log("📋 FormData inicializado:", initialData);
+  setFormData(initialData);
+};
 
   const loadForeignKeyOptions = async () => {
   // Validación inicial más robusta
