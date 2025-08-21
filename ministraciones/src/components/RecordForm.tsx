@@ -96,42 +96,52 @@ const RecordForm = ({
   };
 
   const loadForeignKeyOptions = async () => {
-    if (!schema.foreignKeys || schema.foreignKeys.length === 0) {
-      return;
-    }
+  // Validación inicial más robusta
+  if (!schema || !schema.foreignKeys || schema.foreignKeys.length === 0) {
+    console.log("No hay foreign keys para cargar");
+    return;
+  }
 
-    setLoadingOptions(true);
-    const options: { [key: string]: any } = {};
+  setLoadingOptions(true);
+  const options: { [key: string]: any } = {};
 
-    try {
-      // Cargar opciones para cada foreign key
-      const promises = schema.foreignKeys.map(async (fk) => {
-        try {
-          const response = await apiService.getForeignKeyOptions(
-            tableName,
-            fk.column_name
-          );
+  try {
+    const promises = schema.foreignKeys.map(async (fk) => {
+      try {
+        // Validar que fk y fk.column_name existan
+        if (!fk || !fk.column_name) {
+          console.warn("Foreign key inválida:", fk);
+          return;
+        }
+
+        const response = await apiService.getForeignKeyOptions(
+          tableName,
+          fk.column_name
+        );
+
+        // Validar la estructura de la respuesta
+        if (response?.data?.data?.options) {
           options[fk.column_name] = response.data.data.options;
-          //console.log(`Opciones cargadas para ${fk.column_name}:`, response.data.data.options);
-        } catch (error) {
-          console.error(
-            `Error cargando opciones para ${fk.column_name}:`,
-            error
-          );
-          // Si falla, crear opciones vacías
+          console.log(`Opciones cargadas para ${fk.column_name}:`, response.data.data.options);
+        } else {
+          console.warn(`Estructura de respuesta inválida para ${fk.column_name}:`, response);
           options[fk.column_name] = [];
         }
-      });
 
-      await Promise.all(promises);
-      setForeignKeyOptions(options);
-    } catch (error) {
-      console.error("Error general cargando opciones FK:", error);
-      // showNotification('Error al cargar opciones de relaciones', 'error');
-    } finally {
-      setLoadingOptions(false);
-    }
-  };
+      } catch (error) {
+        console.error(`Error cargando opciones para ${fk.column_name}:`, error);
+        options[fk.column_name] = [];
+      }
+    });
+
+    await Promise.all(promises);
+    setForeignKeyOptions(options);
+  } catch (error) {
+    console.error("Error general cargando opciones FK:", error);
+  } finally {
+    setLoadingOptions(false);
+  }
+};
 
   const handleInputChange = (columnName: string, value: any) => {
     setFormData((prev) => ({
