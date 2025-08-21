@@ -64,6 +64,21 @@ const FormStyleFiltersModal = ({
     //isRequired,
     displayName
   ) => {
+    // Verificar que las opciones estén disponibles
+      const options = foreignKeyOptions[column.column_name];
+      
+      if (!options || !Array.isArray(options)) {
+        console.warn(`No hay opciones disponibles para ${column.column_name}`);
+        return (
+          <div className="mb-2">
+            <select className="select1" disabled>
+              <option>Cargando opciones...</option>
+            </select>
+          </div>
+        );
+      }
+
+    
     /*
     // Si están cargando las opciones, mostrar loading
     if (loadingOptions) {
@@ -106,7 +121,7 @@ const FormStyleFiltersModal = ({
           >
             Seleccionar...
           </option>
-          {foreignKeyOptions[column.column_name]?.map((option) => (
+          {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
