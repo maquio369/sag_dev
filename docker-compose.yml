@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # Backend - NestJS API (Puerto 3011 - AUTH)
+  ministraciones-backend:
+    build:
+      context: ./ministraciones_bk
+      dockerfile: Dockerfile
+    container_name: ministraciones-backend
+    ports:
+      - "3011:3011"
+    environment:
+      # Database
+      - POSTGRES_HOST=172.16.35.75
+      - POSTGRES_PORT=32768
+      - POSTGRES_USER=maquio
+      - POSTGRES_PASSWORD=maquio92
+      - POSTGRES_DATABASE=siag_dev
+      
+      # JWT
+      - JWT_SECRET=L0ng_s3cr3t_p4ssw0rd_G@l@xy2025
+      - JWT_EXPIRATION=1h
+      
+      # App
+      - API_PORT=3011
+      - MODE=DEV
+      - RUN_MIGRATIONS=false
+    restart: unless-stopped
+    networks:
+      - ministraciones-network
+
+  # Frontend - Next.js
+  ministraciones-frontend:
+    build:
+      context: ./ministraciones
+      dockerfile: Dockerfile
+    container_name: ministraciones-frontend
+    ports:
+      - "3010:3010"
+    environment:
+      # APIs separadas
+      - NEXT_PUBLIC_AUTH_API=http://172.16.35.75:3011
+      - NEXT_PUBLIC_DATA_API=http://172.16.35.75:3013/api
+      
+      # Para server-side
+      - API_URL=http://172.16.35.75:3011/
+      - API_URL2=http://172.16.35.75:3013/api
+      
+      # Database
+      - POSTGRES_HOST=172.16.35.75
+      - POSTGRES_PORT=32768
+      - POSTGRES_USER=maquio
+      - POSTGRES_PASSWORD=maquio92
+      - POSTGRES_DATABASE=siag_dev
+      
+      # JWT
+      - JWT_SECRET=L0ng_s3cr3t_p4ssw0rd_G@l@xy2025
+      - JWT_EXPIRATION=1h
+      
+      # App
+      - PORT=3010
+      - MODE=DEV
+      - IS_DEV_MODE=true
+      - RUN_MIGRATIONS=false
+    depends_on:
+      - ministraciones-backend
+    restart: unless-stopped
+    networks:
+      - ministraciones-network
+
+networks:
+  ministraciones-network:
+    driver: bridge
+
+volumes:
+  ministraciones-data:
