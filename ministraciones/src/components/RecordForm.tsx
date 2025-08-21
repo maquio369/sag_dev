@@ -246,6 +246,27 @@ const RecordForm = ({
     isRequired: boolean,
     displayName: string
   ) => {
+
+  // Verificar que las opciones estén disponibles
+    const options = foreignKeyOptions[column.column_name];
+    
+    if (!loadingOptions && (!options || !Array.isArray(options))) {
+      console.warn(`No hay opciones disponibles para ${column.column_name}`);
+      return (
+        <div className="mb-2">
+          <label className="lbl" htmlFor={column.column_name}>
+            <div className="flex items-center space-x-0">
+              <span className="pr-0.5">{column.is_primary_key ? "🔑 " : ""}</span>
+              <span>{displayName}</span>
+              {isRequired && <span className="text-TextoLblErrorDark">*</span>}
+            </div>
+          </label>
+          <select className="select1" disabled>
+            <option>No hay opciones disponibles</option>
+          </select>
+        </div>
+      );
+    }
     // Si están cargando las opciones, mostrar loading
     if (loadingOptions) {
       return (
@@ -300,7 +321,7 @@ const RecordForm = ({
                 ? `(Seleccione ${displayName.toLowerCase()})`
                 : "≡"}
           </option>
-          {foreignKeyOptions[column.column_name]?.map((option) => (
+          {options?.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
