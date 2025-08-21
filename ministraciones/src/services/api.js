@@ -131,95 +131,96 @@ const api = {
  },
 
  // Método para foreign key options
- // Método para foreign key options
-getForeignKeyOptions: async (tableName, columnName) => {
-  try {
-    // Obtener el schema para encontrar la tabla referenciada
-    const schemaResponse = await dataApi.get(`/tables/${tableName}/schema`);
-    const schema = schemaResponse.data.data || schemaResponse.data;
-    
-    // Buscar la foreign key en el schema
-    const fkColumn = schema.foreignKeys?.find(fk => fk.column_name === columnName);
-    
-    if (!fkColumn || !fkColumn.referenced_table_name) {
-      console.warn(`No se encontró información FK para ${columnName}`);
-      return { 
-        data: { 
-          data: { 
-            options: [] 
-          } 
-        } 
-      };
-    }
+ getForeignKeyOptions: async (tableName, columnName) => {
+   try {
+     // Obtener el schema para encontrar la tabla referenciada
+     const schemaResponse = await dataApi.get(`/tables/${tableName}/schema`);
+     const schema = schemaResponse.data.data || schemaResponse.data;
+     
+     // Buscar la foreign key en el schema
+     const fkColumn = schema.foreignKeys?.find(fk => fk.column_name === columnName);
+     
+     if (!fkColumn || (!fkColumn.referenced_table_name && !fkColumn.foreign_table_name)) {
+       console.warn(`No se encontró información FK para ${columnName}`, fkColumn);
+       return { 
+         data: { 
+           data: { 
+             options: [] 
+           } 
+         } 
+       };
+     }
 
-    console.log(`🔍 Cargando opciones para FK ${columnName} -> ${fkColumn.referenced_table_name}`);
-    
-    // Obtener datos de la tabla referenciada
-    const response = await dataApi.get(`/tables/${fkColumn.referenced_table_name}`);
-    const rawData = response.data.data || response.data;
+     // Usar el nombre correcto de la tabla referenciada
+     const referencedTable = fkColumn.referenced_table_name || fkColumn.foreign_table_name;
+     console.log(`🔍 Cargando opciones para FK ${columnName} -> ${referencedTable}`);
+     
+     // Obtener datos de la tabla referenciada
+     const response = await dataApi.get(`/tables/${referencedTable}`);
+     const rawData = response.data.data || response.data;
 
-    if (!Array.isArray(rawData) || rawData.length === 0) {
-      console.warn(`No hay datos en tabla ${fkColumn.referenced_table_name}`);
-      return { 
-        data: { 
-          data: { 
-            options: [] 
-          } 
-        } 
-      };
-    }
+     if (!Array.isArray(rawData) || rawData.length === 0) {
+       console.warn(`No hay datos en tabla ${referencedTable}`);
+       return { 
+         data: { 
+           data: { 
+             options: [] 
+           } 
+         } 
+       };
+     }
 
-    // 🎯 FORMATEAR LOS DATOS COMO OPCIONES
-    const options = rawData.map(record => {
-      // Usar la primary key como value
-      const primaryKeyValue = record[fkColumn.referenced_column_name] || record.id || Object.values(record)[0];
-      
-      // Crear label: buscar campo descriptivo o usar la PK
-      let label = primaryKeyValue;
-      
-      // Intentar encontrar un campo descriptivo (nombre, descripcion, titulo, etc.)
-      const descriptiveFields = ['nombre', 'nombres', 'descripcion', 'titulo', 'opcion', 'rol', 'empleado'];
-      for (const field of descriptiveFields) {
-        if (record[field]) {
-          label = record[field];
-          break;
-        }
-      }
-      
-      // Si hay más de un campo descriptivo, combinarlos
-      if (record.nombres && record.apellidos) {
-        label = `${record.nombres} ${record.apellidos}`;
-      } else if (record.nombre && record.apellidos) {
-        label = `${record.nombre} ${record.apellidos}`;
-      }
-      
-      return {
-        value: String(primaryKeyValue), // Asegurar que sea string
-        label: String(label)
-      };
-    });
+     // 🎯 FORMATEAR LOS DATOS COMO OPCIONES
+     const options = rawData.map(record => {
+       // Usar la primary key como value
+       const primaryKeyValue = record[fkColumn.referenced_column_name] || record.id || Object.values(record)[0];
+       
+       // Crear label: buscar campo descriptivo o usar la PK
+       let label = primaryKeyValue;
+       
+       // Intentar encontrar un campo descriptivo (nombre, descripcion, titulo, etc.)
+       const descriptiveFields = ['nombre', 'nombres', 'descripcion', 'titulo', 'opcion', 'rol', 'empleado'];
+       for (const field of descriptiveFields) {
+         if (record[field]) {
+           label = record[field];
+           break;
+         }
+       }
+       
+       // Si hay más de un campo descriptivo, combinarlos
+       if (record.nombres && record.apellidos) {
+         label = `${record.nombres} ${record.apellidos}`;
+       } else if (record.nombre && record.apellidos) {
+         label = `${record.nombre} ${record.apellidos}`;
+       }
+       
+       return {
+         value: String(primaryKeyValue), // Asegurar que sea string
+         label: String(label)
+       };
+     });
 
-    console.log(`✅ ${options.length} opciones formateadas para ${columnName}:`, options);
+     console.log(`✅ ${options.length} opciones formateadas para ${columnName}:`, options);
 
-    return { 
-      data: { 
-        data: { 
-          options: options 
-        } 
-      } 
-    };
-    
-  } catch (error) {
-    console.error(`❌ Error cargando opciones FK para ${tableName}.${columnName}:`, error);
-    return { 
-      data: { 
-        data: { 
-          options: [] 
-        } 
-      } 
-    };
-  }
-},
+     return { 
+       data: { 
+         data: { 
+           options: options 
+         } 
+       } 
+     };
+     
+   } catch (error) {
+     console.error(`❌ Error cargando opciones FK para ${tableName}.${columnName}:`, error);
+     return { 
+       data: { 
+         data: { 
+           options: [] 
+         } 
+       } 
+     };
+   }
+ },
 
  // Métodos CRUD
  createRecord: (tableName, data) => {
