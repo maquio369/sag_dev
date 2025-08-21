@@ -58,114 +58,114 @@ const RecordForm = ({
   const isEdit = !!record;
 
   useEffect(() => {
-  initializeForm();
-  
-  // Validación más robusta para foreign keys
-  if (schema && Array.isArray(schema.foreignKeys) && schema.foreignKeys.length > 0) {
-    console.log("Cargando opciones FK para RecordForm:", schema.foreignKeys);
-    loadForeignKeyOptions();
-  } else {
-    console.log("No se requiere cargar opciones FK en RecordForm");
-  }
-}, [schema, record, tableName, level]);
-
-// NUEVO: useEffect separado para reinicializar cuando cambien las opciones FK
-useEffect(() => {
-  if (isEdit && record && Object.keys(foreignKeyOptions).length > 0) {
-    console.log("🔄 Re-inicializando formulario con datos FK cargados");
     initializeForm();
-  }
-}, [foreignKeyOptions, isEdit, record]);
+    
+    // Validación más robusta para foreign keys
+    if (schema && Array.isArray(schema.foreignKeys) && schema.foreignKeys.length > 0) {
+      console.log("Cargando opciones FK para RecordForm:", schema.foreignKeys);
+      loadForeignKeyOptions();
+    } else {
+      console.log("No se requiere cargar opciones FK en RecordForm");
+    }
+  }, [schema, record, tableName, level]);
+
+  // NUEVO: useEffect separado para reinicializar cuando cambien las opciones FK
+  useEffect(() => {
+    if (isEdit && record && Object.keys(foreignKeyOptions).length > 0) {
+      console.log("🔄 Re-inicializando formulario con datos FK cargados");
+      initializeForm();
+    }
+  }, [foreignKeyOptions, isEdit, record]);
 
   const initializeForm = () => {
-  const initialData: Record<string, any> = {};
+    const initialData: Record<string, any> = {};
 
-  schema.columns.forEach((column) => {
-    if (isEdit && record) {
-      // Modo edición: usar datos del registro
-      let value = record[column.column_name] ?? "";
-      
-      // 🎯 ESPECIAL PARA FOREIGN KEYS: Asegurar que el valor sea string
-      const isForeignKey = schema.foreignKeys?.some(fk => fk.column_name === column.column_name);
-      if (isForeignKey && value !== null && value !== undefined && value !== "") {
-        // Convertir a string para que coincida con las opciones del select
-        value = String(value);
-        console.log(`🔑 FK ${column.column_name}: valor asignado = "${value}"`);
-      }
-      
-      initialData[column.column_name] = value;
-    } else {
-      // Modo creación: valores por defecto
-      if (column.is_primary_key && column.is_identity) {
-        // Primary key auto-increment: no incluir
-        return;
-      }
-
-      if (column.column_default) {
-        if (column.data_type === "boolean") {
-          initialData[column.column_name] = column.column_default === "true";
-        } else {
-          initialData[column.column_name] = column.column_default;
+    schema.columns.forEach((column) => {
+      if (isEdit && record) {
+        // Modo edición: usar datos del registro
+        let value = record[column.column_name] ?? "";
+        
+        // 🎯 ESPECIAL PARA FOREIGN KEYS: Asegurar que el valor sea string
+        const isForeignKey = schema.foreignKeys?.some(fk => fk.column_name === column.column_name);
+        if (isForeignKey && value !== null && value !== undefined && value !== "") {
+          // Convertir a string para que coincida con las opciones del select
+          value = String(value);
+          console.log(`🔑 FK ${column.column_name}: valor asignado = "${value}"`);
         }
-      } else if (column.data_type === "boolean") {
-        initialData[column.column_name] = false;
+        
+        initialData[column.column_name] = value;
       } else {
-        initialData[column.column_name] = "";
-      }
-    }
-  });
-
-  console.log("📋 FormData inicializado:", initialData);
-  setFormData(initialData);
-};
-
-  const loadForeignKeyOptions = async () => {
-  // Validación inicial más robusta
-  if (!schema || !schema.foreignKeys || schema.foreignKeys.length === 0) {
-    console.log("No hay foreign keys para cargar");
-    return;
-  }
-
-  setLoadingOptions(true);
-  const options: { [key: string]: any } = {};
-
-  try {
-    const promises = schema.foreignKeys.map(async (fk) => {
-      try {
-        // Validar que fk y fk.column_name existan
-        if (!fk || !fk.column_name) {
-          console.warn("Foreign key inválida:", fk);
+        // Modo creación: valores por defecto
+        if (column.is_primary_key && column.is_identity) {
+          // Primary key auto-increment: no incluir
           return;
         }
 
-        const response = await apiService.getForeignKeyOptions(
-          tableName,
-          fk.column_name
-        );
-
-        // Validar la estructura de la respuesta
-        if (response?.data?.data?.options) {
-          options[fk.column_name] = response.data.data.options;
-          console.log(`Opciones cargadas para ${fk.column_name}:`, response.data.data.options);
+        if (column.column_default) {
+          if (column.data_type === "boolean") {
+            initialData[column.column_name] = column.column_default === "true";
+          } else {
+            initialData[column.column_name] = column.column_default;
+          }
+        } else if (column.data_type === "boolean") {
+          initialData[column.column_name] = false;
         } else {
-          console.warn(`Estructura de respuesta inválida para ${fk.column_name}:`, response);
-          options[fk.column_name] = [];
+          initialData[column.column_name] = "";
         }
-
-      } catch (error) {
-        console.error(`Error cargando opciones para ${fk.column_name}:`, error);
-        options[fk.column_name] = [];
       }
     });
 
-    await Promise.all(promises);
-    setForeignKeyOptions(options);
-  } catch (error) {
-    console.error("Error general cargando opciones FK:", error);
-  } finally {
-    setLoadingOptions(false);
-  }
-};
+    console.log("📋 FormData inicializado:", initialData);
+    setFormData(initialData);
+  };
+
+  const loadForeignKeyOptions = async () => {
+    // Validación inicial más robusta
+    if (!schema || !schema.foreignKeys || schema.foreignKeys.length === 0) {
+      console.log("No hay foreign keys para cargar");
+      return;
+    }
+
+    setLoadingOptions(true);
+    const options: { [key: string]: any } = {};
+
+    try {
+      const promises = schema.foreignKeys.map(async (fk) => {
+        try {
+          // Validar que fk y fk.column_name existan
+          if (!fk || !fk.column_name) {
+            console.warn("Foreign key inválida:", fk);
+            return;
+          }
+
+          const response = await apiService.getForeignKeyOptions(
+            tableName,
+            fk.column_name
+          );
+
+          // Validar la estructura de la respuesta
+          if (response?.data?.data?.options) {
+            options[fk.column_name] = response.data.data.options;
+            console.log(`Opciones cargadas para ${fk.column_name}:`, response.data.data.options);
+          } else {
+            console.warn(`Estructura de respuesta inválida para ${fk.column_name}:`, response);
+            options[fk.column_name] = [];
+          }
+
+        } catch (error) {
+          console.error(`Error cargando opciones para ${fk.column_name}:`, error);
+          options[fk.column_name] = [];
+        }
+      });
+
+      await Promise.all(promises);
+      setForeignKeyOptions(options);
+    } catch (error) {
+      console.error("Error general cargando opciones FK:", error);
+    } finally {
+      setLoadingOptions(false);
+    }
+  };
 
   const handleInputChange = (columnName: string, value: any) => {
     setFormData((prev) => ({
@@ -266,7 +266,7 @@ useEffect(() => {
     displayName: string
   ) => {
 
-  // Verificar que las opciones estén disponibles
+    // Verificar que las opciones estén disponibles
     const options = foreignKeyOptions[column.column_name];
     
     if (!loadingOptions && (!options || !Array.isArray(options))) {
@@ -286,6 +286,7 @@ useEffect(() => {
         </div>
       );
     }
+    
     // Si están cargando las opciones, mostrar loading
     if (loadingOptions) {
       return (
@@ -301,6 +302,15 @@ useEffect(() => {
         </div>
       );
     }
+
+    // 🔍 DEBUGGING: Log para verificar valores
+    console.log(`🎯 Renderizando FK ${column.column_name}:`, {
+      value,
+      valueType: typeof value,
+      availableOptions: options?.length || 0,
+      optionsLoaded: !loadingOptions,
+      firstOption: options?.[0]
+    });
 
     return (
       <div className="mb-2">
@@ -323,7 +333,7 @@ useEffect(() => {
           onChange={(e) =>
             handleInputChange(
               column.column_name,
-              e.target.value ? parseInt(e.target.value) : ""
+              e.target.value
             )
           }
           className="select1"
