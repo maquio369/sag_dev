@@ -48,7 +48,7 @@ const FormStyleFiltersModal = ({
   } else {
     console.log("No se requiere cargar opciones FK en FormStyleFiltersModal");
   }
-}, [schema, record, tableName, level]);
+}, [schema, tableName, access_level]);
   //const error = errors[column.column_name];
   /*const isRequired = column.is_nullable === "NO" && !column.column_default;
     const columnDisplayName = getColumnDisplayName(
