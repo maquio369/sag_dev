@@ -58,11 +58,16 @@ const RecordForm = ({
   const isEdit = !!record;
 
   useEffect(() => {
-    initializeForm();
-    if (schema && schema.foreignKeys && schema.foreignKeys.length > 0) {
-      loadForeignKeyOptions();
-    }
-  }, [schema, record, tableName, level]);
+  initializeForm();
+  
+  // Validación más robusta para foreign keys
+  if (schema && Array.isArray(schema.foreignKeys) && schema.foreignKeys.length > 0) {
+    console.log("Cargando opciones FK para RecordForm:", schema.foreignKeys);
+    loadForeignKeyOptions();
+  } else {
+    console.log("No se requiere cargar opciones FK en RecordForm");
+  }
+}, [schema, record, tableName, level]);
 
   const initializeForm = () => {
     const initialData: Record<string, any> = {};
