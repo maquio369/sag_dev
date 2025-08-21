@@ -38,12 +38,17 @@ const FormStyleFiltersModal = ({
     }
   }, [isOpen, schema]);
 
-  useEffect(() => {
-    //initializeForm();
-    if (schema && schema.foreignKeys && schema.foreignKeys.length > 0) {
-      loadForeignKeyOptions();
-    }
-  }, [schema]);
+   useEffect(() => {
+  initializeFilters();
+  
+  // Validación más robusta para foreign keys
+  if (schema && Array.isArray(schema.foreignKeys) && schema.foreignKeys.length > 0) {
+    console.log("Cargando opciones FK para FormStyleFiltersModal:", schema.foreignKeys);
+    loadForeignKeyOptions();
+  } else {
+    console.log("No se requiere cargar opciones FK en FormStyleFiltersModal");
+  }
+}, [schema, record, tableName, level]);
   //const error = errors[column.column_name];
   /*const isRequired = column.is_nullable === "NO" && !column.column_default;
     const columnDisplayName = getColumnDisplayName(
